@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "eslint-plugin-security": "^1.4.0",
     "express": "^4.17.2"
   }
 }
