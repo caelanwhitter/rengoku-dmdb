@@ -3,10 +3,20 @@ package utils;
 import org.bson.types.*;
 
 public class Review {
-  private ObjectId id;
-  private String username, content, datePosted;
-  private double rating;
-  
+	private ObjectId id;
+	private String username, content, datePosted;
+	private double rating;
+
+	public Review() {}
+
+	public Review(ObjectId id, String username, String content, String datePosted, double rating) {
+		this.id = id;
+		this.username = username;
+		this.content = content;
+		this.datePosted = datePosted;
+		this.rating = rating;
+	}
+
 	public ObjectId getId() {
 		return id;
 	}

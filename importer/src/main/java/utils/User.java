@@ -3,8 +3,17 @@ package utils;
 import org.bson.types.*;
 
 public class User {
-  private ObjectId id;
-  private String username, email, password;
+	private ObjectId id;
+	private String username, email, password;
+
+	public User() {}
+
+	public User(ObjectId id, String username, String email, String password) {
+		this.id = id;
+		this.username = username;
+		this.email = email;
+		this.password = password;
+	}
 
 	public ObjectId getId() {
 		return id;

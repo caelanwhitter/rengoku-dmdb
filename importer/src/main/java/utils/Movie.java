@@ -6,10 +6,27 @@ import org.bson.types.*;
 import java.util.*;
 
 public class Movie {
-  private ObjectId id;
-  private String title, description, duration, genre, rating, poster, director;
-  private double score, gross;
-  private int releaseYear;
+	private ObjectId id;
+	private String title, description, duration, genre, rating, poster, director;
+	private double score, gross;
+	private int releaseYear;
+
+	public Movie() {}
+
+	public Movie(ObjectId id, String title, String description, String duration, String genre, String rating,
+			String poster, String director, double score, double gross, int releaseYear) {
+		this.id = id;
+		this.title = title;
+		this.description = description;
+		this.duration = duration;
+		this.genre = genre;
+		this.rating = rating;
+		this.poster = poster;
+		this.director = director;
+		this.score = score;
+		this.gross = gross;
+		this.releaseYear = releaseYear;
+	}
 
 	public ObjectId getId() {
 		return id;
