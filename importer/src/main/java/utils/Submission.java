@@ -1,15 +1,11 @@
 package utils;
 
-import org.bson.codecs.pojo.annotations.BsonProperty;
-import org.bson.*;
 import org.bson.types.*;
-import java.util.*;
 
-public class Movie {
-  private ObjectId id;
-  private String title, description, duration, genre, rating, poster, director;
-  private double score, gross;
-  private int releaseYear;
+public class Submission {
+    private ObjectId id;
+    private String username, title, description, duration, genre, rating, poster, videoLink;
+    private double score;
 
 	public ObjectId getId() {
 		return id;
@@ -17,6 +13,14 @@ public class Movie {
 
 	public void setId(ObjectId id) {
 		this.id = id;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getTitle() {
@@ -59,22 +63,6 @@ public class Movie {
 		this.rating = rating;
 	}
 
-	public String getPoster() {
-		return poster;
-	}
-
-	public void setPoster(String poster) {
-		this.poster = poster;
-	}
-
-	public String getDirector() {
-		return director;
-	}
-
-	public void setDirector(String director) {
-		this.director = director;
-	}
-
 	public double getScore() {
 		return score;
 	}
@@ -83,19 +71,19 @@ public class Movie {
 		this.score = score;
 	}
 
-	public double getGross() {
-		return gross;
+	public String getPoster() {
+		return poster;
 	}
 
-	public void setGross(double gross) {
-		this.gross = gross;
+	public void setPoster(String poster) {
+		this.poster = poster;
 	}
 
-	public int getReleaseYear() {
-		return releaseYear;
+	public String getVideoLink() {
+		return videoLink;
 	}
 
-	public void setReleaseYear(int releaseYear) {
-		this.releaseYear = releaseYear;
+	public void setVideoLink(String videoLink) {
+		this.videoLink = videoLink;
 	}
 }
