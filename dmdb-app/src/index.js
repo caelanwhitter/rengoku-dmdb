@@ -1,17 +1,72 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { render } from "react-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route
+} from "react-router-dom";
+import App from "./App";
+import Featured from "./routes/Featured";
+import Movie from "./routes/movie";
+import Movies from "./routes/Movies";
+import HiddenGems from "./routes/HiddenGems";
+import Profile from "./routes/Profile";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+const rootElement = document.getElementById("root");
+render(
+  <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<App />} >
+        <Route path="featured" element={<Featured />} >
+          <Route
+            index
+            element={
+              <main style={{ padding: "1rem" }}>
+                <p>Select an Feature</p>
+              </main>
+            }
+          />
+        </Route>
+        <Route path="movies" element={<Movies />}>
+          <Route
+            index
+            element={
+              <main style={{ padding: "1rem" }}>
+                <p>Select a Movie</p>
+              </main>
+            }
+          />
+          <Route path=":movieId" element={<Movie />} />
+        </Route>
+        <Route path="hiddengems" element={<HiddenGems />} >
+          <Route
+            index
+            element={
+              <main style={{ padding: "1rem" }}>
+                <p>View the Hidden Gems</p>
+              </main>
+            }
+          />
+        </Route>
+        <Route path="profile" element={<Profile />} >
+          <Route
+            index
+            element={
+              <main style={{ padding: "1rem" }}>
+                <p>Select a Profile</p>
+              </main>
+            }
+          />
+        </Route>
+        <Route
+          path="*"
+          element={
+            <main style={{ padding: "1rem" }}>
+              <p>There's nothing here!</p>
+            </main>
+          }
+        />
+      </Route>
+    </Routes>
+  </BrowserRouter>,
+  rootElement
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
