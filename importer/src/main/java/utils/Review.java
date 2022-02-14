@@ -9,8 +9,7 @@ public class Review {
 
 	public Review() {}
 
-	public Review(ObjectId id, String username, String content, String datePosted, double rating) {
-		this.id = id;
+	public Review(String username, String content, String datePosted, double rating) {
 		this.username = username;
 		this.content = content;
 		this.datePosted = datePosted;

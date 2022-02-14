@@ -13,9 +13,8 @@ public class Movie {
 
 	public Movie() {}
 
-	public Movie(ObjectId id, String title, String description, String duration, String genre, String rating,
+	public Movie(String title, String description, String duration, String genre, String rating,
 			String poster, String director, double score, double gross, int releaseYear) {
-		this.id = id;
 		this.title = title;
 		this.description = description;
 		this.duration = duration;

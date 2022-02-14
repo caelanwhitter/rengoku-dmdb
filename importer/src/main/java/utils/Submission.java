@@ -9,9 +9,8 @@ public class Submission {
 
     public Submission() {}
 
-    public Submission(ObjectId id, String username, String title, String description, String duration, String genre,
+    public Submission(String username, String title, String description, String duration, String genre,
             String rating, String poster, String videoLink, double score) {
-        this.id = id;
         this.username = username;
         this.title = title;
         this.description = description;
