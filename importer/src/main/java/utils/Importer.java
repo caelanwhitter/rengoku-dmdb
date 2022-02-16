@@ -10,7 +10,8 @@ public class Importer {
     private String moviesPath;
     private String title, duration, genre, rating, director;
 	private double score, gross;
-	private int releaseYear;
+    private int releaseYear;
+    private int count = 0;
     public Importer() {
         this.moviesPath = "importer/src/main/java/utils/resources/movies.csv";
     }
@@ -30,47 +31,54 @@ public class Importer {
                 firstLine = false;
                 continue;
             }
-            if(line.startsWith("\""))
-            {
+            if (line.startsWith("\"")) {
                 String[] commas = line.split("\",");
                 title = commas[0].substring(1);
                 //System.out.println(commas[0].substring(1));
-            }
-            else {
+            } else {
                 String[] movies = line.split(splitby);
-                if (movies[4].startsWith("\"") || movies[4]== "")  {
+                title = movies[0];
+                rating = movies[1];
+                genre = movies[2];
+                releaseYear = Integer.parseInt(movies[3]);
 
-                    title = movies[0];
+                if (movies[4].startsWith("\"") && movies.length == 16) {
                     duration = movies[15];
-                    genre = movies[2];
-                    rating = movies[1];
                     director = movies[8];
                     score = parseDouble(movies[6]);
                     gross = parseDouble(movies[13]);
-                    releaseYear = Integer.parseInt(movies[3]);
-                    
-                } else {
-                    title = movies[0];
-                    //duration = movies[14];
-                    genre = movies[2];
-                    rating = movies[1];
+
+                } else if (movies.length == 10) {
+                    duration = "";
                     director = movies[7];
                     score = parseDouble(movies[6]);
-                    //gross = parseDouble(movies[12]);
-                    releaseYear = Integer.parseInt(movies[3]);
-                    System.out.println(title+", "+movies[1]+", "+movies[2]+", "+movies[3]+", "+movies[4]+", "+movies[5]+", "+movies[6]);
-                  }
+                    gross = 0.0;
 
-            Movie movie = new Movie(title, " ", duration, genre, rating , " ", director,
-                    score, gross, releaseYear);
-            //System.out.println(title + " | " + movies[15] + " | " +  movies[2] + " | " +  movies[1] + " | " +  movies[8] + " | " + 
-            //movies[6] + " | " + movies[13] + " | " +  movies[3]);
-            //System.out.println(movie.getTitle()+" | "+movie.getDescription()+" | "+movie.getDuration()+" | "+movie.getGenre()+" | "+movie.getRating()+" | "+movie.getPoster()+" | "+movie.getDirector()+" | "+movie.getScore()+" | "+movie.getGross()+" | "+movie.getReleaseYear());
-                    movieList.add(movie);
+                } else if (movies.length == 15) {
+                    duration = movies[14];
+                    director = movies[7];
+                    score = parseDouble(movies[6]);
+                    gross = 0.0;
+
+                } else {
+                    duration = movies[14];
+                    director = movies[7];
+                    score = parseDouble(movies[6]);
+                    gross = parseDouble(movies[12]);
+                }
+                count++;
+                System.out.println(title + ", " + duration);
+
+                Movie movie = new Movie(title, " ", duration, genre, rating, " ", director,
+                        score, gross, releaseYear);
+                //System.out.println(title + " | " + movies[15] + " | " +  movies[2] + " | " +  movies[1] + " | " +  movies[8] + " | " + 
+                //movies[6] + " | " + movies[13] + " | " +  movies[3]);
+                //System.out.println(movie.getTitle()+" | "+movie.getDescription()+" | "+movie.getDuration()+" | "+movie.getGenre()+" | "+movie.getRating()+" | "+movie.getPoster()+" | "+movie.getDirector()+" | "+movie.getScore()+" | "+movie.getGross()+" | "+movie.getReleaseYear());
+                movieList.add(movie);
             }
 
-
         }
+        System.out.println(count);
 
     }catch(IOException e)
     {
