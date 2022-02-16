@@ -40,9 +40,9 @@ public class App
         List<Movie> movieList = importer.fetchDataFromDataset();
         /*for (Movie movie : movieList) {
             System.out.println(movie.getTitle());
-        }
-        
         }*/
+        
+        
         // Movie m = new Movie();
         //movies.insertOne(m);
 
