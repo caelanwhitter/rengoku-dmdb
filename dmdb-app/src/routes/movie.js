@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
+import { Button } from "@mantine/core";
 
 export default function Movie() {
   let params = useParams();
-  return <h2>Invoice: {params.movieId}</h2>;
+  return <Button m={20}>View {params.movieId}</Button>
 }

@@ -1,5 +1,6 @@
 import { Link, Outlet } from "react-router-dom";
 import { getMovies } from "../data";
+
 export default function Movies() {
   let movies = getMovies();
   return (
@@ -11,10 +12,10 @@ export default function Movies() {
         {movies.map(movies => (
           <Link
             style={{ display: "block", margin: "1rem 0" }}
-            to={`/movies/${movies.number}`}
+            to={`/movies/${movies.name}`}
             key={movies.number}
           >
-          Movies Tab {movies.name}
+          {movies.name}
           </Link>
         ))}
       </nav>
