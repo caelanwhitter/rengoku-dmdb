@@ -38,9 +38,13 @@ public class App
 
         Importer importer = new Importer();
         List<Movie> movieList = importer.fetchDataFromDataset();
-        /*for (Movie movie : movieList) {
-            System.out.println(movie.getTitle());
-        }*/
+        
+        int count = 0;
+        for (Movie movie : movieList) {
+                count++;
+                System.out.println(movie.getTitle());
+        }
+        System.out.println(count);
         
         
         // Movie m = new Movie();
