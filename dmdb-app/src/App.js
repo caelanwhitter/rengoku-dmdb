@@ -9,7 +9,7 @@ export default function App() {
         paddingBottom: "1rem"
       }}>
         <Link className="featuredTab" to="/featured">Featured</Link>{" | "}
-        <Link className="moviesTab" to="/movies">Movies</Link>{" | "}
+        <Link className="moviesTab" to="/movies">hi</Link>{" | "}
         <Link className="hiddenGemsTab" to="/hiddenGems">Hidden Gems</Link>{" | "}
         <Link className="profileTab" to="/register">Register</Link>{" | "}
         <Link className="profileTab" to="/login">Login</Link>{" | "}

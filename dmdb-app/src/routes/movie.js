@@ -6,6 +6,7 @@ export default function Movie() {
   let movies = getMovies();
   return (
     <div>
+      
     <h2>This is the ID of the movie: {params.movieId}</h2>
     <h3>This is the name of the movie: {params.movieName}</h3>
     
