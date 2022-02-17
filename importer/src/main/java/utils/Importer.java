@@ -11,10 +11,7 @@ public class Importer {
      * Create private fields for every field of a movie
      */
     private String movieAttributesPath;
-    // private String title, duration, genre, rating, director;
-    // private double score, gross;
-    // private int releaseYear;
-    private List<Movie> movieList;
+    private List<Movie> movieList = new ArrayList<Movie>();
 
     /**
      * set the path to the csv file
@@ -27,7 +24,6 @@ public class Importer {
 
         String line = " ";
         String splitby = ",";
-        movieList = new ArrayList<Movie>();
 
         /**
          * a try-catch method to extract data from csv file
@@ -105,7 +101,7 @@ public class Importer {
                     }
 
                     /* Add movie into movie list after changes */
-                    System.out.println(movie);
+                    // System.out.println(movie);
                     movieList.add(movie);
                 }
 
