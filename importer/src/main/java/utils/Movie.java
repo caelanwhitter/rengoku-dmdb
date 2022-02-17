@@ -3,13 +3,24 @@ package utils;
 import org.bson.types.*;
 
 public class Movie {
+	// TO-DO: find better replacement than empty string
 	private ObjectId id;
-	private String title, description, duration, genre, rating, poster, director;
+	private String title, description, duration, genre, rating, poster, director, gross;
 	private double score;
-	private String gross;
 	private int releaseYear;
 
-	public Movie() {}
+	public Movie() {
+		this.title = "";
+		this.description = "";
+		this.duration = "";
+		this.genre = "";
+		this.rating = "";
+		this.poster = "";
+		this.director = "";
+		this.score = 0.0;
+		this.gross = "";
+		this.releaseYear = 0;
+	}
 
 	public Movie(String title, String description, String duration, String genre, String rating,
 			String poster, String director, double score, String gross, int releaseYear) {
@@ -111,5 +122,11 @@ public class Movie {
 
 	public void setReleaseYear(int releaseYear) {
 		this.releaseYear = releaseYear;
+	}
+
+	@Override
+	public String toString() {
+		return "MOVIE: " + title + " | " + description + " | " + genre + " | " + rating + " | " + poster + " | "
+				+ director + " | " + score + " | " + gross + " | " + releaseYear;
 	}
 }

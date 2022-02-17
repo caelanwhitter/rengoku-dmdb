@@ -493,7 +493,7 @@ Gremlins,PG,Comedy,1984,"June 8, 1984 (United States)",7.3,204000.0,Joe Dante,Ch
 Romancing the Stone,PG,Action,1984,"March 30, 1984 (United States)",6.9,86000.0,Robert Zemeckis,Diane Thomas,Michael Douglas,Mexico,10000000.0,86572238.0,Twentieth Century Fox,106.0
 Streets of Fire,PG,Action,1984,"June 1, 1984 (United States)",6.7,19000.0,Walter Hill,Walter Hill,Michael Paré,United States,14500000.0,8089290.0,Universal Pictures,93.0
 Sixteen Candles,PG,Comedy,1984,"May 4, 1984 (United States)",7.0,108000.0,John Hughes,John Hughes,Molly Ringwald,United States,6500000.0,23686027.0,Universal Pictures,93.0
-"Paris, Texas",R,Drama,1984,"August 23, 1984 (United Kingdom)",8.1,96000.0,Wim Wenders,L.M. Kit Carson,Harry Dean Stanton,West Germany,,2207548.0,Road Movies Filmproduktion,145.0
+"Paris, Texas",R,Drama,1984,"August 23, 1984 (United Kingdom)",8.1,96000.0,Wim Wenders,L.M. Kit Carson,Harry Dean Stanton,West Germany,,2207548.0,Road movieAttributes Filmproduktion,145.0
 This Is Spinal Tap,R,Comedy,1984,"March 2, 1984 (United States)",7.9,132000.0,Rob Reiner,Christopher Guest,Rob Reiner,United States,2500000.0,4736202.0,Spinal Tap Prod.,82.0
 1984,R,Drama,1984,"March 22, 1985 (United States)",7.1,68000.0,Michael Radford,Michael Radford,John Hurt,United Kingdom,,8430492.0,Virgin,113.0
 Top Secret!,PG,Comedy,1984,"June 8, 1984 (United States)",7.2,62000.0,Jim Abrahams,Jim Abrahams,Val Kilmer,United Kingdom,9000000.0,20458340.0,Kingsmere Properties,90.0
@@ -1089,7 +1089,7 @@ La Bamba,PG-13,Biography,1987,"July 24, 1987 (United States)",6.9,30000.0,Luis V
 Revenge of the Nerds II: Nerds in Paradise,PG-13,Comedy,1987,"July 10, 1987 (United States)",5.1,14000.0,Joe Roth,Tim Metcalfe,Robert Carradine,United States,,30063289.0,Twentieth Century Fox,88.0
 The Monster Squad,PG-13,Action,1987,"August 14, 1987 (United States)",7.0,30000.0,Fred Dekker,Shane Black,Andre Gower,United States,12000000.0,3769990.0,TAFT Entertainment Pictures,79.0
 Prince of Darkness,R,Horror,1987,"October 23, 1987 (United States)",6.7,39000.0,John Carpenter,John Carpenter,Donald Pleasence,United States,3000000.0,14182492.0,Alive Films,102.0
-Wings of Desire,PG-13,Drama,1987,"May 6, 1988 (United States)",8.0,67000.0,Wim Wenders,Wim Wenders,Bruno Ganz,West Germany,,3404057.0,Road Movies Filmproduktion,128.0
+Wings of Desire,PG-13,Drama,1987,"May 6, 1988 (United States)",8.0,67000.0,Wim Wenders,Wim Wenders,Bruno Ganz,West Germany,,3404057.0,Road movieAttributes Filmproduktion,128.0
 Maurice,R,Drama,1987,"September 18, 1987 (United States)",7.7,17000.0,James Ivory,E.M. Forster,James Wilby,United Kingdom,,2642567.0,Merchant Ivory Productions,140.0
 Broadcast News,R,Comedy,1987,"December 25, 1987 (United States)",7.2,28000.0,James L. Brooks,James L. Brooks,William Hurt,United States,20000000.0,67331309.0,Amercent Films,133.0
 Harry and the Hendersons,PG,Comedy,1987,"June 5, 1987 (United States)",6.0,32000.0,William Dear,William Dear,John Lithgow,United States,10000000.0,49998613.0,Amblin Entertainment,110.0
@@ -2398,7 +2398,7 @@ Mr. Nanny,PG,Action,1993,"October 8, 1993 (United States)",3.8,8900.0,Michael Go
 The Real McCoy,PG-13,Crime,1993,"September 10, 1993 (United States)",5.5,8500.0,Russell Mulcahy,Desmond Lowden,Kim Basinger,United States,,6484246.0,Bregman/Baer Productions,105.0
 3 Ninjas: Knuckle Up,PG-13,Action,1993,"April 7, 1995 (United States)",4.3,5400.0,Sang-ok Shin,Alex S. Kim,Victor Wong,United States,,413479.0,Sheen Productions,85.0
 Father Hood,PG-13,Adventure,1993,"August 27, 1993 (United States)",4.9,2900.0,Darrell Roodt,Scott Spencer,Patrick Swayze,United States,,3418141.0,Hollywood Pictures,95.0
-"Faraway, So Close!",PG-13,Drama,1993,"December 21, 1993 (United States)",7.3,7800.0,Wim Wenders,Wim Wenders,Otto Sander,Germany,10500000.0,810455.0,Road Movies Filmproduktion,140.0
+"Faraway, So Close!",PG-13,Drama,1993,"December 21, 1993 (United States)",7.3,7800.0,Wim Wenders,Wim Wenders,Otto Sander,Germany,10500000.0,810455.0,Road movieAttributes Filmproduktion,140.0
 Dangerous Game,R,Drama,1993,"November 19, 1993 (United States)",5.6,3600.0,Abel Ferrara,Nicholas St. John,Harvey Keitel,Italy,10000000.0,1261210.0,Cecchi Gori Europa N.V.,108.0
 Deadfall,R,Crime,1993,"October 8, 1993 (United States)",4.0,3000.0,Christopher Coppola,Christopher Coppola,Michael Biehn,United States,10000000.0,18369.0,Trimark Pictures,98.0
 A Home of Our Own,PG,Biography,1993,"November 5, 1993 (United States)",7.1,3000.0,Tony Bill,Patrick Sheane Duncan,Kathy Bates,United States,12000000.0,1677807.0,A&M Films,104.0
@@ -6326,7 +6326,7 @@ Before Midnight,R,Drama,2013,"June 14, 2013 (United States)",7.9,146000.0,Richar
 Young & Beautiful,Not Rated,Drama,2013,"April 25, 2014 (United States)",6.7,33000.0,François Ozon,François Ozon,Marine Vacth,France,,9757417.0,Mandarin Films,95.0
 Begin Again,R,Comedy,2013,"July 11, 2014 (United States)",7.4,147000.0,John Carney,John Carney,Keira Knightley,United States,8000000.0,65652908.0,Exclusive Media Group,104.0
 Oculus,R,Horror,2013,"April 11, 2014 (United States)",6.5,120000.0,Mike Flanagan,Mike Flanagan,Karen Gillan,United States,5000000.0,44459951.0,Intrepid Pictures,104.0
-Big Bad Wolves,Not Rated,Drama,2013,"August 15, 2013 (Israel)",6.8,16000.0,Aharon Keshales,Aharon Keshales,Lior Ashkenazi,Israel,,291239.0,United Channel Movies,110.0
+Big Bad Wolves,Not Rated,Drama,2013,"August 15, 2013 (Israel)",6.8,16000.0,Aharon Keshales,Aharon Keshales,Lior Ashkenazi,Israel,,291239.0,United Channel movieAttributes,110.0
 The Counselor,R,Crime,2013,"October 25, 2013 (United States)",5.3,98000.0,Ridley Scott,Cormac McCarthy,Michael Fassbender,United Kingdom,25000000.0,71009334.0,Fox 2000 Pictures,117.0
 Parker,R,Action,2013,"January 25, 2013 (United States)",6.2,118000.0,Taylor Hackford,John J. McLaughlin,Jason Statham,United States,35000000.0,46922566.0,Incentive Filmed Entertainment,118.0
 The Call,R,Crime,2013,"March 15, 2013 (United States)",6.7,115000.0,Brad Anderson,Richard D'Ovidio,Halle Berry,United States,13000000.0,68572631.0,TriStar Pictures,94.0
