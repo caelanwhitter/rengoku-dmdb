@@ -3,9 +3,10 @@ package utils;
 import org.bson.types.*;
 
 public class Movie {
+	// TO-DO: find better replacement than empty string
 	private ObjectId id;
-	private String title, description, duration, genre, rating, poster, director;
-	private double score, gross;
+	private String title, description, duration, genre, rating, poster, director, gross;
+	private double score;
 	private int releaseYear;
 
 	public Movie() {
@@ -17,12 +18,12 @@ public class Movie {
 		this.poster = "";
 		this.director = "";
 		this.score = 0.0;
-		this.gross = 0.0;
+		this.gross = "";
 		this.releaseYear = 0;
 	}
 
 	public Movie(String title, String description, String duration, String genre, String rating,
-			String poster, String director, double score, double gross, int releaseYear) {
+			String poster, String director, double score, String gross, int releaseYear) {
 		this.title = title;
 		this.description = description;
 		this.duration = duration;
@@ -107,11 +108,11 @@ public class Movie {
 		this.score = score;
 	}
 
-	public double getGross() {
+	public String getGross() {
 		return gross;
 	}
 
-	public void setGross(double gross) {
+	public void setGross(String gross) {
 		this.gross = gross;
 	}
 
