@@ -1,5 +1,6 @@
 import { NavLink, Link, Outlet } from "react-router-dom";
 import { getMovies } from "../data";
+import { Table } from '@mantine/core';
 
 export default function Movies() {
   let movies = getMovies();
@@ -9,8 +10,9 @@ export default function Movies() {
         borderRight: "solid 1px",
         padding: "1rem"
       }}>
+        <Table highlightOnHover>
         {movies.map(movies => (
-          <NavLink
+          <tr><NavLink
             style={({ isActive }) => {
               return {
                 display: "block",
@@ -21,8 +23,10 @@ export default function Movies() {
             key={movies.number}
           >
             Movies Tab {movies.name}
-          </NavLink>
+          </NavLink></tr>
+          
         ))}
+        </Table>
       </nav>
       <Outlet />
     </div>
