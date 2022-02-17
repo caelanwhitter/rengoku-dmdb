@@ -1,4 +1,5 @@
 package utils;
+
 import java.util.List;
 
 import com.mongodb.ConnectionString;
@@ -34,15 +35,12 @@ public class App {
                 MongoClient client = MongoClients.create(clientSettings);
 
                 MongoDatabase database = client.getDatabase("moviedb");
-                MongoCollection<Movie> movieAttributes = database.getCollection("movieAttributes", Movie.class);
+                MongoCollection<Movie> movies = database.getCollection("movies", Movie.class);
 
                 Importer importer = new Importer();
                 List<Movie> movieList = importer.fetchDataFromDataset();
 
-                
-
-                // Movie m = new Movie();
-                // movieAttributes.insertOne(m);
+                movies.insertMany(movieList);
 
         }
 }
