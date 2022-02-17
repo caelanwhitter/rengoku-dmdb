@@ -12,7 +12,8 @@ public class Importer {
      */
     private String moviesPath;
     private String title, duration, genre, rating, director;
-	private double score, gross;
+    private double score;
+    private String gross;
     private int releaseYear;
     private List<Movie> movieList;
 
@@ -76,7 +77,7 @@ public class Importer {
                             duration = "";
                         }
                         director = movies[8];
-                        gross = parseDouble(movies[13]);
+                        gross = movies[13];
 
                     }
                     /**
@@ -86,7 +87,7 @@ public class Importer {
                     else if (movies.length == 10) {
                         duration = "";
                         director = movies[7];
-                        gross = 0.0;
+                        gross = "0";
 
                     }
                     /**
@@ -96,7 +97,7 @@ public class Importer {
                         System.out.println(title);
                         duration = movies[14];
                         director = movies[7];
-                        gross = parseDouble(movies[12]);
+                        gross = movies[12];
                     }
 
                     /**
@@ -153,7 +154,7 @@ public void titleWithComma(String line) {
    releaseYear = Integer.parseInt(firstHalf[2]);
    director=secondHalf[2];
    score=parseDouble(secondHalf[0]);
-   gross=parseDouble(secondHalf[7]);
+   gross=secondHalf[7];
    releaseYear = Integer.parseInt(firstHalf[2]);
 
    /**

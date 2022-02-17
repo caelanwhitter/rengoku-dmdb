@@ -1,4 +1,7 @@
 package utils;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.List;
 
 import com.mongodb.ConnectionString;
@@ -20,7 +23,7 @@ import org.bson.codecs.pojo.PojoCodecProvider;
 public class App 
 {
     
-    public static void main( String[] args )
+    public static void main( String[] args ) throws FileNotFoundException
     {
 
         ConnectionString connectionString = new ConnectionString(
@@ -40,11 +43,17 @@ public class App
         List<Movie> movieList = importer.fetchDataFromDataset();
         
         int count = 0;
+
+        PrintStream o = new PrintStream(new File("A.txt"));
+
         for (Movie movie : movieList) {
                 count++;
-                System.out.println(movie.getTitle());
+                //System.out.println(movie.getTitle());
+                System.setOut(o);
+                System.out.println(movie.getTitle()+", "+movie.getDescription()+", "+movie.getDuration()+", "+movie.getGenre()+", "+movie.getRating()+", "+movie.getPoster()+", "+movie.getDirector()+", "+movie.getScore()+", "+movie.getGross()+", "+movie.getReleaseYear());
         }
-        System.out.println(count);
+
+        //System.out.println(count);
         
         
         // Movie m = new Movie();
