@@ -46,7 +46,7 @@ public class Importer {
 
                 String[] movieAttributes = line.split(splitby);
                 /**
-                 * Lines that start with a " mean that there is a comma within the title which
+                 * Lines that start with a " means that there is a comma within the title which
                  * would disrupt the cleaning process.
                  * Send the line to a helper method to set the movie variables properly
                  */
@@ -67,8 +67,7 @@ public class Importer {
                     /**
                      * Since the release date column can contain a comma,
                      * we set the remaining movie variables depending on their respective place only
-                     * if
-                     * the line isn't missing any data
+                     * if the line isn't missing any data
                      * The lines that are missing the last column of data will have the duration set
                      * to empty
                      */
@@ -83,16 +82,15 @@ public class Importer {
                     }
                     /**
                      * There are a couple movieAttributes that are missing the last 5 columns of
-                     * data
-                     * so we set the data appropriatly without some of the fields
+                     * data so we set the data appropriatly without some of the fields
                      */
                     else if (movieAttributes.length == 10) {
                         movie.setDirector(movieAttributes[7]);
                     }
                     /**
-                     * movieAttributes the the release date have no comma go through here since the
-                     * data is
-                     * in different spots
+                     * In case if movieAttributes where the release date have no comma, go through
+                     * here since the
+                     * data are in different spots
                      */
                     else {
                         movie.setDuration(movieAttributes[14]);
@@ -112,14 +110,14 @@ public class Importer {
         }
 
         /**
-         * Return the List of movieAttributes
+         * Return the List of movies
          */
         return movieList;
     }
 
     /**
      * Method to check if the score or gross aren't empty strings.
-     * If empty return 0, if not parse it to a double
+     * If empty, return 0, if not parse it to a double
      * 
      * @param number A String containing either a number or is empty
      * @return the parsed double of the string or the default number of 0
@@ -135,8 +133,8 @@ public class Importer {
      */
     public void formatTitleWithComma(String line, Movie movie) {
         /**
-         * Split by ", to get the titll by itself. Creates two other arrays.
-         * One containing everythig before and up to the release date, and the other
+         * Split by ", to get the title by itself. Creates two other arrays.
+         * One containing everything before and up to the release date, and the other
          * containing everything after
          */
         String[] commas = line.split("\",");
@@ -157,7 +155,7 @@ public class Importer {
         movie.setReleaseYear(Integer.parseInt(firstHalf[2]));
 
         /**
-         * create a movie object and add it to List of movieAttributes
+         * create a movie object and add it to List of movies
          */
         movieList.add(movie);
     }
