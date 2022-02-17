@@ -39,6 +39,8 @@ public class App {
                 Importer importer = new Importer();
                 List<Movie> movieList = importer.fetchDataFromDataset();
 
+                
+
                 // Movie m = new Movie();
                 // movieAttributes.insertOne(m);
 
