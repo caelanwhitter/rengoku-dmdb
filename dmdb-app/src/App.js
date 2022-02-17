@@ -1,19 +1,32 @@
-import {Outlet, Link } from "react-router-dom";
-
+import { Outlet, Link } from "react-router-dom";
+import './App.css';
 export default function App() {
   return (
-    <div>
+    <div className="content-container">
       <h1 className="title"> Welcome to DMDB ! </h1>
-      <nav style={{
-          borderBottom: "solid 1px",
-          paddingBottom: "1rem"
-        }}>
-        <Link to="/featured">Featured</Link>{" | "}
-        <Link to="/movies">Movies</Link>{" | "}
-        <Link to="/hiddenGems">Hidden Gems</Link>{" | "}
-        <Link to="/profile">Profile</Link>{" | "}
+      <nav className="tabs" style={{
+        borderBottom: "solid 1px",
+        paddingBottom: "1rem"
+      }}>
+        <Link className="featuredTab" to="/featured">Featured</Link>{" | "}
+        <Link className="moviesTab" to="/movies">Movies</Link>{" | "}
+        <Link className="hiddenGemsTab" to="/hiddenGems">Hidden Gems</Link>{" | "}
+        <Link className="profileTab" to="/register">Register</Link>{" | "}
+        <Link className="profileTab" to="/login">Login</Link>{" | "}
+        <Link className="profileTab" to="/logout">Logout</Link>{" | "}
+        <Link className="profileTab" to="/profile">Profile</Link>{" | "}
+        <Link className="profileTab" to="/admin">Admin</Link>{" | "}
       </nav>
-      <Outlet/>
+      <Outlet />
+      <footer className="footer--pin">
+        <div></div>
+        <p>{"Website Made By Miky and team"}</p>
+        <ul>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
+      </footer>
     </div>
   );
 }
