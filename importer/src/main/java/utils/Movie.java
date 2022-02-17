@@ -8,7 +8,18 @@ public class Movie {
 	private double score, gross;
 	private int releaseYear;
 
-	public Movie() {}
+	public Movie() {
+		this.title = "";
+		this.description = "";
+		this.duration = "";
+		this.genre = "";
+		this.rating = "";
+		this.poster = "";
+		this.director = "";
+		this.score = 0.0;
+		this.gross = 0.0;
+		this.releaseYear = 0;
+	}
 
 	public Movie(String title, String description, String duration, String genre, String rating,
 			String poster, String director, double score, double gross, int releaseYear) {
@@ -110,5 +121,11 @@ public class Movie {
 
 	public void setReleaseYear(int releaseYear) {
 		this.releaseYear = releaseYear;
+	}
+
+	@Override
+	public String toString() {
+		return "MOVIE: " + title + " | " + description + " | " + genre + " | " + rating + " | " + poster + " | "
+				+ director + " | " + score + " | " + gross + " | " + releaseYear;
 	}
 }
