@@ -8,12 +8,8 @@ export default function Movies() {
   const rows = movies.map((element) => (
     <tr key={element.number}>
       <td><NavLink style={({ isActive }) => {
-            return {
-              display: "block",
-              margin: "1rem 0",
-              color: isActive ? "red" : "blue"
-            };
-          }} to={`/movies/id_${element.number}`}
+            return { color: isActive ? "red" : "blue" };
+          }} to={`/movies/${element.number}`}
           key={element.number}>
           {element.name}</NavLink></td>
       <td>{element.amount}</td>

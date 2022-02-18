@@ -21,7 +21,7 @@ export default function Movie() {
                 margin: "1rem 0",
                 color: isActive ? "red" : "blue"
               };
-            }} to={`/movies/id_`+`${movies.number}/reviews`}
+            }} to={`/movies/${movies.number}/reviews`}
             key={movies.number}
           >
              {movies.name}

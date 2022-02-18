@@ -1,16 +1,11 @@
 import { Outlet, Link } from "react-router-dom";
-import { Blockquote, Title } from "@mantine/core";
+import { Title } from "@mantine/core";
 import './App.css';
 
 export default function App() {
   return (
     <div className="content-container">
-      <nav className="tabs" style={{
-        borderBottom: "solid 1px",
-        paddingBottom: "1rem",
-        display: "flex",
-        justifyContent: "space-between",
-      }}>
+      <nav id="tabs">
         <Title className="title">Welcome to DMDB!</Title>
         <Link className="tabLink" to="/featured">Featured</Link>
         <Link className="tabLink" to="/movies">Movies</Link>
@@ -22,6 +17,7 @@ export default function App() {
         <Link className="tabLink" to="/admin">Admin</Link> */}
       </nav>
       <Outlet />
+      
       <footer className="footer--pin">
         <p>{"Website Made By Miky and team"}</p>
       </footer>
