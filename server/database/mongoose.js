@@ -5,12 +5,10 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 require('dotenv').config();
 
-mongoose.connect(process.env.ATLAS_URL);
-//Get the default connection
-var db = mongoose.connection;
+let uri = process.env.ATLAS_URI;
 
-//Bind connection to error event (to get notification of connection errors)
-db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+// Connect Mongoose to MongoDB Movies
+mongoose.connect(process.env.ATLAS_URI, { useNewUrlParser: true}, () => "Connected to database!");
 
 const movieSchema = new Schema({
     description: String,
@@ -26,8 +24,12 @@ const movieSchema = new Schema({
 }, {collection: 'movies'});
 
 const Movie = mongoose.model('Movie', movieSchema)
-const queryMovies =  Movie.find();
-console.log(queryMovies);
+
+Movie.find({}, function(err, movies) {
+    if (err) throw err;
+
+    console.log(movies);
+})
 
 //movie.findOne(function(error, result){});
 
