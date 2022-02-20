@@ -9,38 +9,36 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import io.github.cdimascio.dotenv.Dotenv;
 
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
-/**
- * Hello world!
- *
- */
 public class App {
+    public static void main(String[] args) {
 
-        public static void main(String[] args) {
+        Dotenv dotenv = Dotenv.load();
+        final String ATLAS_URI = dotenv.get("ATLAS_URI");
+        final String DATABASE_NAME = "moviedb";
+        final String COLLECTION_NAME = "movies";
 
-                ConnectionString connectionString = new ConnectionString(
-                                "mongodb+srv://dmdbadmin:iKYCXvnAZWe0zGO8@dmbdcluster.nkrxw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
-                CodecRegistry pojoCodecRegistry = CodecRegistries
-                                .fromProviders(PojoCodecProvider.builder().automatic(true).build());
-                CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
-                                MongoClientSettings.getDefaultCodecRegistry(),
-                                pojoCodecRegistry);
-                MongoClientSettings clientSettings = MongoClientSettings.builder()
-                                .applyConnectionString(connectionString)
-                                .codecRegistry(codecRegistry).build();
-                MongoClient client = MongoClients.create(clientSettings);
+        System.out.println("Importing data into: '" + DATABASE_NAME + "'...");
 
-                MongoDatabase database = client.getDatabase("moviedb");
-                MongoCollection<Movie> movies = database.getCollection("movies", Movie.class);
+        ConnectionString connectionString = new ConnectionString(ATLAS_URI);
+        CodecRegistry pojoCodecRegistry = CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build());
+        CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), pojoCodecRegistry);
+        MongoClientSettings clientSettings = MongoClientSettings.builder().applyConnectionString(connectionString).codecRegistry(codecRegistry).build();
+        MongoClient client = MongoClients.create(clientSettings);
 
-                Importer importer = new Importer();
-                List<Movie> movieList = importer.fetchDataFromDataset();
+        MongoDatabase database = client.getDatabase(DATABASE_NAME);  
+        MongoCollection<Movie> movies = database.getCollection(COLLECTION_NAME, Movie.class);
 
-                movies.insertMany(movieList);
+        Importer importer = new Importer();
+        List<Movie> movieList = importer.fetchDataFromDataset();            
+        
+        movies.insertMany(movieList);
 
-        }
+        System.out.println("Importing data into: '" + DATABASE_NAME + "' done!");
+    }
 }
