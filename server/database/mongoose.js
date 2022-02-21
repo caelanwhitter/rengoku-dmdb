@@ -7,7 +7,7 @@ const { Schema } = mongoose;
 require('dotenv').config();
 
 // Connect Mongoose to MongoDB Movies (do "node server/database/mongoose.js" at root dir)
-mongoose.connect(process.env.ATLAS_URI, { useNewUrlParser: true}, () => "Connected to database!");
+mongoose.connect(process.env.ATLAS_URI, { useNewUrlParser: true }, () => console.log("Connected to database!"));
 
 //Get the default connection
 let db = mongoose.connection;
@@ -17,7 +17,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 const movieSchema = new Schema({
     description: String,
-    director:String,
+    director: String,
     duration: String,
     genre: String,
     gross: String,
@@ -26,7 +26,7 @@ const movieSchema = new Schema({
     releaseYear: Number,
     score: Number,
     title: String,
-}, {collection: 'movies'});
+}, { collection: 'movies' });
 
 const Movie = mongoose.model('Movie', movieSchema)
 
