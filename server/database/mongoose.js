@@ -29,11 +29,7 @@ const movieSchema = new Schema({
 
 const Movie = mongoose.model('Movie', movieSchema)
 
-Movie.find({}, function(err, movies) {
-    if (err) throw err;
-
-    console.log(movies);
-})
+module.exports = Movie;
 
 //movie.findOne(function(error, result){});
 
