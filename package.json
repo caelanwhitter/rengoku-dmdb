@@ -1,0 +1,20 @@
+{
+  "name": "rengoku-dmdb",
+  "version": "1.0.0",
+  "description": "Web Dev Project - Rengoku DMDB",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/zhuxiaoj1/rengoku-dmdb.git"
+  },
+  "author": "Dawson Movie Solutions (DMS)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/zhuxiaoj1/rengoku-dmdb/issues"
+  },
+  "homepage": "https://gitlab.com/zhuxiaoj1/rengoku-dmdb#readme"
+}
