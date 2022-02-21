@@ -16,8 +16,8 @@ public class Importer {
     /**
      * set the path to the csv file
      */
-    public Importer() {
-        this.movieAttributesPath = "importer/src/main/java/utils/resources/movies.csv";
+    public Importer(String path) {
+        this.movieAttributesPath = path;
     }
 
     public List<Movie> fetchDataFromDataset() {
