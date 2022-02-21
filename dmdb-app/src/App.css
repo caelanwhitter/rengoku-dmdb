@@ -5,8 +5,10 @@ html {
 .title {
   background-color: black;
   color: white;
-  font-family: Arial;
+  font-family: 'Noto Serif Display', serif;
+  font-style:italic;
   text-align: center;
+  font-size: 50px;
 }
 
 #tabs {
@@ -17,10 +19,18 @@ html {
   justify-content: space-between;
   align-items: center;
   font-variant: small-caps;
+  padding-right: 15px;
 }
 
 #movieDetails {
   padding: 10px;
+}
+
+#footContent {
+  color: aliceblue;
+  background-color: black;
+  padding: 10px;
+  border-radius: 10px;
 }
 
 .tabLink {
@@ -34,38 +44,14 @@ html {
   color: white;
 }
 
-.footer--pin {
-  position:absolute;
-}
-
 .content-container {
   min-height: calc(100vh - 34px);
 }
 
 footer {
-  background-color: black;
-  padding: 5px 10px;
+  width: auto;
   margin-top: 5px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-footer div {
-  background-color: #950707;
-  border-radius: 30px;
-  width: 65px;
-  height: 10px;
-}
-
-footer p {
-  color: #e3c893;
+  justify-content: center;
   text-align: center;
-}
-
-footer ul li {
-  background-color: #950707;
-  border-radius: 30px;
-  width: 15px;
-  height: 15px;
 }

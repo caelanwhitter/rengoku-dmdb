@@ -6,15 +6,14 @@ export default function Movies() {
   let movies = getMovies();
 
   const rows = movies.map((element) => (
+    <>
     <tr key={element.number}>
-      <td><NavLink style={({ isActive }) => {
-            return { color: isActive ? "red" : "blue" };
-          }} to={`/movies/${element.number}`}
-          key={element.number}>
-          {element.name}</NavLink></td>
+      <td><NavLink to={ `./${element.number}` } key={element.name}> 
+        {element.name}</NavLink></td>
       <td>{element.amount}</td>
       <td>{element.due}</td>
     </tr>
+    </>
   ));
 
   return (

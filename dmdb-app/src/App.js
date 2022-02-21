@@ -6,7 +6,10 @@ export default function App() {
   return (
     <div className="content-container">
       <nav id="tabs">
-        <Title className="title">Welcome to DMDB!</Title>
+        <div id="titleDiv">
+          <Title className="title">DMDB</Title>
+          <Title className="subtitle" order={5}>Dawson Movie Database</Title>
+        </div>
         <Link className="tabLink" to="/featured">Featured</Link>
         <Link className="tabLink" to="/movies">Movies</Link>
         <Link className="tabLink" to="/hiddenGems">Hidden Gems</Link>
@@ -18,8 +21,8 @@ export default function App() {
       </nav>
       <Outlet />
       
-      <footer className="footer--pin">
-        <p>{"Website Made By Miky and team"}</p>
+      <footer>
+        <p id="footContent">{"© Dawson Movie Solutions 2022, Apache License 2.0"}</p>
       </footer>
     </div>
   );
