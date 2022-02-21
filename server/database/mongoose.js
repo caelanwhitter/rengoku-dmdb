@@ -1,5 +1,6 @@
 /**
- * @author Danilo Zhu
+ * Mongoose.js sets up the Mongoose ORM so it can connect the MongoDB database with routes
+ * @author Daniel Lam & Mikael Baril
  */
 const mongoose = require('mongoose');
 const { Schema } = mongoose;

@@ -1,3 +1,8 @@
+/**
+ * app.js sets up the express router
+ * @author Daniel Lam
+ */
+
 // Required Modules
 const express = require("express");
 const app = express();

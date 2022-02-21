@@ -15,7 +15,11 @@ import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
-public class App {
+/**
+ * MongoDB.java sets up initial connection to MongoDB database, creates Importer and inserts movies into database
+ * @author Caelan Whitter & Daniel Lam
+ */
+public class MongoDB {
     public static void main(String[] args) {
 
         Dotenv dotenv = Dotenv.load();

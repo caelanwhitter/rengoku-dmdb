@@ -1,3 +1,8 @@
+/**
+ * route.js holds all the possible routes of the router and sends back data
+ * @author Daniel Lam
+ */
+
 const express = require("express");
 const router = express.Router();
 const Movies = require("../database/mongoose");
