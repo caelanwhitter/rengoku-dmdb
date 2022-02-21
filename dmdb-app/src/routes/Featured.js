@@ -1,5 +1,6 @@
 import { Link,Outlet } from "react-router-dom";
 import { getFeatured } from "../data";
+
 export default function Featured() {
   let featured = getFeatured();
   return (

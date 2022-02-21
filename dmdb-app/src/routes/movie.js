@@ -1,10 +1,11 @@
 import { NavLink, useParams } from "react-router-dom";
-import { getMovies } from "../data";
+import { Button } from "@mantine/core";
 
 export default function Movie() {
   let params = useParams();
-  let movies = getMovies();
+
   return (
+<<<<<<< HEAD
     <div>
       
     <h2>This is the ID of the movie: {params.movieId}</h2>
@@ -29,6 +30,12 @@ export default function Movie() {
           </NavLink>
         ))}
       </nav>
+=======
+    <div id="movieDetails">
+      <h2>This is the ID of the movie: {params.movieId}</h2>
+      <h3>This is the name of the movie: {params.movieName}</h3>
+      <Button variant="subtle" component={NavLink} to={`/movies/${params.movieId}/reviews`}>View Reviews</Button>
+>>>>>>> e8242aac30e2b91279035bfe9a6bff0468ef628c
     </div>
-      );
+    );
 }
