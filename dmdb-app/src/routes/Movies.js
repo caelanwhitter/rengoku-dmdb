@@ -1,24 +1,37 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { getMovies } from "../data";
 import { Table } from '@mantine/core';
+import React, {useEffect, useState} from 'react'
 
 export default function Movies() {
-  let movies = getMovies();
+  const [backendData,setBackendData] =useState([{}])
+  
+  useEffect(()=> {
+    fetch("/getAll").then(
+      response => response.json()
+    ).then(
+      data => { 
+        setBackendData(data)
+      })
+  }, [])
 
-  const rows = movies.map((element) => (
-    <tr key={element.number}>
+  //let movies = getMovies();
+
+  const rows = backendData.map((element) => (
+    <tr key={element.title}>
       <td><NavLink style={({ isActive }) => {
             return { color: isActive ? "red" : "blue" };
-          }} to={`/movies/${element.number}`}
-          key={element.number}>
-          {element.name}</NavLink></td>
-      <td>{element.amount}</td>
-      <td>{element.due}</td>
+          }} to={`/movies/${element.gross}`}
+          key={element.title}>
+          {element.title}</NavLink></td>
+      <td>{element.director}</td>
+      <td>{element.releaseYear}</td>
     </tr>
   ));
 
   return (
+    
     <div style={{ display: "flex" }}>
+      
       <nav style={{
         borderRight: "solid 1px",
         padding: "1rem"
@@ -27,8 +40,8 @@ export default function Movies() {
           <thead>
             <tr>
               <th>Movie Name</th>
-              <th>Movie Amount</th>
-              <th>Movie Due</th>
+              <th>Movie Director</th>
+              <th>Movie Year</th>
             </tr>
           </thead>
           <tbody>{rows}</tbody>
