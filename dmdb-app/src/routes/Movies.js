@@ -17,12 +17,12 @@ export default function Movies() {
   ));
 
   return (
-    <div style={{ display: "flex" }}>
-      <nav style={{
+    <div id="movieContainer">
+      {/* <div style={{
         borderRight: "solid 1px",
         padding: "1rem"
-      }}>
-        <Table highlightOnHover>
+      }}> */}
+        <Table id="movieList" highlightOnHover>
           <thead>
             <tr>
               <th>Movie Name</th>
@@ -32,7 +32,7 @@ export default function Movies() {
           </thead>
           <tbody>{rows}</tbody>
         </Table>
-      </nav>
+        {/* </div> */}
       <Outlet />
     </div>
   );

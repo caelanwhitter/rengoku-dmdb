@@ -5,10 +5,19 @@ html {
 .title {
   background-color: black;
   color: white;
-  font-family: 'Noto Serif Display', serif;
+  font-family: 'Bodoni Moda', serif;
   font-style:italic;
   text-align: center;
   font-size: 50px;
+}
+
+#movieContainer {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+#movieList {
+  max-width: 50%;
 }
 
 #tabs {
