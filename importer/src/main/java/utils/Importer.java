@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Importer.java reads through every line of dataset, cleans each line and creates a Movie object
+ * @author Caelan Whitter & Daniel Lam 
+ */
 public class Importer {
     /**
      * Create private fields for every field of a movie
