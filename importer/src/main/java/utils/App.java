@@ -8,7 +8,6 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
 
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -38,17 +37,17 @@ public class App {
                 MongoCollection<Movie> movies = database.getCollection("movies", Movie.class);
 
                // Importer importer = new Importer("importer/src/main/java/utils/resources/movies.csv");
-                Importer importer = new Importer("importer/src/test/java/utils/resources/testmovies.csv");
+                Importer importer = new Importer("importer/src/main/java/utils/resources/movies.csv");
 
                 
 
                 List<Movie> movieList = importer.fetchDataFromDataset();
 
-                //movies.insertMany(movieList);
-                for (Movie movie : movieList)
-                {
-                        System.out.println(movie);
-                }
+                movies.insertMany(movieList);
+                // for (Movie movie : movieList)
+                // {
+                //         System.out.println(movie);
+                // }
 
         }
 }

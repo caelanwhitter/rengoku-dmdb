@@ -8,22 +8,27 @@ import java.util.List;
 import org.junit.*;
 
 /**
- * Unit test for simple App.
+ * Unit test to check if all the fields are properly filled in with the right data
  */
 public class ImporterTest 
 {
+    // TO-DO: Find a way to have a universal path
     private String movieAttributesPath = "/Users/Caelan/Documents/sixthsemester/WebDevelopment/rengoku-dmdb/importer/src/test/java/utils/resources/testmovies.csv";
-    //private String movieAttributesPath = "importer/src/test/java/utils/resources/testmovies.csv";
     private Importer importer;
     private List<Movie> testMovieList;
 
+    /**
+     * Initializes the Importer and List before every Test
+     */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.importer = new Importer(movieAttributesPath);
         this.testMovieList = importer.fetchDataFromDataset();
     }
     
-
+    /**
+     * Checks if every title is extracted properly and in the right order
+     */
     @Test
     public void testTitlesFromDataset()
     {
@@ -39,40 +44,53 @@ public class ImporterTest
                 && takenMovieTitles.equals(givenMovieTitles));
     }
         
+        /**
+     * Checks if every Description is extracted properly and in the right order
+     */
     @Test
     public void testDescriptionFromDataset()
     {
-     
-        List<String> givenMovieDescription = Arrays.asList("", "", "","", "");
+
+        List<String> givenMovieDescription = Arrays.asList("", "", "", "", "");
         List<String> takenMovieDescription = new ArrayList<String>();
 
         for (Movie movie : testMovieList) {
             takenMovieDescription.add(movie.getDescription());
         }
 
-        assertTrue(givenMovieDescription.size() == takenMovieDescription.size() && givenMovieDescription.equals(takenMovieDescription)
+        assertTrue(givenMovieDescription.size() == takenMovieDescription.size()
+                && givenMovieDescription.equals(takenMovieDescription)
                 && takenMovieDescription.equals(givenMovieDescription));
     }
-        
+      
+    
+        /**
+     * Checks if every Duration is extracted properly and in the right order
+     */
     @Test
     public void testDurationFromDataset() 
     {
-     
-        List<String> givenMovieDuration = Arrays.asList("94.0","","100.0","114.0","");
+
+        List<String> givenMovieDuration = Arrays.asList("94.0", "", "100.0", "114.0", "");
         List<String> takenMovieDuration = new ArrayList<String>();
 
         for (Movie movie : testMovieList) {
             takenMovieDuration.add(movie.getDuration());
         }
-        assertTrue(givenMovieDuration.size() == takenMovieDuration.size() && givenMovieDuration.equals(takenMovieDuration)
-        && takenMovieDuration.equals(givenMovieDuration));
+        assertTrue(
+                givenMovieDuration.size() == takenMovieDuration.size() && givenMovieDuration.equals(takenMovieDuration)
+                        && takenMovieDuration.equals(givenMovieDuration));
     }
         
+    
+        /**
+     * Checks if every Genre is extracted properly and in the right order
+     */
     @Test
     public void testGenreFromDataset() 
     {
-   
-        List<String> givenMovieGenre = Arrays.asList("Comedy", "Crime", "Action","Drama", "Action");
+
+        List<String> givenMovieGenre = Arrays.asList("Comedy", "Crime", "Action", "Drama", "Action");
         List<String> takenMovieGenre = new ArrayList<String>();
 
         for (Movie movie : testMovieList) {
@@ -83,10 +101,14 @@ public class ImporterTest
                 && takenMovieGenre.equals(givenMovieGenre));
     }
         
+    
+        /**
+     * Checks if every Rating is extracted properly and in the right order
+     */
     @Test
     public void testRatingFromDataset() 
     {
-        List<String> givenMovieRating = Arrays.asList("PG", "R", "PG-13","X", "PG-13");
+        List<String> givenMovieRating = Arrays.asList("PG", "R", "PG-13", "X", "PG-13");
         List<String> takenMovieRating = new ArrayList<String>();
 
         for (Movie movie : testMovieList) {
@@ -97,10 +119,14 @@ public class ImporterTest
                 && takenMovieRating.equals(givenMovieRating));
     }
         
+    
+        /**
+     * Checks if every Poster is extracted properly and in the right order
+     */
     @Test
     public void testPosterFromDataset()
     {
-        List<String> givenMoviePosters = Arrays.asList("", "", "","", "");
+        List<String> givenMoviePosters = Arrays.asList("", "", "", "", "");
         List<String> takenMoviePosters = new ArrayList<String>();
 
         for (Movie movie : testMovieList) {
@@ -110,7 +136,11 @@ public class ImporterTest
         assertTrue(givenMoviePosters.size() == takenMoviePosters.size() && givenMoviePosters.equals(takenMoviePosters)
                 && takenMoviePosters.equals(givenMoviePosters));
     }
-        
+    
+    
+        /**
+     * Checks if every Director is extracted properly and in the right order
+     */
     @Test
     public void testDirectorFromDataset()
     {
@@ -122,57 +152,62 @@ public class ImporterTest
             takenMovieDirector.add(movie.getDirector());
         }
 
-        assertTrue(givenMovieDirector.size() == takenMovieDirector.size() && givenMovieDirector.containsAll(takenMovieDirector)
-                && takenMovieDirector.containsAll(givenMovieDirector));
+        assertTrue(
+                givenMovieDirector.size() == takenMovieDirector.size() && givenMovieDirector.equals(takenMovieDirector)
+                        && takenMovieDirector.equals(givenMovieDirector));
     }
         
-//     @Test
-//     public void testScoreFromDataset() throws IOException
-//     {
-//         Importer importer = new Importer(movieAttributesPath);
-//         List<Movie> testMovieList = importer.fetchDataFromDataset();
-//         List<String> givenMovieTitles = Arrays.asList("Oh, God! Book II", "Saw: The Final Chapter", "Killers",
-//                 "The Wolfman", "One for the Money");
-//         List<String> takenMovieTitles = new ArrayList<String>();
+    
+        /**
+     * Checks if every Score is extracted properly and in the right order
+     */
+    @Test
+    public void testScoreFromDataset()
+    {
+        List<Double> givenMovieScore = Arrays.asList(5.2, 5.6, 5.5, 5.8, 5.3);
+        List<Double> takenMovieScore = new ArrayList<Double>();
 
-//         for (Movie movie : testMovieList) {
-//             takenMovieTitles.add(movie.getTitle());
-//         }
+        for (Movie movie : testMovieList) {
+            takenMovieScore.add(movie.getScore());
+        }
 
-//         assertTrue(givenMovieTitles.size() == takenMovieTitles.size() && givenMovieTitles.containsAll(takenMovieTitles)
-//                 && takenMovieTitles.containsAll(givenMovieTitles));
-//     }
+        assertTrue(givenMovieScore.size() == takenMovieScore.size() && givenMovieScore.equals(takenMovieScore)
+                && takenMovieScore.containsAll(givenMovieScore));
+    }
 
-//     @Test
-//     public void testGrossFromDataset() throws IOException
-//     {
-//         Importer importer = new Importer(movieAttributesPath);
-//         List<Movie> testMovieList = importer.fetchDataFromDataset();
-//         List<String> givenMovieTitles = Arrays.asList("Oh, God! Book II", "Saw: The Final Chapter", "Killers",
-//                 "The Wolfman", "One for the Money");
-//         List<String> takenMovieTitles = new ArrayList<String>();
+    
+        /**
+     * Checks if every Gross is extracted properly and in the right order
+     */
+    @Test
+    public void testGrossFromDataset()
+    {
+        List<String> givenMovieGross = Arrays.asList("14504277.0", "", "98159963.0",
+                "546904.0", "38084162.0");
+        List<String> takenMovieGross = new ArrayList<String>();
 
-//         for (Movie movie : testMovieList) {
-//             takenMovieTitles.add(movie.getTitle());
-//         }
+        for (Movie movie : testMovieList) {
+            takenMovieGross.add(movie.getGross());
+        }
 
-//         assertTrue(givenMovieTitles.size() == takenMovieTitles.size() && givenMovieTitles.containsAll(takenMovieTitles)
-//                 && takenMovieTitles.containsAll(givenMovieTitles));
-//     }
+        assertTrue(givenMovieGross.size() == takenMovieGross.size() && givenMovieGross.equals(takenMovieGross)
+                && takenMovieGross.equals(givenMovieGross));
+    }
         
-//     @Test
-//     public void testReleaseYearFromDataset() throws IOException
-//     {           
-//         Importer importer = new Importer(movieAttributesPath);
-//         List<Movie> testMovieList = importer.fetchDataFromDataset();
-//         List<String> givenMovieTitles = Arrays.asList("Oh, God! Book II", "Saw: The Final Chapter", "Killers",
-//                 "The Wolfman", "One for the Money");
-//         List<String> takenMovieTitles = new ArrayList<String>();
-        
-//         for (Movie movie : testMovieList) {
-//             takenMovieTitles.add(movie.getTitle());
-//         }
 
-//         assertTrue(givenMovieTitles.size() == takenMovieTitles.size() && givenMovieTitles.containsAll(takenMovieTitles) && takenMovieTitles.containsAll(givenMovieTitles));
-//         }
+        /**
+     * Checks if every ReleaseYear is extracted properly and in the right order
+     */
+    @Test
+    public void testReleaseYearFromDataset()
+    {           
+        List<Integer> givenMovieReleaseYear = Arrays.asList(1980, 2010, 2010,1986,2012);
+        List<Integer> takenMovieReleaseYear = new ArrayList<Integer>();
+        
+        for (Movie movie : testMovieList) {
+            takenMovieReleaseYear.add(movie.getReleaseYear());
+        }
+
+        assertTrue(givenMovieReleaseYear.size() == takenMovieReleaseYear.size() && givenMovieReleaseYear.equals(takenMovieReleaseYear) && takenMovieReleaseYear.equals(givenMovieReleaseYear));
+        }
  }

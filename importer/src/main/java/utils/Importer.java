@@ -86,6 +86,7 @@ public class Importer {
                      */
                     else if (movieAttributes.length == 10) {
                         movie.setDirector(movieAttributes[7]);
+                        movie.setScore(parseDouble(movieAttributes[5]));
                     }
                     /**
                      * In case if movieAttributes where the release date have no comma, go through
