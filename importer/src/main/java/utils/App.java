@@ -37,14 +37,18 @@ public class App {
                 MongoDatabase database = client.getDatabase("moviedb");
                 MongoCollection<Movie> movies = database.getCollection("movies", Movie.class);
 
-                Importer importer = new Importer("importer/src/test/java/utils/TestMovies.csv");
+               // Importer importer = new Importer("importer/src/main/java/utils/resources/movies.csv");
+                Importer importer = new Importer("importer/src/test/java/utils/resources/testmovies.csv");
+
+                
+
                 List<Movie> movieList = importer.fetchDataFromDataset();
 
                 //movies.insertMany(movieList);
-                /*for (Movie movie : movieList)
+                for (Movie movie : movieList)
                 {
                         System.out.println(movie);
-                }*/
+                }
 
         }
 }
