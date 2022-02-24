@@ -1,7 +1,9 @@
 import { Outlet, Link } from "react-router-dom";
+import {GoogleLogin,GoogleLogout} from "react-google-login"
 import { Title } from "@mantine/core";
 import './App.css';
 
+//This function is the main application component. It holds all the tabs that will be used for the application.
 export default function App() {
   return (
     <div className="content-container">
@@ -17,7 +19,14 @@ export default function App() {
         <Link className="tabLink" to="/admin">Admin</Link> */}
       </nav>
       <Outlet />
-      
+      {/* <GoogleLogin
+        clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+        buttonText="Log in with Google"
+        onSuccess={handleLogin}
+        onFailure={handleLogin}
+        cookiePolicy={'single_host_origin'}
+      /> */}
+
       <footer className="footer--pin">
         <p>{"Website Made By Miky and team"}</p>
       </footer>
