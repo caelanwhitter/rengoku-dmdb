@@ -1,12 +1,23 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { getMovies } from "../data";
 import { Table, Pagination } from '@mantine/core';
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
 
 export default function Movies() {
-    let movies = getMovies();
-
+    const [movies, setMovie] = useState([]);
     const [activePage, setPage] = useState(1);
+
+    useEffect(() => {
+        fetch('http://localhost:3001/api/allMovies/page/' + activePage)
+            .then(json => {
+                console.log(json);
+                setMovie(json);
+            })
+            .catch(err => {
+                console.log()
+            })
+    });
 
     const rows = movies.map((element) => (
         <tr key={element.number}>
