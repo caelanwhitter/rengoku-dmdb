@@ -12,7 +12,10 @@ import org.junit.*;
  */
 public class ImporterTest 
 {
-    // TO-DO: Find a way to have a universal path
+    /**
+     * To run tests on own machine, right click on the testmovies.csv file and copy the ful path. Paste that into the movieAttributesPath and run the test file.
+     */
+    
     private String movieAttributesPath = "/Users/Caelan/Documents/sixthsemester/WebDevelopment/rengoku-dmdb/importer/src/test/java/utils/resources/testmovies.csv";
     private Importer importer;
     private List<Movie> testMovieList;
