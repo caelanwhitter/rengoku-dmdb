@@ -14,12 +14,11 @@ export default function Movie() {
       opened={opened}
       onClose={() => setOpened(false)}
       title={params.movieName}
+      size="xl"
     >
     <div id="movieDetails">
-      <h2>This is the ID of the movie: {params.movieId}</h2>
-      <h2>This is the name of the movie: {params.movieName}</h2>
-      <h2>This is the gross amount of the movie: {params.movieGross}</h2>
-      <h2>This is the rate of the movie: {params.movieRate}</h2>
+      <Title>{params.movieName}</Title>
+      <p>This is the description of the movie.</p>
     </div>
     </Modal>
     <Title>{params.movieName}</Title><br/>
