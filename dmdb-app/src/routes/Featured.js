@@ -1,6 +1,7 @@
 import { Link,Outlet } from "react-router-dom";
 import { getFeatured } from "../data";
 
+//This function is used to render the featured movies of our movie database
 export default function Featured() {
   let featured = getFeatured();
   return (

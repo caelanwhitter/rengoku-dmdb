@@ -1,5 +1,6 @@
 import { Link,Outlet } from "react-router-dom";
 import { getHiddenGems } from "../data";
+//This function is used to display the hiddenGems page
 export default function HiddenGems() {
   let hiddengems = getHiddenGems();
   return (

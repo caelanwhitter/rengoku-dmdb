@@ -3,6 +3,7 @@ import { Title, Modal, TextInput, Button } from "@mantine/core";
 import { useState } from 'react';
 import './App.css';
 
+//This function is the main application component. It holds all the tabs that will be used for the application.
 export default function App() {
   const [opened, setOpened] = useState(false);
 

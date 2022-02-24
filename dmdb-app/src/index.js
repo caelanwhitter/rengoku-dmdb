@@ -17,6 +17,7 @@ render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<App />} >
+
         <Route path="featured" element={<Featured />} >
           <Route
             index
@@ -37,6 +38,8 @@ render(
             }
           />
           <Route path=":movieId" element={<Movie />} />
+          <Route path=":movieName" element={<Movie />} />
+          <Route path=":movieGross" element={<Movie />} />
         </Route>
         <Route path="hiddengems" element={<HiddenGems />} >
           <Route
