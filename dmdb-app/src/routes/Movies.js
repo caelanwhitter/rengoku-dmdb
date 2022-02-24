@@ -18,9 +18,7 @@ export default function Movies() {
   // This code will get values stored inside backendData and splits every field from the database into rows and columns
   const rows = backendData.map((element) => (
     <tr key={element.title}>
-      <td><NavLink style={({ isActive }) => {
-            return { color: isActive ? "red" : "blue" };
-          }} to={`/movies/${element.gross}`}
+      <td><NavLink to={`/movies/${element.title}`}
           key={element.title}>
           {element.title}</NavLink></td>
       <td>{element.director}</td>
