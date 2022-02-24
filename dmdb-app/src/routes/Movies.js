@@ -5,29 +5,34 @@ import React, { useState, useEffect } from 'react';
 
 
 export default function Movies() {
-    const [movies, setMovie] = useState([]);
+    const [movies, setMovies] = useState([{}]);
     const [activePage, setPage] = useState(1);
 
+    async function fetchMoviesPerPage(pageNumber) {
+        let response = await fetch('http://localhost:3001/api/allMovies/page/' + pageNumber);
+        let moviesJson = await response.json();
+        setMovies(moviesJson);
+    }
+
     useEffect(() => {
-        fetch('http://localhost:3001/api/allMovies/page/' + activePage)
-            .then(json => {
-                console.log(json);
-                setMovie(json);
-            })
-            .catch(err => {
-                console.log()
-            })
-    });
+        fetchMoviesPerPage(activePage);
+    }, []);
+
+    const changePage = (event) => {
+        console.log(event);
+        fetchMoviesPerPage(event);
+        setPage(event);
+    }
 
     const rows = movies.map((element) => (
-        <tr key={element.number}>
+        <tr key={element._id}>
             <td><NavLink style={({ isActive }) => {
                 return { color: isActive ? "red" : "blue" };
-            }} to={`/movies/${element.number}`}
-                key={element.number}>
-                {element.name}</NavLink></td>
-            <td>{element.amount}</td>
-            <td>{element.due}</td>
+            }} to={`/movies/${element.gross}`}
+                key={element._id}>
+                {element.title}</NavLink></td>
+            <td>{element.director}</td>
+            <td>{element.releaseYear}</td>
         </tr>
     ));
 
@@ -47,7 +52,7 @@ export default function Movies() {
                     </thead>
                     <tbody>{rows}</tbody>
                 </Table>
-                <Pagination page={activePage} onChange={setPage} total={rows.length} color="dark" sibilings={1} withEdges />
+                <Pagination page={activePage} onChange={changePage} total={rows.length} color="dark" sibilings={1} withEdges />
             </nav>
             <Outlet />
         </div>
