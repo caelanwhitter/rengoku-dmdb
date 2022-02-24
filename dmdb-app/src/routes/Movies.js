@@ -7,6 +7,7 @@ export default function Movies() {
     let movies = getMovies();
 
     const [activePage, setPage] = useState(1);
+
     const rows = movies.map((element) => (
         <tr key={element.number}>
             <td><NavLink style={({ isActive }) => {
@@ -35,7 +36,7 @@ export default function Movies() {
                     </thead>
                     <tbody>{rows}</tbody>
                 </Table>
-                <Pagination page={activePage} onChange={setPage} total={2} color="dark" sibilings={1} withEdges />
+                <Pagination page={activePage} onChange={setPage} total={rows.length} color="dark" sibilings={1} withEdges />
             </nav>
             <Outlet />
         </div>

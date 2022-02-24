@@ -9,6 +9,6 @@ const app = express();
 const route = require("./routes/route");
 const path = require("path");
 
-app.use("/", route);
+app.use("/api", route);
 
 module.exports = app;
