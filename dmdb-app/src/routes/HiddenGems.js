@@ -1,22 +1,14 @@
-import { Link,Outlet } from "react-router-dom";
-import { getHiddenGems } from "../data";
+import { Outlet } from "react-router-dom";
+
+//This function is used to display the hiddenGems page
 export default function HiddenGems() {
-  let hiddengems = getHiddenGems();
   return (
     <div style={{ display: "flex" }}>
       <nav style={{
           borderRight: "solid 1px",
           padding: "1rem"
         }}>
-        {hiddengems.map(hiddengems => (
-          <Link
-            style={{ display: "block", margin: "1rem 0" }}
-            to={`/hiddengems/${hiddengems.number}`}
-            key={hiddengems.number}
-          >
-           Hidden Gems Tab {hiddengems.name}
-          </Link>
-        ))}
+        <p>Hidden Gems Page</p>
       </nav>
       <Outlet/>
     </div>

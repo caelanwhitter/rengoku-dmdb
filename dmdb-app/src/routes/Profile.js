@@ -1,5 +1,7 @@
 import { Link,Outlet } from "react-router-dom";
 import { getProfile } from "../data";
+
+//This function is used to display the Profile page
 export default function Profile() {
   let profile = getProfile();
   return (

@@ -1,9 +1,8 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { getMovies } from "../data";
-import { Table, Pagination } from '@mantine/core';
-import React, { useState, useEffect } from 'react';
+import { Table } from '@mantine/core';
+import React, {useEffect, useState} from 'react'
 
-
+//This function is used to fetch the data from the server and insert it into a variable called backendData.
 export default function Movies() {
     const [movies, setMovies] = useState([{}]);
     const [activePage, setPage] = useState(1);
