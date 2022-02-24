@@ -15,8 +15,12 @@ export default function App() {
       >
         <TextInput
           placeholder="Search..."
+          variant="unstyled"
+          size="lg"
+          radius="md"
           required
-        />
+        /> <br/>
+        <Button color="dark" type="submit">Go!</Button>
       </Modal>
 
       <nav id="tabs">
@@ -27,7 +31,7 @@ export default function App() {
         <Link className="tabLink" to="/featured">Featured</Link>
         <Link className="tabLink" to="/movies">Movies</Link>
         <Link className="tabLink" to="/hiddenGems">Hidden Gems</Link>
-        <Button onClick={() => setOpened(true)} variant="subtle" color="dark" uppercase>Search</Button>
+        <Link className="tabLink" onClick={() => setOpened(true)} to={{}}>Search</Link>
         <Link className="tabLink" to="/register">Register</Link>
         <Link className="tabLink" to="/login">Login</Link>
         <Link className="tabLink" to="/logout">Logout</Link> {/* {" · "} */}
