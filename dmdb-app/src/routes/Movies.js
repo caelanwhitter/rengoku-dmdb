@@ -4,10 +4,10 @@ import React, {useEffect, useState} from 'react'
 
 //This function is used to fetch the data from the server and insert it into a variable called backendData.
 export default function Movies() {
-  const [backendData,setBackendData] =useState([{}])
+  const [backendData, setBackendData] = useState([{}])
   
   useEffect(()=> {
-    fetch("/getAll").then(
+    fetch("/api/allMovies").then(
       response => response.json()
     ).then(
       data => { 
@@ -18,8 +18,8 @@ export default function Movies() {
   // This code will get values stored inside backendData and splits every field from the database into rows and columns
   const rows = backendData.map((element) => (
     <tr key={element.title}>
-      <td><NavLink to={`/movies/${element.title}`}
-          key={element.title}>
+      <td><NavLink to={`/movies/${element._id}`}
+          key={element._id}>
           {element.title}</NavLink></td>
       <td>{element.director}</td>
       <td>{element.releaseYear}</td>
