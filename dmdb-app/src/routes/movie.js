@@ -1,6 +1,8 @@
 import { NavLink, useParams } from "react-router-dom";
 import { Button } from "@mantine/core";
 
+//This function is used to create a navigation page from the Movies component.
+//It will hold the details of the movies for now.
 export default function Movie() {
   let params = useParams();
 

@@ -17,6 +17,7 @@ render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<App />} >
+
         <Route path="featured" element={<Featured />} >
           <Route
             index

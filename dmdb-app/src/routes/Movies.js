@@ -2,6 +2,7 @@ import { NavLink, Outlet } from "react-router-dom";
 import { Table } from '@mantine/core';
 import React, {useEffect, useState} from 'react'
 
+//This function is used to fetch the data from the server and insert it into a variable called backendData.
 export default function Movies() {
   const [backendData,setBackendData] =useState([{}])
   
@@ -14,8 +15,7 @@ export default function Movies() {
       })
   }, [])
 
-  //let movies = getMovies();
-
+  // This code will get values stored inside backendData and splits every field from the database into rows and columns
   const rows = backendData.map((element) => (
     <tr key={element.title}>
       <td><NavLink style={({ isActive }) => {
@@ -27,7 +27,7 @@ export default function Movies() {
       <td>{element.releaseYear}</td>
     </tr>
   ));
-
+//This is the return using a Table component. rows variable holds all the values fetched from the db
   return (
     
     <div style={{ display: "flex" }}>
