@@ -27,16 +27,11 @@ export default function Movies() {
       <td>{element.releaseYear}</td>
     </tr>
   ));
+  
 //This is the return using a Table component. rows variable holds all the values fetched from the db
   return (
-    
-    <div style={{ display: "flex" }}>
-      
-      <nav style={{
-        borderRight: "solid 1px",
-        padding: "1rem"
-      }}>
-        <Table highlightOnHover>
+    <div id="movieContainer">
+        <Table id="movieList" highlightOnHover>
           <thead>
             <tr>
               <th>Movie Name</th>
@@ -46,7 +41,6 @@ export default function Movies() {
           </thead>
           <tbody>{rows}</tbody>
         </Table>
-      </nav>
       <Outlet />
     </div>
   );
