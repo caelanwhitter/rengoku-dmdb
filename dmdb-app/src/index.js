@@ -37,7 +37,6 @@ render(
               </main>
             }
           />
-          <Route path=":movieName" element={<Movie />} />
           <Route path=":movieId" element={<Movie />} />
           <Route path=":movieGross" element={<Movie />} />
         </Route>

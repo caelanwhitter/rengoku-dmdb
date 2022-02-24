@@ -9,7 +9,9 @@ image: node:latest
 
 stages:
   - build
-  - test
+  only:
+    - staging
+    - main
 
 build:
   stage: build
@@ -25,8 +27,3 @@ build:
     paths:
       - server/node_modules/
       - dmdb-app/node_modules/
-
-sast:
-  stage: test
-include:
-- template: Security/SAST.gitlab-ci.yml
