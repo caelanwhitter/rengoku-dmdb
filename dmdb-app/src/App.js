@@ -1,10 +1,24 @@
 import { Outlet, Link } from "react-router-dom";
-import { Title } from "@mantine/core";
+import { Title, Modal, TextInput, Button } from "@mantine/core";
+import { useState } from 'react';
 import './App.css';
 
 export default function App() {
+  const [opened, setOpened] = useState(false);
+
   return (
     <div className="content-container">
+      <Modal
+        opened={opened}
+        onClose={() => setOpened(false)}
+        hideCloseButton
+      >
+        <TextInput
+          placeholder="Search..."
+          required
+        />
+      </Modal>
+
       <nav id="tabs">
         <div id="titleDiv">
           <Title className="title">DMDB</Title>
@@ -13,6 +27,7 @@ export default function App() {
         <Link className="tabLink" to="/featured">Featured</Link>
         <Link className="tabLink" to="/movies">Movies</Link>
         <Link className="tabLink" to="/hiddenGems">Hidden Gems</Link>
+        <Button onClick={() => setOpened(true)} variant="subtle" color="dark" uppercase>Search</Button>
         <Link className="tabLink" to="/register">Register</Link>
         <Link className="tabLink" to="/login">Login</Link>
         <Link className="tabLink" to="/logout">Logout</Link> {/* {" · "} */}
