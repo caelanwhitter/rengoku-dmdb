@@ -30,8 +30,8 @@ export default function Movie() {
       <h3>This is the name of the movie: {current.movieName}</h3>
     </div>
     </Modal>
-    <Title>{current.movieName}</Title>
-    <Button onClick={() => setOpened(true)} variant="subtle">View Details</Button>
+    <Title>{current.movieName}</Title><br/>
+    <Button color="dark" onClick={() => setOpened(true)} variant="subtle">View Details</Button>
     </div>
     );
 }

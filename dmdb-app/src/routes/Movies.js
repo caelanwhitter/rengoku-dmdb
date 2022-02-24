@@ -18,10 +18,6 @@ export default function Movies() {
 
   return (
     <div id="movieContainer">
-      {/* <div style={{
-        borderRight: "solid 1px",
-        padding: "1rem"
-      }}> */}
         <Table id="movieList" highlightOnHover>
           <thead>
             <tr>
@@ -32,7 +28,6 @@ export default function Movies() {
           </thead>
           <tbody>{rows}</tbody>
         </Table>
-        {/* </div> */}
       <Outlet />
     </div>
   );
