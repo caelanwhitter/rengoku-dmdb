@@ -32,7 +32,7 @@ export default function App() {
         <Link className="tabLink" to="/featured">Featured</Link>
         <Link className="tabLink" to="/movies">Movies</Link>
         <Link className="tabLink" to="/hiddenGems">Hidden Gems</Link>
-        <Link className="tabLink" onClick={() => setOpened(true)} to={{}}>Search</Link>
+        <Link className="tabLink" onClick={() => setOpened(true)} to={{}}>Search</Link>{" | "}
         <Link className="tabLink" to="/register">Register</Link>
         <Link className="tabLink" to="/login">Login</Link>
         <Link className="tabLink" to="/logout">Logout</Link> {/* {" · "} */}

@@ -1,24 +1,14 @@
-import { Link,Outlet } from "react-router-dom";
-import { getFeatured } from "../data";
+import { Outlet } from "react-router-dom";
 
 //This function is used to render the featured movies of our movie database
 export default function Featured() {
-  let featured = getFeatured();
   return (
     <div style={{ display: "flex" }}>
       <nav style={{
           borderRight: "solid 1px",
           padding: "1rem"
         }}>
-        {featured.map(featured => (
-          <Link
-            style={{ display: "block", margin: "1rem 0" }}
-            to={`/featured/${featured.number}`}
-            key={featured.number}
-          >
-           Featured Tab {featured.name}
-          </Link>
-        ))}
+        <p>Featured Page</p>
       </nav>
       <Outlet/>
     </div>
