@@ -20,8 +20,8 @@ public class Importer {
     /**
      * set the path to the csv file
      */
-    public Importer() {
-        this.movieAttributesPath = "importer/src/main/java/utils/resources/movies.csv";
+    public Importer(String path) {
+        this.movieAttributesPath = path;
     }
 
     public List<Movie> fetchDataFromDataset() {
@@ -90,6 +90,7 @@ public class Importer {
                      */
                     else if (movieAttributes.length == 10) {
                         movie.setDirector(movieAttributes[7]);
+                        movie.setScore(parseDouble(movieAttributes[5]));
                     }
                     /**
                      * In case if movieAttributes where the release date have no comma, go through
