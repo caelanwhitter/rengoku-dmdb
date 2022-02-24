@@ -20,5 +20,19 @@ router.get("/allMovies", async (req, res) => {
     }
 })
 
+router.get("/allMovies/page/:pageNumber", async (req, res) => {
+    const pageNumber = req.params.pageNumber;
+
+    const moviesPerPage = await Movies.find({}).skip(100 * (pageNumber - 1)).limit(100);
+
+    try {
+        res.json(moviesPerPage);
+        res.end();
+    }
+    catch (error) {
+        console.error(error.message);
+        res.sendStatus(404).end();
+    }
+})
 
 module.exports = router;
