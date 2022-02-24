@@ -8,9 +8,9 @@ const express = require("express");
 const app = express();
 const route = require("./routes/route");
 const path = require("path");
-const cors = require('cors');
+// const cors = require('cors');
 
-app.use(cors);
+// app.use(cors);
 
 app.use("/api", route);
 
