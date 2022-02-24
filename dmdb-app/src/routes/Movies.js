@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { Table } from '@mantine/core';
+import { Table, Pagination } from '@mantine/core';
 import React, {useEffect, useState} from 'react'
 
 //This function is used to fetch the data from the server and insert it into a variable called backendData.
@@ -15,19 +15,16 @@ export default function Movies() {
 
     useEffect(() => {
         fetchMoviesPerPage(activePage);
-    }, []);
+    }, [activePage]);
 
     const changePage = (event) => {
-        console.log(event);
         fetchMoviesPerPage(event);
         setPage(event);
     }
 
     const rows = movies.map((element) => (
         <tr key={element._id}>
-            <td><NavLink style={({ isActive }) => {
-                return { color: isActive ? "red" : "blue" };
-            }} to={`/movies/${element.gross}`}
+            <td><NavLink to={`/movies/${element._id}`}
                 key={element._id}>
                 {element.title}</NavLink></td>
             <td>{element.director}</td>
