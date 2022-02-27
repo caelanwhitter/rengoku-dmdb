@@ -6,6 +6,7 @@ import React, {useEffect, useState} from 'react'
 export default function Movies() {
     const [movies, setMovies] = useState([{}]);
     const [activePage, setPage] = useState(1);
+    const [allMoviesLength, setAllMoviesLength] = useState(0);
 
     async function fetchMoviesPerPage(pageNumber) {
         let response = await fetch('http://localhost:3001/api/allMovies/page/' + pageNumber);
@@ -13,8 +14,15 @@ export default function Movies() {
         setMovies(moviesJson);
     }
 
+    async function fetchAllMoviesLength() {
+        let response = await fetch('http://localhost:3001/api/allMovies');
+        let moviesJson = await response.json();
+        setAllMoviesLength(moviesJson.length);
+    }
+
     useEffect(() => {
         fetchMoviesPerPage(activePage);
+        fetchAllMoviesLength();
     }, [activePage]);
 
     const changePage = (event) => {
@@ -48,7 +56,7 @@ export default function Movies() {
                     </thead>
                     <tbody>{rows}</tbody>
                 </Table>
-                <Pagination page={activePage} onChange={changePage} total={rows.length} color="dark" sibilings={1} withEdges />
+                <Pagination page={activePage} onChange={changePage} total={Math.ceil(allMoviesLength/rows.length)} color="dark" sibilings={1} withEdges />
             </nav>
             <Outlet />
         </div>
