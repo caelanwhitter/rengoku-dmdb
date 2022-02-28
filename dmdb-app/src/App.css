@@ -43,6 +43,11 @@ html {
   border-radius: 10px;
 }
 
+#pagination {
+  margin-top: 50px;
+  margin-left: 30%;
+}
+
 .tabLink {
   color: black;
   text-decoration: none;
