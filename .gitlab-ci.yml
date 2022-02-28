@@ -9,12 +9,12 @@ image: node:latest
 
 stages:
   - build
-  only:
-    - staging
-    - main
 
 build:
   stage: build
+  only:
+    - staging
+    - main
   script:
     - cd server && npm install && cd ../dmdb-app && npm install
   cache:
