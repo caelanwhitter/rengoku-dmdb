@@ -21,15 +21,6 @@ export default function Movies() {
         fetchMoviesPerPage(activePage);
     }, []);
 
-    // useEffect(()=> {
-    //     fetch("/api/oneMovie?id=" + params.movieId).then(
-    //       response => response.json()
-    //     ).then(
-    //       data => { 
-    //         setBackendData(data[0])
-    //       })
-    //   }, [params.movieId]);
-
     function getDetails(movieId) {
         fetch("/api/oneMovie?id=" + movieId).then(
             response => response.json())
@@ -83,7 +74,7 @@ export default function Movies() {
      */
     const cards = movies.map((element) => (
         <Grid.Col span={3}>
-            <Card onClick={() => { getDetails(element._id); setOpened(true)}} style={{cursor: "pointer"}}shadow="md">
+            <Card onClick={() => { getDetails(element._id); setOpened(true)}} style={{cursor: "pointer"}} shadow="md">
                 <Card.Section>
                     <Image src="https://www.theyearinpictures.co.uk/images//image-placeholder.png" height={320} alt={element.title + " Poster"} />
                 </Card.Section>
