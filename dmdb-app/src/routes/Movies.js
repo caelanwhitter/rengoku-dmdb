@@ -6,24 +6,29 @@ import React, {useEffect, useState} from 'react'
 export default function Movies() {
     const [movies, setMovies] = useState([{}]);
     const [activePage, setPage] = useState(1);
-    const [allMoviesLength, setAllMoviesLength] = useState(0);
+    const [totalPagination, setTotalPagination] = useState();
 
     async function fetchMoviesPerPage(pageNumber) {
         let response = await fetch('http://localhost:3001/api/allMovies/page/' + pageNumber);
-        let moviesJson = await response.json();
-        setMovies(moviesJson);
+        let moviesPaginationJson = await response.json();
+        setMovies(moviesPaginationJson);
+
+        if (totalPagination === undefined) {
+            await calculateTotalPagination(moviesPaginationJson);
+        }
     }
 
-    async function fetchAllMoviesLength() {
+    async function calculateTotalPagination(moviesPaginationJson) {
         let response = await fetch('http://localhost:3001/api/allMovies');
-        let moviesJson = await response.json();
-        setAllMoviesLength(moviesJson.length);
+        let allMoviesJson = await response.json();
+        const totalPaginationVar = Math.ceil(allMoviesJson.length/moviesPaginationJson.length);
+
+        setTotalPagination(totalPaginationVar);
     }
 
     useEffect(() => {
         fetchMoviesPerPage(activePage);
-        fetchAllMoviesLength();
-    }, [activePage]);
+    }, []);
 
     const changePage = (event) => {
         fetchMoviesPerPage(event);
@@ -56,7 +61,7 @@ export default function Movies() {
                     </thead>
                     <tbody>{rows}</tbody>
                 </Table>
-                <Pagination page={activePage} onChange={changePage} total={Math.ceil(allMoviesLength/rows.length)} color="dark" sibilings={1} withEdges />
+                <Pagination page={activePage} onChange={changePage} total={totalPagination} color="dark" sibilings={1} withEdges />
             </nav>
             <Outlet />
         </div>
