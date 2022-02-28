@@ -1,3 +1,4 @@
+import { Link, NavLink } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import React, {useEffect, useState} from 'react'
 import { Title, Modal, Button } from '@mantine/core';
@@ -33,7 +34,8 @@ export default function Movie() {
       <p>Rating: {backendData.rating}</p> <p>Score: {backendData.score}</p>
       <p>Duration: {parseInt(backendData.duration)} minutes</p>
       <p>This is the description of the movie.</p>
-      <Title order={6}>Gross: {backendData.gross}</Title>
+          <Title order={6}>Gross: {backendData.gross}</Title>
+          <p><NavLink to={`reviews`}>View Reviews</NavLink></p>
     </div>
     </Modal>
     <Title>{backendData.title}</Title><br/>

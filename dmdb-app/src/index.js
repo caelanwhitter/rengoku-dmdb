@@ -11,6 +11,7 @@ import Movies from "./routes/Movies";
 import HiddenGems from "./routes/HiddenGems";
 import Profile from "./routes/Profile";
 import Register from "./routes/Register";
+import Reviews from "./routes/Reviews";
 
 const rootElement = document.getElementById("root");
 render(
@@ -28,6 +29,7 @@ render(
             }
           />
         </Route>
+        
         <Route path="movies" element={<Movies />}>
           <Route
             index
@@ -37,9 +39,15 @@ render(
               </main>
             }
           />
-          <Route path=":movieId" element={<Movie />} />
+          <Route path=":movieId" element={<Movie />}>
+            <Route path="reviews" element={<Reviews />}/>
+          </Route>
           <Route path=":movieGross" element={<Movie />} />
         </Route>
+        <Route path="reviews" element={<Reviews />}/>
+
+  
+        
         <Route path="hiddengems" element={<HiddenGems />} >
           <Route
             index
