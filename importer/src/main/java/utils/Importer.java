@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.text.NumberFormat;
 
 /**
  * Importer.java reads through every line of dataset, cleans each line and creates a Movie object
@@ -16,6 +17,8 @@ public class Importer {
      */
     private String movieAttributesPath;
     private List<Movie> movieList = new ArrayList<Movie>();
+    private NumberFormat formatter = NumberFormat.getCurrencyInstance();
+
 
     /**
      * set the path to the csv file
@@ -25,6 +28,7 @@ public class Importer {
     }
 
     public List<Movie> fetchDataFromDataset() {
+
 
         String line = " ";
         String splitby = ",";
@@ -81,7 +85,10 @@ public class Importer {
                             movie.setDuration(movieAttributes[15]);
                         }
                         movie.setDirector(movieAttributes[8]);
-                        movie.setGross(movieAttributes[13]);
+                        movie.setGross(formatGross(movieAttributes[13]));
+
+
+
 
                     }
                     /**
@@ -100,7 +107,7 @@ public class Importer {
                     else {
                         movie.setDuration(movieAttributes[14]);
                         movie.setDirector(movieAttributes[7]);
-                        movie.setGross(movieAttributes[12]);
+                        movie.setGross(formatGross(movieAttributes[12]));
                     }
 
                     /* Add movie into movie list after changes */
@@ -131,6 +138,20 @@ public class Importer {
         return number != "" ? Double.parseDouble(number) : 0;
     }
 
+
+    /**
+     * Formats the gross into a more readable number
+     * 
+     * @param number A String containing either a number or is empty
+     * @return the formatted number
+     */
+    public String formatGross(String number) {
+        String newNumber = formatter.format(parseDouble(number));
+
+        return newNumber;
+    }
+
+
     /**
      * 
      * @param line line containing Movie where the title contains at least one
@@ -156,7 +177,7 @@ public class Importer {
         movie.setReleaseYear(Integer.parseInt(firstHalf[2]));
         movie.setDirector(secondHalf[2]);
         movie.setScore(parseDouble(secondHalf[0]));
-        movie.setGross(secondHalf[7]);
+        movie.setGross(formatGross(secondHalf[7]));
         movie.setReleaseYear(Integer.parseInt(firstHalf[2]));
 
         /**

@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 import { Grid, Text, Badge, Title, Modal, Group, Card, Image, Pagination } from '@mantine/core';
 import React, {useEffect, useState} from 'react';
 
@@ -106,8 +107,11 @@ export default function Movies() {
                     <Badge color="gray" variant="outline">Rated {backendData.rating}</Badge> 
                     <Badge color="yellow" variant="dot">{backendData.score} ⭐</Badge>    
                 </Group>
-                <p>This is the description of the movie.</p>
-                <Title order={6}>Gross: {backendData.gross}</Title>
+                    <p>This is the description of the movie.</p>
+                    <Title order={6}>Gross: {backendData.gross}</Title>
+                    <Badge variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}><NavLink style={{ textDecoration: 'none' , color: 'black'}} to={`${backendData._id}/reviews`}>View Reviews</NavLink></Badge>
+
+
             </div>
         </Modal>
 
