@@ -1,7 +1,8 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import React, {useEffect, useState} from 'react'
 import { Title, Modal, Button } from '@mantine/core';
+
 
 //This function is used to create a navigation page from the Movies component.
 //It will hold the details of the movies for now.
@@ -36,10 +37,12 @@ export default function Movie() {
       <p>This is the description of the movie.</p>
           <Title order={6}>Gross: {backendData.gross}</Title>
           <p><NavLink to={`reviews`}>View Reviews</NavLink></p>
+
     </div>
     </Modal>
     <Title>{backendData.title}</Title><br/>
-    <Button color="dark" onClick={() => setOpened(true)} variant="subtle">View Details</Button>
+      <Button color="dark" onClick={() => setOpened(true)} variant="subtle">View Details</Button>
+
     </div>
     );
 }

@@ -39,12 +39,12 @@ render(
               </main>
             }
           />
-          <Route path=":movieId" element={<Movie />}>
-            <Route path="reviews" element={<Reviews />}/>
-          </Route>
+          <Route path=":movieId" element={<Movie />}/>
           <Route path=":movieGross" element={<Movie />} />
         </Route>
-        <Route path="reviews" element={<Reviews />}/>
+
+        <Route path="movies/:movieId/reviews" element={<Reviews />}/>
+
 
   
         

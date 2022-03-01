@@ -6,20 +6,7 @@ import { Title, Modal, Button } from '@mantine/core';
 //This function is used to create a navigation page from the Movies component.
 //It will hold the details of the movies for now.
 export default function Reviews() {
-  let params = useParams();
-  const [opened, setOpened] = useState(false);
-    const [backendData, setBackendData] = useState([{}])
-    
 
-    // useEffect(() => {
-    //     fetchReviewsForMovie();
-    // }, []);
-
-
-    // async function fetchReviewsForMovie() {
-    //     let response = await fetch('http://localhost:3001/api/oneMovie/reviews');
-    //     let moviesPaginationJson = await response.json();
-    //  }
 
 
 
@@ -31,7 +18,7 @@ export default function Reviews() {
             padding: "1rem"
           }}>
           <p>Reviews Page</p>
-        </nav>
+      </nav>
       </div>
     );
 }

@@ -6,7 +6,9 @@
 
 const express = require("express");
 const router = express.Router();
-const Movies = require("../database/mongoose");
+const Mongoose = require("../database/mongoose");
+const Movies = Mongoose.Movie;
+const Reviews = Mongoose.Review;
 const ObjectId = require("mongodb").ObjectId;
 
 router.get("/allMovies", async (req, res) => {
@@ -46,6 +48,20 @@ router.get("/oneMovie", async (req, res) => {
 
     try {
         res.json(singleMovie);
+        res.end();
+    }
+    catch (error) {
+        console.error(error.message);
+        res.sendStatus(404).end();
+    }
+})
+
+router.get("/oneMovie/reviews", async (req, res) => {
+    const id = req.query.id;
+
+    const reviewForMovie = await Reviews.find({"movieId": id});
+    try {
+        res.json(reviewForMovie);
         res.end();
     }
     catch (error) {
