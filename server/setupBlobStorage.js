@@ -1,10 +1,9 @@
 require('dotenv').config();
 const { BlobServiceClient } = require('@azure/storage-blob');
-const { v1: uuidv1 } = require('uuid');
 
-async function main() {
+async function setupBlobContainer() {
     /* Get connection string */
-    console.log('Setting up ');
+    console.log('Setting up Azure Blob Storage...');
     const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
 
     /* Create a container */
@@ -12,10 +11,8 @@ async function main() {
     // Create the BlobServiceClient object which will be used to create a container client
     const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
 
-    console.log("reaches");
-
     // Create a unique name for the container
-    const containerName = 'rengokublobs-' + uuidv1();
+    const containerName = 'rengokublobs';
 
     console.log('\nCreating container...');
     console.log('\t', containerName);
@@ -30,7 +27,7 @@ async function main() {
     /* Upload blobs to a container */
 
     // Create a unique name for the blob
-    const blobName = 'rengoku-' + uuidv1() + '.txt';
+    const blobName = 'rengoku.txt';
 
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
@@ -62,10 +59,6 @@ async function main() {
     console.log("Done!");
 }
 
-async function setupEnvironmentVariables() {
-    AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
-}
-
 // A helper function used to read a Node.js readable stream into a string
 async function streamToString(readableStream) {
     return new Promise((resolve, reject) => {
@@ -89,4 +82,5 @@ async function deleteContainer() {
     console.log("Container was deleted successfully. requestId: ", deleteContainerResponse.requestId);
 }
 
-main().catch((ex) => console.log(ex.message));
+// Runs setupBlobStorage.js
+setupBlobContainer().catch((ex) => console.log(ex.message));
