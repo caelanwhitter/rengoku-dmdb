@@ -16,5 +16,13 @@
   "bugs": {
     "url": "https://gitlab.com/zhuxiaoj1/rengoku-dmdb/issues"
   },
+<<<<<<< HEAD
   "homepage": "https://gitlab.com/zhuxiaoj1/rengoku-dmdb#readme"
 }
+=======
+  "homepage": "https://gitlab.com/zhuxiaoj1/rengoku-dmdb#readme",
+  "dependencies": {
+    "@radix-ui/react-icons": "^1.1.0"
+  }
+}
+>>>>>>> c460ddc598b2df678f1e75cdd113c7349470a9bb
