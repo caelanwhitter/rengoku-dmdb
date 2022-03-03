@@ -1,16 +1,11 @@
+
 import { Grid, Text, Badge, Title, Modal, Group, Card, Image, Pagination, TextInput,Button } from '@mantine/core';
 import React, {useEffect, useState} from 'react';
 import { Outlet, Link } from "react-router-dom";
 import '../App.css';
 
 
-/**
- * Movies() is a component that fetches the list of Movies from the DB and displays it properly using pagination
- * @returns Table Of Movies + Pagination
- */
-export default function Movies() {
-
-    //Initializes variables and sets up "settters to variables"
+export default function Search() {
     const [movies, setMovies] = useState([{}]);
     const [activePage, setPage] = useState(1);
     const [totalPagination, setTotalPagination] = useState();
@@ -19,10 +14,11 @@ export default function Movies() {
     const [backendData, setBackendData] = useState([{}])
     const [value, setValue] = useState('');
 
+
     /**
      * useEffect() runs following methods once. Similar to ComponentDidMount()
      */
-    useEffect(() => {
+     useEffect(() => {
         fetchMoviesPerPage(activePage);
     }, []);
 
@@ -34,7 +30,6 @@ export default function Movies() {
         setSearchOpened(false);
           
     }
-
     async function getDetails(movieId) {
         await fetch("/api/oneMovie?id=" + movieId).then(
             response => response.json())
@@ -47,8 +42,8 @@ export default function Movies() {
      * fetchMoviesPerPage() fetches list of movies following pagination endpoints and calculates totalPagination on first render
      * @param {String} pageNumber 
      */
-    async function fetchMoviesPerPage(pageNumber) {
-        let response = await fetch('/api/allMovies/page/' + pageNumber);
+     async function fetchMoviesPerPage(pageNumber) {
+        let response = await fetch('/api/getSearch/page/'+pageNumber+'?title='+value);
         let moviesPaginationJson = await response.json();
         setMovies(moviesPaginationJson);
 
@@ -57,13 +52,12 @@ export default function Movies() {
             await calculateTotalPagination(moviesPaginationJson);
         }
     }
-
     /**
      * calculateTotalPagination() calculates how many pages should the entire list of movies be separated for pagination
      * @param {JSON} moviesPaginationJson 
      */
-    async function calculateTotalPagination(moviesPaginationJson) {
-        let response = await fetch('/api/allMovies');
+     async function calculateTotalPagination(moviesPaginationJson) {
+        let response = await fetch('/api/getSearch?title='+value);
         let allMoviesJson = await response.json();
         const totalMoviePages = Math.ceil(allMoviesJson.length/moviesPaginationJson.length);
 
@@ -74,7 +68,7 @@ export default function Movies() {
      * changePage() calls methods whenever detects a change of page on pagination
      * @param {*} event 
      */
-    const changePage = (event) => {
+     const changePage = (event) => {
 
         // Re-fetches the list of movies with proper page number
         fetchMoviesPerPage(event);
@@ -83,10 +77,11 @@ export default function Movies() {
         setPage(event);
     }
 
+    
     /**
      * rows returns a table body of the appropriate list of movies
      */
-    const cards = movies.map((element) => (
+     const cards = movies.map((element) => (
         <Grid.Col span={3}>
             <Card onClick={() => { getDetails(element._id); setOpened(true)}} style={{cursor: "pointer"}} shadow="md">
                 <Card.Section>
@@ -125,7 +120,7 @@ export default function Movies() {
         <Button
           onClick={fetchSearch}
           component={Link}
-          to='/search'
+          to='/movies/search'
           color="dark"
           type="submit">
           Go!

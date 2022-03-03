@@ -35,6 +35,23 @@ router.get("/getSearch", async (req, res) => {
         res.sendStatus(404).end();
     }
 })
+router.get("/getSearch/page/:pageNumber", async (req, res) => {
+    const pageNumber = req.params.pageNumber;
+    const keyword = req.query.title;
+    const elemsPerPage = 52;
+    const moviesPerPage = await Movies.find({
+        title: { $regex: `${keyword}`, $options: "i"}
+    }).skip(elemsPerPage * (pageNumber - 1)).limit(elemsPerPage);
+
+    try {
+        res.json(moviesPerPage);
+        res.end();
+    }
+    catch (error) {
+        console.error(error.message);
+        res.sendStatus(404).end();
+    }
+})
 
 router.get("/allMovies/page/:pageNumber", async (req, res) => {
     const pageNumber = req.params.pageNumber;

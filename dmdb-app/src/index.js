@@ -11,6 +11,7 @@ import Movies from "./routes/Movies";
 import HiddenGems from "./routes/HiddenGems";
 import Profile from "./routes/Profile";
 import Register from "./routes/Register";
+import Search from "./routes/Search"
 
 const rootElement = document.getElementById("root");
 render(
@@ -29,16 +30,9 @@ render(
           />
         </Route>
         <Route path="movies" element={<Movies />}>
-          <Route
-            index
-            element={
-              <main style={{ padding: "1rem" }}>
-                <p>Select a Movie</p>
-              </main>
-            }
-          />
-          <Route path=":movieId" element={<Movie />} />
+
         </Route>
+        <Route path="search" element={<Search />} />
         <Route path="hiddengems" element={<HiddenGems />} >
           <Route
             index
