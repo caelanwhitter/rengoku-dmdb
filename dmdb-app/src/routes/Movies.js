@@ -1,5 +1,8 @@
-import { Grid, Text, Badge, Title, Modal, Group, Card, Image, Pagination } from '@mantine/core';
+import { Grid, Text, Badge, Title, Modal, Group, Card, Image, Pagination, TextInput,Button } from '@mantine/core';
 import React, {useEffect, useState} from 'react';
+import { Outlet, Link } from "react-router-dom";
+import '../App.css';
+
 
 /**
  * Movies() is a component that fetches the list of Movies from the DB and displays it properly using pagination
@@ -12,7 +15,9 @@ export default function Movies() {
     const [activePage, setPage] = useState(1);
     const [totalPagination, setTotalPagination] = useState();
     const [opened, setOpened] = useState(false);
+    const [searchopened, setSearchOpened] = useState(false);
     const [backendData, setBackendData] = useState([{}])
+    const [value, setValue] = useState('');
 
     /**
      * useEffect() runs following methods once. Similar to ComponentDidMount()
@@ -21,8 +26,17 @@ export default function Movies() {
         fetchMoviesPerPage(activePage);
     }, []);
 
-    function getDetails(movieId) {
-        fetch("/api/oneMovie?id=" + movieId).then(
+    async function fetchSearch(){
+   
+        let response = await fetch("/api/getSearch?title="+value)
+        let movieSearched = await response.json();
+        setMovies(movieSearched);
+        setSearchOpened(false);
+          
+    }
+
+    async function getDetails(movieId) {
+        await fetch("/api/oneMovie?id=" + movieId).then(
             response => response.json())
             .then(
                 data => {setBackendData(data[0])}
@@ -89,8 +103,32 @@ export default function Movies() {
         </Grid.Col>
     ));
 
-    return (
+    return (    
         <>
+        <nav id="tabs">
+        <Link className="tabLink" onClick={() => setSearchOpened(true)} to={{}}>Search</Link>{" | "}
+        </nav>
+        <Modal
+        opened={searchopened}
+        onClose={() => setSearchOpened(false)}
+        hideCloseButton
+      >
+        <TextInput
+          value={value}
+          onChange={(event) => setValue(event.currentTarget.value)}
+          placeholder="Search..."
+          variant="unstyled"
+          size="lg"
+          radius="md"
+          required
+        /> <br />
+        <Button
+          onClick={fetchSearch}
+          color="dark"
+          type="submit">
+          Go!
+        </Button>
+      </Modal>
         <Modal
             opened={opened}
             onClose={() => setOpened(false)}
@@ -110,7 +148,7 @@ export default function Movies() {
                 <Title order={6}>Gross: {backendData.gross}</Title>
             </div>
         </Modal>
-
+        
         <div style={{ display: "flex" }}>
             <nav style={{ padding: "2rem" }}>
                 <Grid gutter={80}>

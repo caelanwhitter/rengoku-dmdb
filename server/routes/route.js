@@ -21,6 +21,20 @@ router.get("/allMovies", async (req, res) => {
         res.sendStatus(404).end();
     }
 })
+router.get("/getSearch", async (req, res) => {
+    const keyword = req.query.title;
+    const findTitle = await Movies.find({
+        title: { $regex: `${keyword}`, $options: "i"}});
+    try {
+        console.log("worke");
+        res.json(findTitle);
+        res.end();
+    }
+    catch (error) {
+        console.error(error.message);
+        res.sendStatus(404).end();
+    }
+})
 
 router.get("/allMovies/page/:pageNumber", async (req, res) => {
     const pageNumber = req.params.pageNumber;

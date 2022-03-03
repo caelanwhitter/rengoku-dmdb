@@ -38,7 +38,6 @@ render(
             }
           />
           <Route path=":movieId" element={<Movie />} />
-          <Route path=":movieGross" element={<Movie />} />
         </Route>
         <Route path="hiddengems" element={<HiddenGems />} >
           <Route
