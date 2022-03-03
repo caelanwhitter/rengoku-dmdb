@@ -15,14 +15,14 @@ export default function Movies() {
     const [totalPagination, setTotalPagination] = useState();
     const [opened, setOpened] = useState(false);
     const [oneMovieData, setOneMovieData] = useState([{}]);
-    const [scroll, scrollTo] = useWindowScroll();
+    const [, scrollTo] = useWindowScroll();
 
     /**
      * useEffect() runs following methods once. Similar to ComponentDidMount()
      */
     useEffect(() => {
         fetchMoviesPerPage(activePage);
-    }, []);
+    }, [activePage, fetchMoviesPerPage]);
 
     function getDetails(movieId) {
         fetch("/api/oneMovie?id=" + movieId).then(
