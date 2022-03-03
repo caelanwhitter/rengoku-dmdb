@@ -36,13 +36,6 @@ html {
   padding: 10px;
 }
 
-#footContent {
-  color: aliceblue;
-  background-color: black;
-  padding: 10px;
-  border-radius: 10px;
-}
-
 #pagination {
   margin-top: 50px;
   margin-left: 30%;
@@ -64,8 +57,9 @@ html {
 }
 
 footer {
+  background-color: black;
+  color: white;
   width: auto;
-  margin-top: 5px;
   display: flex;
   justify-content: center;
   text-align: center;
