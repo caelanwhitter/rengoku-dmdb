@@ -35,6 +35,7 @@ const Movie = mongoose.model("Movie", movieSchema)
 const reviewSchema = new Schema({
   username: String,
   movieId: String,
+  subtitle: String,
   content: String,
   rating: Number,
   datePosted: String
