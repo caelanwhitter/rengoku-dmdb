@@ -1,6 +1,8 @@
-import { Grid, Text, Badge, Title, Modal, 
-    Group, Card, Image, Pagination } from '@mantine/core';
-import React, {useEffect, useState} from 'react';
+import {
+    Grid, Text, Badge, Title, Modal,
+    Group, Card, Image, Pagination
+} from '@mantine/core';
+import React, { useEffect, useState } from 'react';
 import { useWindowScroll } from '@mantine/hooks';
 
 /**
@@ -22,13 +24,13 @@ export default function Movies() {
      */
     useEffect(() => {
         fetchMoviesPerPage(activePage);
-    }, [activePage, fetchMoviesPerPage]);
+    }, []);
 
     function getDetails(movieId) {
         fetch("/api/oneMovie?id=" + movieId).then(
             response => response.json())
             .then(
-                data => {setOneMovieData(data[0])}
+                data => { setOneMovieData(data[0]) }
             )
     }
 
@@ -54,7 +56,7 @@ export default function Movies() {
     async function calculateTotalPagination(moviesPaginationJson) {
         let response = await fetch('/api/allMovies');
         let allMoviesJson = await response.json();
-        const totalMoviePages = Math.ceil(allMoviesJson.length/moviesPaginationJson.length);
+        const totalMoviePages = Math.ceil(allMoviesJson.length / moviesPaginationJson.length);
 
         setTotalPagination(totalMoviePages);
     }
@@ -79,9 +81,9 @@ export default function Movies() {
      */
     const cards = movies.map((element) => (
         <Grid.Col span={3}>
-            <Card onClick={() => { getDetails(element._id); setOpened(true)}} style={{cursor: "pointer"}} shadow="md">
+            <Card onClick={() => { getDetails(element._id); setOpened(true) }} style={{ cursor: "pointer" }} shadow="md">
                 <Card.Section>
-                    <Image src={null} height={320} alt={element.title + " Poster"} withPlaceholder/>
+                    <Image src={null} height={320} alt={element.title + " Poster"} withPlaceholder />
                 </Card.Section>
 
                 <Text weight={600}>{element.title}</Text>
@@ -96,36 +98,36 @@ export default function Movies() {
 
     return (
         <>
-        <Modal
-            opened={opened}
-            onClose={() => setOpened(false)}
-            title={<Title>{oneMovieData.title}</Title>}
-            size="xl"
-            overflow="inside"
-            centered
+            <Modal
+                opened={opened}
+                onClose={() => setOpened(false)}
+                title={<Title>{oneMovieData.title}</Title>}
+                size="xl"
+                overflow="inside"
+                centered
             >
-            <div id="movieDetails">
-                <Image src={null} height={320} alt={oneMovieData.title + " Poster"} withPlaceholder/>
-                <Title order={4}>Director: {oneMovieData.director}</Title>
-                <Group position="left">
-                    <Badge color="dark">{oneMovieData.genre}</Badge>
-                    <Badge color="dark" variant="outline">{parseInt(oneMovieData.duration)} minutes</Badge>
-                    <Badge color="gray" variant="outline">Rated {oneMovieData.rating}</Badge> 
-                    <Badge color="yellow" variant="dot">{oneMovieData.score} ⭐</Badge>    
-                </Group>
-                <p>This is the description of the movie.</p>
-                <Title order={6}>Gross: {oneMovieData.gross}</Title>
-            </div>
-        </Modal>
+                <div id="movieDetails">
+                    <Image src={null} height={320} alt={oneMovieData.title + " Poster"} withPlaceholder />
+                    <Title order={4}>Director: {oneMovieData.director}</Title>
+                    <Group position="left">
+                        <Badge color="dark">{oneMovieData.genre}</Badge>
+                        <Badge color="dark" variant="outline">{parseInt(oneMovieData.duration)} minutes</Badge>
+                        <Badge color="gray" variant="outline">Rated {oneMovieData.rating}</Badge>
+                        <Badge color="yellow" variant="dot">{oneMovieData.score} ⭐</Badge>
+                    </Group>
+                    <p>This is the description of the movie.</p>
+                    <Title order={6}>Gross: {oneMovieData.gross}</Title>
+                </div>
+            </Modal>
 
-        <div style={{ display: "flex" }}>
-            <nav style={{ padding: "2rem" }}>
-                <Grid gutter={80}>
-                    {cards}
-                </Grid>
-                <Pagination id="pagination" page={activePage} onChange={changePage} total={totalPagination} color="dark" sibilings={1} withEdges/>
-            </nav>
-        </div>
+            <div style={{ display: "flex" }}>
+                <nav style={{ padding: "2rem" }}>
+                    <Grid gutter={80}>
+                        {cards}
+                    </Grid>
+                    <Pagination id="pagination" page={activePage} onChange={changePage} total={totalPagination} color="dark" sibilings={1} withEdges />
+                </nav>
+            </div>
         </>
     );
 }
