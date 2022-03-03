@@ -15,8 +15,7 @@ router.get("/allMovies", async (req, res) => {
     try {
         res.json(allMovies);
         res.end();
-    }
-    catch (error) {
+    } catch (error) {
         console.error(error.message);
         res.sendStatus(404).end();
     }
@@ -30,8 +29,7 @@ router.get("/allMovies/page/:pageNumber", async (req, res) => {
     try {
         res.json(moviesPerPage);
         res.end();
-    }
-    catch (error) {
+    } catch (error) {
         console.error(error.message);
         res.sendStatus(404).end();
     }
@@ -41,14 +39,15 @@ router.get("/allMovies/page/:pageNumber", async (req, res) => {
 router.get("/oneMovie", async (req, res) => {
 
     const id = req.query.id;
-    const singleMovie = await Movies.find({"_id": new ObjectId(id)});
+    const singleMovie = await Movies.find({
+        "_id": new ObjectId(id)
+    });
 
 
     try {
         res.json(singleMovie);
         res.end();
-    }
-    catch (error) {
+    } catch (error) {
         console.error(error.message);
         res.sendStatus(404).end();
     }

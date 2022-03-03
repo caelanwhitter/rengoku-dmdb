@@ -1,5 +1,5 @@
 import { Outlet, Link } from "react-router-dom";
-import { Title, Modal, TextInput, Button, Image, Affix, Transition } from "@mantine/core";
+import { Title, Modal, Text, TextInput, Button, Affix, Transition } from "@mantine/core";
 import { MagnifyingGlassIcon, ArrowUpIcon } from "@radix-ui/react-icons";
 import { useWindowScroll } from '@mantine/hooks';
 import { useState } from 'react';
@@ -11,7 +11,7 @@ export default function App() {
   const [scroll, scrollTo] = useWindowScroll();
 
   return (
-    <div className="content-container">
+    <div>
       <Modal
         opened={opened}
         onClose={() => setOpened(false)}
@@ -29,10 +29,10 @@ export default function App() {
 
       <nav id="tabs">
         <div id="titleDiv">
-          <Title className="title">DMDB</Title>
-          <Title className="subtitle" order={5}>Dawson Movie Database</Title>
+          <a href="/home"><Title className="title">DMDB</Title>
+          <Title className="subtitle" order={5}>Dawson Movie Database</Title></a>
         </div>
-        <Link className="tabLink" to="/featured">Featured</Link>
+        <Link className="tabLink" to="/home">Home</Link>
         <Link className="tabLink" to="/movies">Movies</Link>
         <Link className="tabLink" to="/hiddenGems">Hidden Gems</Link>
         <Link className="tabLink" onClick={() => setOpened(true)} to={{}}> <MagnifyingGlassIcon/> Search</Link>{" | "}
@@ -45,14 +45,24 @@ export default function App() {
       <Outlet />
       
       <footer>
-        <div class="footSection">
-          <Image src="https://i.imgur.com/t9yVLZn.png"></Image>
+        <div className="footSection">
+          <div id="brandIcon">
+            <a href="/home"><Title className="title">DMDB</Title>
+            <Title className="subtitle" order={5}>Dawson Movie Database</Title></a>
+          </div>
           <p id="footContent">{"© Dawson Movie Solutions 2022, Apache License 2.0"}</p>
         </div>
 
-        <div class="footSection">
-
+        <div className="footSection">
+          <Title order={4}>About the project</Title>
+          <Text color="dark">Hello World!</Text>
         </div> 
+
+        <div className="footSection">
+          <Title order={4}>Feedback</Title>
+          <Text color="dark">Report a bug</Text>
+        </div>
+
       </footer>
 
       <Affix position={{ bottom: 20, right: 20 }}>
@@ -63,6 +73,7 @@ export default function App() {
                 style={transitionStyles}
                 onClick={() => scrollTo({ y: 0 })}
                 color="dark"
+                uppercase
               >
                 Back to top
               </Button>
