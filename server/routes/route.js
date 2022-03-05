@@ -27,7 +27,7 @@ router.get("/allMovies", async (req, res) => {
 
 router.get("/allMovies/page/:pageNumber", async (req, res) => {
     const pageNumber = req.params.pageNumber;
-    const elemsPerPage = 1;
+    const elemsPerPage = 4;
     const moviesPerPage = await Movies.find({}).skip(elemsPerPage * (pageNumber - 1)).limit(elemsPerPage);
 
     try {

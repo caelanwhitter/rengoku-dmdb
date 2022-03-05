@@ -11,19 +11,20 @@ import { useWindowScroll } from '@mantine/hooks';
  */
 export default function Movies() {
 
-    //Initializes variables and sets up "settters to variables"
-    const [movies, setMovies] = useState([{}]);
-    const [activePage, setPage] = useState(1);
+    //Initializes variables and sets up "setters to variables"
+    const DEFAULT_ACTIVE_PAGE = 1;
+    const [oneMovieData, setOneMovieData] = useState([{}]);
+    const [cards, setCards] = useState([]);
+    const [activePage, setPage] = useState(DEFAULT_ACTIVE_PAGE);
     const [totalPagination, setTotalPagination] = useState();
     const [opened, setOpened] = useState(false);
-    const [oneMovieData, setOneMovieData] = useState([{}]);
     const [, scrollTo] = useWindowScroll();
 
     /**
      * useEffect() runs following methods once. Similar to ComponentDidMount()
      */
     useEffect(() => {
-        fetchMoviesPerPage(activePage);
+        displayMoviesPerPage(activePage);
     }, []);
 
     function getDetails(movieId) {
@@ -35,13 +36,13 @@ export default function Movies() {
     }
 
     /**
-     * fetchMoviesPerPage() fetches list of movies following pagination endpoints and calculates totalPagination on first render
+     * displayMoviesPerPage() fetches list of movies following pagination endpoints and calculates totalPagination on first render
      * @param {String} pageNumber 
      */
-    async function fetchMoviesPerPage(pageNumber) {
+    async function displayMoviesPerPage(pageNumber) {
         let response = await fetch('/api/allMovies/page/' + pageNumber);
         let moviesPaginationJson = await response.json();
-        setMovies(moviesPaginationJson);
+        setCards(getCards(moviesPaginationJson));
 
         // Calls calculateTotalPagination() if totalPagination not initialized yet yet
         if (totalPagination === undefined) {
@@ -68,7 +69,7 @@ export default function Movies() {
     const changePage = (event) => {
 
         // Re-fetches the list of movies with proper page number
-        fetchMoviesPerPage(event);
+        displayMoviesPerPage(event);
 
         // Sets activePage to update styles of Pagination
         setPage(event);
@@ -96,28 +97,32 @@ export default function Movies() {
     //     </Grid.Col>
     // ));
 
-    const cards = movies.map((movie) => {
-        // Checks if movie description and poster are missing and checks if movie isn't an empty object
-        if ((!movie.description || !movie.poster) && Object.keys(movie).length !== 0) {
-            fetchMovieDataFromBackend(movie);
-        }
-        return (
-            <Grid.Col span={3}>
-                <Card onClick={() => { getDetails(movie._id); setOpened(true) }} style={{ cursor: "pointer" }} shadow="md">
-                    <Card.Section>
-                        <Image src={null} height={320} alt={movie.title + " Poster"} withPlaceholder />
-                    </Card.Section>
+    function getCards(moviesJson) {
 
-                    <Text weight={600}>{movie.title}</Text>
+        let cards = moviesJson.map((movie) => {
+            // Checks if movie description and poster are missing and checks if movie isn't an empty object
+            if ((!movie.description || !movie.poster) && Object.keys(movie).length !== 0) {
+                fetchMovieDataFromBackend(movie);
+            }
+            return (
+                <Grid.Col span={3}>
+                    <Card onClick={() => { getDetails(movie._id); setOpened(true) }} style={{ cursor: "pointer" }} shadow="md">
+                        <Card.Section>
+                            <Image src={null} height={320} alt={movie.title + " Poster"} withPlaceholder />
+                        </Card.Section>
 
-                    <Group position="apart">
-                        <Text size="sm">{movie.director}</Text>
-                        <Badge color="dark">{movie.releaseYear}</Badge>
-                    </Group>
-                </Card>
-            </Grid.Col>
-        );
-    })
+                        <Text weight={600}>{movie.title}</Text>
+
+                        <Group position="apart">
+                            <Text size="sm">{movie.director}</Text>
+                            <Badge color="dark">{movie.releaseYear}</Badge>
+                        </Group>
+                    </Card>
+                </Grid.Col>
+            );
+        });
+        return cards;
+    }
 
     async function fetchMovieDataFromBackend(movie) {
         try {
