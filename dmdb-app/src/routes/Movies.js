@@ -121,6 +121,7 @@ export default function Movies() {
                 </Grid.Col>
             );
         });
+        console.log(cards);
         return cards;
     }
 
@@ -130,7 +131,7 @@ export default function Movies() {
             let response = await fetch(movieUrl);
             if (response.ok) {
                 let movieJson = await response.json();
-                console.log(movieJson);
+                //console.log(movieJson);
             }
         }
         catch (e) {

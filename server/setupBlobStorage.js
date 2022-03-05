@@ -27,7 +27,7 @@ async function setupBlobContainer() {
     /* Upload blobs to a container */
 
     // Create a unique name for the blob
-    const blobName = 'rengoku.txt';
+    const blobName = 'rengokutest.txt';
 
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
