@@ -1,7 +1,6 @@
 /**
  * route.js holds all the possible routes of the router and sends back data
- * @author Daniel Lam
- * @author Caelan Whitter
+ * @author Daniel Lam, Caelan Whitter
  */
 
 const express = require("express");
@@ -36,14 +35,11 @@ router.get("/allMovies/page/:pageNumber", async (req, res) => {
         console.error(error.message);
         res.sendStatus(404).end();
     }
-})
-
+});
 
 router.get("/oneMovie", async (req, res) => {
-
     const id = req.query.id;
     const singleMovie = await Movies.find({ "_id": new ObjectId(id) });
-
 
     try {
         res.json(singleMovie);
@@ -53,19 +49,19 @@ router.get("/oneMovie", async (req, res) => {
         console.error(error.message);
         res.sendStatus(404).end();
     }
-})
+});
 
 router.get("/oneMovie/fetchMovieApi/:movieTitle", async (req, res) => {
     const title = req.params.movieTitle;
 
     try {
-        res.send(title);
+        res.json(title);
         res.end();
     }
     catch (error) {
         console.error(error.message);
         res.sendStatus(404).end();
     }
-})
+});
 
 module.exports = router;

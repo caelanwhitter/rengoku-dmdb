@@ -79,22 +79,58 @@ export default function Movies() {
     /**
      * rows returns a table body of the appropriate list of movies
      */
-    const cards = movies.map((element) => (
-        <Grid.Col span={3}>
-            <Card onClick={() => { getDetails(element._id); setOpened(true) }} style={{ cursor: "pointer" }} shadow="md">
-                <Card.Section>
-                    <Image src={null} height={320} alt={element.title + " Poster"} withPlaceholder />
-                </Card.Section>
+    // const cards = movies.map((movie) => (
+    //     <Grid.Col span={3}>
+    //         <Card onClick={() => { getDetails(movie._id); setOpened(true) }} style={{ cursor: "pointer" }} shadow="md">
+    //             <Card.Section>
+    //                 <Image src={null} height={320} alt={movie.title + " Poster"} withPlaceholder />
+    //             </Card.Section>
 
-                <Text weight={600}>{element.title}</Text>
+    //             <Text weight={600}>{movie.title}</Text>
 
-                <Group position="apart">
-                    <Text size="sm">{element.director}</Text>
-                    <Badge color="dark">{element.releaseYear}</Badge>
-                </Group>
-            </Card>
-        </Grid.Col>
-    ));
+    //             <Group position="apart">
+    //                 <Text size="sm">{movie.director}</Text>
+    //                 <Badge color="dark">{movie.releaseYear}</Badge>
+    //             </Group>
+    //         </Card>
+    //     </Grid.Col>
+    // ));
+
+    const cards = movies.map((movie) => {
+        if (!movie.description || !movie.poster) {
+            fetchMovieDataFromApi(movie);
+        }
+        return (
+            <Grid.Col span={3}>
+                <Card onClick={() => { getDetails(movie._id); setOpened(true) }} style={{ cursor: "pointer" }} shadow="md">
+                    <Card.Section>
+                        <Image src={null} height={320} alt={movie.title + " Poster"} withPlaceholder />
+                    </Card.Section>
+
+                    <Text weight={600}>{movie.title}</Text>
+
+                    <Group position="apart">
+                        <Text size="sm">{movie.director}</Text>
+                        <Badge color="dark">{movie.releaseYear}</Badge>
+                    </Group>
+                </Card>
+            </Grid.Col>
+        );
+    })
+
+    async function fetchMovieDataFromApi(movie) {
+        try {
+            let movieUrl = '/api/oneMovie/fetchMovieApi/' + movie.title;
+            let response = await fetch(movieUrl);
+            if (response.ok) {
+                let movieJson = await response.json();
+                console.log(movieJson);
+            }
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
 
     return (
         <>
