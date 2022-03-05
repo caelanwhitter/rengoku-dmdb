@@ -97,7 +97,8 @@ export default function Movies() {
     // ));
 
     const cards = movies.map((movie) => {
-        if (!movie.description || !movie.poster) {
+        // Checks if movie description and poster are missing and checks if movie isn't an empty object
+        if ((!movie.description || !movie.poster) && Object.keys(movie).length !== 0) {
             fetchMovieDataFromBackend(movie);
         }
         return (

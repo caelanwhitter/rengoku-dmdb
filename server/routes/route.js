@@ -7,6 +7,7 @@ const express = require("express");
 const router = express.Router();
 const Movies = require("../database/mongoose");
 const ObjectId = require("mongodb").ObjectId;
+const fetch = require("node-fetch");
 require('dotenv').config();
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
@@ -70,7 +71,21 @@ router.get("/oneMovie/fetchMovieApi/:movieTitle", async (req, res) => {
 async function fetchMovieDataFromApi(movieTitle) {
     let response = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${movieTitle}`);
     if (response.ok) {
-        return response.json();
+        let moviesJsonApi = await response.json();
+        let moviesApiResults = moviesJsonApi.results;
+        let movieData = {};
+
+        // Checks if movie results has at least one movie. If there is, update description and poster
+        if (moviesApiResults.length !== 0) {
+            let firstMovieJson = moviesApiResults[0];
+
+            movieData = {
+                title: firstMovieJson.original_title,
+                description: firstMovieJson.overview,
+                poster: firstMovieJson.poster_path,
+            }
+        }
+        return movieData;
     }
     throw new Error('TMDB Movie API failed!');
 }
