@@ -98,7 +98,7 @@ export default function Movies() {
 
     const cards = movies.map((movie) => {
         if (!movie.description || !movie.poster) {
-            fetchMovieDataFromApi(movie);
+            fetchMovieDataFromBackend(movie);
         }
         return (
             <Grid.Col span={3}>
@@ -118,7 +118,7 @@ export default function Movies() {
         );
     })
 
-    async function fetchMovieDataFromApi(movie) {
+    async function fetchMovieDataFromBackend(movie) {
         try {
             let movieUrl = '/api/oneMovie/fetchMovieApi/' + movie.title;
             let response = await fetch(movieUrl);
