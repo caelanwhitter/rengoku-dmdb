@@ -28,14 +28,6 @@ render(
           />
         </Route>
         <Route path="movies" element={<Movies />}>
-          <Route
-            index
-            element={
-              <main style={{ padding: "1rem" }}>
-                <p>Select a Movie</p>
-              </main>
-            }
-          />
         </Route>
         <Route path="hiddengems" element={<HiddenGems />} >
           <Route

@@ -10,7 +10,10 @@ html {
   text-align: center;
   font-size: 50px;
 }
-
+#searchButton {
+  align-content: right;
+  text-align: right;
+}
 #movieContainer {
   display: flex;
   justify-content: space-around;

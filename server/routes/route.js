@@ -9,11 +9,24 @@ const router = express.Router();
 const Movies = require("../database/mongoose");
 const ObjectId = require("mongodb").ObjectId;
 
-router.get("/allMovies", async (req, res) => {
-    const allMovies = await Movies.find({});
+// router.get("/allMovies", async (req, res) => {
+//     const allMovies = await Movies.find({});
 
+//     try {
+//         res.json(allMovies);
+//         res.end();
+//     }
+//     catch (error) {
+//         console.error(error.message);
+//         res.sendStatus(404).end();
+//     }
+// })
+router.get("/getSearch", async (req, res) => {
+    const keyword = req.query.title;
+    const findTitle = await Movies.find({
+        title: { $regex: `${keyword}`, $options: "i"}});
     try {
-        res.json(allMovies);
+        res.json(findTitle);
         res.end();
     }
     catch (error) {
@@ -21,11 +34,13 @@ router.get("/allMovies", async (req, res) => {
         res.sendStatus(404).end();
     }
 })
-
-router.get("/allMovies/page/:pageNumber", async (req, res) => {
+router.get("/getSearch/page/:pageNumber", async (req, res) => {
     const pageNumber = req.params.pageNumber;
+    const keyword = req.query.title;
     const elemsPerPage = 52;
-    const moviesPerPage = await Movies.find({}).skip(elemsPerPage * (pageNumber - 1)).limit(elemsPerPage);
+    const moviesPerPage = await Movies.find({
+        title: { $regex: `${keyword}`, $options: "i"}
+    }).skip(elemsPerPage * (pageNumber - 1)).limit(elemsPerPage);
 
     try {
         res.json(moviesPerPage);
@@ -36,6 +51,21 @@ router.get("/allMovies/page/:pageNumber", async (req, res) => {
         res.sendStatus(404).end();
     }
 })
+
+// router.get("/allMovies/page/:pageNumber", async (req, res) => {
+//     const pageNumber = req.params.pageNumber;
+//     const elemsPerPage = 52;
+//     const moviesPerPage = await Movies.find({}).skip(elemsPerPage * (pageNumber - 1)).limit(elemsPerPage);
+
+//     try {
+//         res.json(moviesPerPage);
+//         res.end();
+//     }
+//     catch (error) {
+//         console.error(error.message);
+//         res.sendStatus(404).end();
+//     }
+// })
 
 
 router.get("/oneMovie", async (req, res) => {

@@ -1,8 +1,10 @@
 import { Outlet, Link } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import Movies from './routes/Movies'
+import fetchMoviesPerPage from './routes/Movies'
 import { Title, Modal, TextInput, Button, Image, Affix, Transition } from "@mantine/core";
 import { MagnifyingGlassIcon, ArrowUpIcon } from "@radix-ui/react-icons";
 import { useWindowScroll } from '@mantine/hooks';
-import { useState } from 'react';
 import './App.css';
 
 //This function is the main application component. It holds all the tabs that will be used for the application.
@@ -12,20 +14,6 @@ export default function App() {
 
   return (
     <div className="content-container">
-      <Modal
-        opened={opened}
-        onClose={() => setOpened(false)}
-        hideCloseButton
-      >
-        <TextInput
-          placeholder="Search..."
-          variant="unstyled"
-          size="lg"
-          radius="md"
-          required
-        /> <br/>
-        <Button color="dark" type="submit">Go!</Button>
-      </Modal>
 
       <nav id="tabs">
         <div id="titleDiv">
@@ -34,16 +22,13 @@ export default function App() {
         </div>
         <Link className="tabLink" to="/featured">Featured</Link>
         <Link className="tabLink" to="/movies">Movies</Link>
-        <Link className="tabLink" to="/hiddenGems">Hidden Gems</Link>
-        <Link className="tabLink" onClick={() => setOpened(true)} to={{}}> <MagnifyingGlassIcon/> Search</Link>{" | "}
+        <Link className="tabLink" to="/hiddenGems">Hidden Gems</Link>{" | "}
         <Link className="tabLink" to="/register">Register</Link>
         <Link className="tabLink" to="/login">Login</Link>
-        <Link className="tabLink" to="/logout">Logout</Link> {/* {" · "} */}
-        {/* <Link className="tabLink" to="/profile">Profile</Link>{" · "}
-        <Link className="tabLink" to="/admin">Admin</Link> */}
+        <Link className="tabLink" to="/logout">Logout</Link>
       </nav>
       <Outlet />
-      
+
       <footer>
         <div class="footSection">
           <Image src="https://i.imgur.com/t9yVLZn.png"></Image>
