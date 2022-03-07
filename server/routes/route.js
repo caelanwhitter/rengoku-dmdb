@@ -72,10 +72,18 @@ router.get("/oneMovie/reviews", async (req, res) => {
 
 
 router.post("/reviews", async (req, res) => {
-  // const mov = { movieId: req.body.username };
+  const body = await req.body;
   // // eslint-disable-next-line max-len
-  // await Reviews.create({username: username, movieId: movieId, content: content, rating: rating, datePosted: datePosted, subtitle: subtitle});
-  //console.log(mov);
+  // eslint-disable-next-line max-len
+  const doc = new Reviews({username: body.username, movieId: body.movieId, content: body.content, rating: body.rating, datePosted: body.datePosted, subtitle: body.subtitle});
+  await doc.save();
+  console.log(body);
+  res.status(201).json({
+    message: "Post worked!"
+  });
+})
+
+router.delete("/review/delete", async (req, res) => {
   const body = await req.body;
   console.log(body);
   res.status(201).json({

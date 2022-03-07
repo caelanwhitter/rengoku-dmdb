@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react'
+import { Link } from "react-router-dom";
+
 import { useParams } from "react-router-dom";
-import { Table, Spoiler, Textarea, TextInput, Button, Text, Box, Avatar, NumberInput } from '@mantine/core';
+import { Table, Spoiler, Textarea, TextInput, Button, Text, Box, Avatar, NumberInput , Group, Badge} from '@mantine/core';
+import { MagnifyingGlassIcon, TrashIcon } from "@radix-ui/react-icons";
+
+
 
 
 export default function Reviews() {
@@ -33,21 +38,27 @@ export default function Reviews() {
         setBackendData(moviesPaginationJson);
   
   }
+
+
+  function refreshPage(){
+    window.location.reload();
+  } 
+  
+  async function deleteReview() {
+    
+    //console.log(element._id);
+    /*await fetch('/api/review/delete', { 
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id: ${element._id},
+      })
+    })*/
+  }
   
   async function insertReview() {
-
-    // var xhr = new XMLHttpRequest();
-    // xhr.open("POST", "/api/reviews", true);
-    // xhr.setRequestHeader("Content-Type", "application/json");
-    // xhr.send(JSON.stringify({
-    //   username: "pop",
-    //   movieId: params.movieId,
-    //   content: content,
-    //   rating: rating,
-    //   datePosted: date,
-    //   subtitle: headline
-    // }));
-
     console.log("here");
     await fetch('/api/reviews', { 
       method: 'POST',
@@ -55,37 +66,72 @@ export default function Reviews() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        username: "",
+        username: "test",
         movieId: params.movieId,
         content: content,
         rating: rating,
         datePosted: date,
         subtitle: headline
       })
-     })
+    })
+    
+    
+    refreshPage();
   }
 
-    const rows = backendData.map((element) => (
-      <tr>
-        <td><Avatar radius="xl"/></td>
-        <td>{element.subtitle}</td>
-        <Spoiler maxHeight={100} showLabel="Show more" hideLabel="Hide"><td>{element.content}</td></Spoiler>
-        <td>{element.rating}</td>
-        <td>{element.username}</td>
-        <td>{element.datePosted}</td>
-      </tr>
+    const reviews = backendData.map((element) => (
+      
+      
+       // <tr>
+      //   <td><Avatar radius="xl" /></td>
+      //   <td>{element.subtitle}</td>
+      //   <Spoiler maxHeight={100} showLabel="Show more" hideLabel="Hide"><td>{element.content}</td></Spoiler>
+      //   <td>{element.rating}</td>
+      //   <td>{element.username}</td>
+      //   <td>{element.datePosted}</td>
+      //   <td><Link className="tabLink" id="searchButton" onClick={() => deleteReview()} to={{}}> <TrashIcon /></Link></td>
+      // </tr>
+      <>      <Box sx={(theme) => ({
+        textAlign: 'center',
+        padding: theme.spacing.sm,
+        margin: theme.spacing.xl,
+          border: 'solid 1px #000',
+      })}>
+          <Text weight={600}>{element.subtitle}</Text>
+            <Badge color="dark">{element.rating}</Badge>
+        
+        <Spoiler maxHeight={100} showLabel="Show more" hideLabel="Hide">
+          {element.content} </Spoiler>
+        <Group spacing="xl">
+        <Link className="trashLink" id={element._id}  onClick={(event) => console.log(this.parentNode)} to={{}}> <TrashIcon /></Link>
+        <Group position="right" >
+          <Text>{element.username}</Text>
+          <Text>/</Text>
+            <Text>{element.datePosted}</Text>
+        </Group>
+        </Group>
+
+        </Box></>
     ));
   
 
     return (
     
-      <><Box sx={(theme) => ({
+      <>
+              <div style={{ display: "flex" }}>
+          
+          
+          <div style={{ width: "50%" }}>{reviews}</div>
+    
+        
+        
+        <Box sx={(theme) => ({
         textAlign: 'center',
         padding: theme.spacing.sm,
         margin: theme.spacing.xl,
-        marginLeft: 400,
-        marginRight: 400,
-        border: 'solid 1px #000'
+          width: "50%",
+            border: 'solid 1px #000',
+            height: "50%",
       })}>
         <Text underline align="center" size="xl">Your Rating and Review</Text>
         <TextInput value={headline} onChange={(event) => setHeadline(event.currentTarget.value)} sx={(theme) => ({
@@ -117,23 +163,13 @@ export default function Reviews() {
         border: 'solid 1px #000'
       })} variant="gradient" gradient={{ from: 'orange', to: 'red', deg: 105 }}>Submit Review</Button>
       </Box>
+        </div>
+        
+
 
         
 
-        <Table highlightOnHover>
-          <thead>
-            <tr>
-              
-              <th>User</th>
-              <th>Movie Subtitle</th>
-              <th>Movie content</th>
-              <th>Movie rating</th>
-              <th>username</th>
-              <th>date</th>
-            </tr>
-          </thead>
-          <tbody>{rows}</tbody>
-        </Table>
+ 
 
       </>
 
