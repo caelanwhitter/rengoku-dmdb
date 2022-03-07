@@ -25,6 +25,7 @@ export default function Movies() {
      */
     useEffect(() => {
         displayMoviesPerPage(activePage);
+
     }, []);
 
     function getDetails(movieId) {
