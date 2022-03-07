@@ -74,7 +74,7 @@ export default function Movies() {
         console.log(totalMoviePages);
         setTotalPagination(totalMoviePages);
     }
-    async function buttonClick(event) {
+    async function clickOnGo(event) {
         setTotalPagination(undefined);
         fetchMoviesPerPage(event);
         setSearchOpened(false);
@@ -117,8 +117,9 @@ export default function Movies() {
 
     return (    
         <>
+        
         <nav id="tabs">
-        <Link className="tabLink" onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>{" | "}
+        <Link className="tabLink" id="searchButton"  onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
         </nav>
         <Modal
         opened={searchopened}
@@ -135,7 +136,7 @@ export default function Movies() {
           required
         /> <br />
         <Button
-          onClick={buttonClick}
+          onClick={clickOnGo}
           color="dark"
           type="submit">
           Go!
