@@ -131,7 +131,7 @@ export default function Movies() {
             let response = await fetch(movieUrl);
             if (response.ok) {
                 let movieJson = await response.json();
-                //console.log(movieJson);
+                console.log(movieJson.title + ": " + movieJson.poster);
             }
         }
         catch (e) {

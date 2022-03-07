@@ -8,9 +8,16 @@ const router = express.Router();
 const Movies = require("../database/mongoose");
 const ObjectId = require("mongodb").ObjectId;
 const fetch = require("node-fetch");
+const { BlobServiceClient } = require('@azure/storage-blob');
+const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
+const TMDB_API_KEY = process.env.TMDB_API_KEY;
+const CONTAINER_NAME = "rengokublobs";
 require('dotenv').config();
 
-const TMDB_API_KEY = process.env.TMDB_API_KEY;
+console.log("Connecting to Azure Blob Storage...");
+const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
+const containerClient = blobServiceClient.getContainerClient(CONTAINER_NAME);
+console.log("Connected to container " + CONTAINER_NAME + "!\n");
 
 router.get("/allMovies", async (req, res) => {
     const allMovies = await Movies.find({});
@@ -84,10 +91,43 @@ async function fetchMovieDataFromApi(movieTitle) {
                 description: firstMovieJson.overview,
                 poster: firstMovieJson.poster_path,
             }
+            fetchMoviePoster(movieData.title, movieData.poster);
         }
         return movieData;
     }
     throw new Error('TMDB Movie API failed!');
+}
+
+async function fetchMoviePoster(movieTitle, moviePosterPath) {
+    let moviePosterUrl = `http://image.tmdb.org/t/p/w500${moviePosterPath}`;
+    let response = await fetch(moviePosterUrl);
+    if (response.ok) {
+
+        const image = await response.blob();
+
+        console.log(image);
+
+        // Create a unique name for the blob
+        const posterBlobName = 'rengokuBlob-' + movieTitle + ".jpg";
+
+        const blockBlobClient = containerClient.getBlockBlobClient(posterBlobName);
+
+        console.log('\nUploading to Azure storage as blob:\n\t', posterBlobName);
+
+        // set mimetype as determined from browser with file upload control
+        //const options = { blobHTTPHeaders: { blobContentType: file.type } };
+
+        // Upload data to blob
+        await blockBlobClient.uploadData(image);
+    }
+}
+
+async function connectToBlobStorageContainer() {
+    console.log("Connecting to Azure Blob Storage...");
+    const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
+    const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
+    containerClient = blobServiceClient.getContainerClient(CONTAINER_NAME);
+    console.log("Connected to container " + CONTAINER_NAME + "!\n");
 }
 
 module.exports = router;
