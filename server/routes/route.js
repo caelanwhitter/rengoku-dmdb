@@ -10,6 +10,9 @@ const Mongoose = require("../database/mongoose");
 const Movies = Mongoose.Movie;
 const Reviews = Mongoose.Review;
 const ObjectId = require("mongodb").ObjectId;
+const bp = require("body-parser");
+router.use(bp.json());
+router.use(bp.urlencoded({ extended: true }));
 
 router.get("/allMovies", async (req, res) => {
   const allMovies = await Movies.find({});
@@ -65,6 +68,19 @@ router.get("/oneMovie/reviews", async (req, res) => {
     console.error(error.message);
     res.sendStatus(404).end();
   }
+})
+
+
+router.post("/reviews", async (req, res) => {
+  // const mov = { movieId: req.body.username };
+  // // eslint-disable-next-line max-len
+  // await Reviews.create({username: username, movieId: movieId, content: content, rating: rating, datePosted: datePosted, subtitle: subtitle});
+  //console.log(mov);
+  const body = await req.body;
+  console.log(body);
+  res.status(201).json({
+    message: "Post worked!"
+  });
 })
 
 module.exports = router;

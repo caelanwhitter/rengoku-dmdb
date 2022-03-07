@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from "react-router-dom";
-import { Table, Spoiler, Textarea,TextInput, Button, Text, Box, Avatar, NumberInput} from '@mantine/core';
+import { Table, Spoiler, Textarea, TextInput, Button, Text, Box, Avatar, NumberInput } from '@mantine/core';
 
 
-//This function is used to create a navigation page from the Movies component.
-//It will hold the details of the movies for now.
 export default function Reviews() {
   let params = useParams();
   const [backendData, setBackendData] = useState([{}]);
   const [headline, setHeadline] = useState("");
   const [content, setContent] = useState("");
   const [rating, setRating] = useState(3);
+  const date = new Date().toLocaleDateString('en-us', {year:"numeric", month:"short", day:"numeric"}) 
+
   
 
 
@@ -19,19 +19,51 @@ export default function Reviews() {
      * useEffect() runs following methods once. Similar to ComponentDidMount()
      */
    useEffect(() => {
-    fetchReviews();});
+    fetchReviews();}, []);
 
   
       /**
      * fetchReviews() fetches list of reviews for specific movie
      * 
      */
-       async function fetchReviews() {
+  async function fetchReviews() {
+         console.log("fetch")
         let response = await fetch('/api/oneMovie/reviews?id='+params.movieId);
         let moviesPaginationJson = await response.json();
         setBackendData(moviesPaginationJson);
   
-    }
+  }
+  
+  async function insertReview() {
+
+    // var xhr = new XMLHttpRequest();
+    // xhr.open("POST", "/api/reviews", true);
+    // xhr.setRequestHeader("Content-Type", "application/json");
+    // xhr.send(JSON.stringify({
+    //   username: "pop",
+    //   movieId: params.movieId,
+    //   content: content,
+    //   rating: rating,
+    //   datePosted: date,
+    //   subtitle: headline
+    // }));
+
+    console.log("here");
+    await fetch('/api/reviews', { 
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: "",
+        movieId: params.movieId,
+        content: content,
+        rating: rating,
+        datePosted: date,
+        subtitle: headline
+      })
+     })
+  }
 
     const rows = backendData.map((element) => (
       <tr>
@@ -78,7 +110,7 @@ export default function Reviews() {
           max={5}
           min={0}
         />
-        <Button onClick={(event)=> console.log(headline+","+content+","+rating)} sx={(theme) => ({
+        <Button onClick={(event)=> insertReview()} sx={(theme) => ({
         textAlign: 'center',
         padding: theme.spacing.sm,
         marginTop: theme.radius.md,
@@ -91,6 +123,7 @@ export default function Reviews() {
         <Table highlightOnHover>
           <thead>
             <tr>
+              
               <th>User</th>
               <th>Movie Subtitle</th>
               <th>Movie content</th>
