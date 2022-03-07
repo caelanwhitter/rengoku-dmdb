@@ -51,21 +51,21 @@ export default function App() {
             <Title className="subtitle" order={5}>Dawson Movie Database</Title></a>
           </div>
           <Space h="sm"/>
-          <Text color="gray">Browse thousands of popular movies and their details<br/> or submit your own Hidden Gem</Text>
+          <Text color="gray">Browse thousands of popular movies and their details<Space/> or submit your own Hidden Gem</Text>
 
           <Space h="md"/>
           <Divider label="Built by" labelPosition="center"/>
-          <Text color="gray" id="footContent">{"© Dawson Movie Solutions 2022, Apache License 2.0"}</Text>
+          <Text color="gray" id="footContent">{"© Dawson Movie Solutions 2022"}</Text>
         </div>
 
         <div className="footSection">
           <Title order={4}>About the project</Title>
-          <Text color="dark">About Us</Text>
+          <Text color="gray">About Us</Text>
         </div> 
 
         <div className="footSection">
           <Title order={4}>Feedback</Title>
-          <Text color="dark">Report a bug</Text>
+          <Text color="gray">Report a bug</Text>
         </div>
 
       </footer>

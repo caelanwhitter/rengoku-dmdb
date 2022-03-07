@@ -1,9 +1,14 @@
-html {
+body {
   font-family: Montserrat, Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
-a {
+a, #gitLabLink {
   text-decoration: none;
+  color: black;
+}
+
+#gitLabLink:hover {
+  color: orange;
 }
 
 #brandIcon {
@@ -20,6 +25,11 @@ a {
   font-style: italic;
   text-align: center;
   font-size: 50px;
+}
+
+#mainPageContainer {
+  padding-top: 50px;
+  padding-bottom: 50px;
 }
 
 #movieContainer {
@@ -66,13 +76,18 @@ a {
   color: white;
 }
 
+.intro { 
+  font-size: 60px;
+}
+
 footer {
   background-color: #f0f3f7;
   padding-top: 20px;
+  padding-bottom: 10px;
+  position: relative;
   width: 100%;
   left: 0;
   bottom: 0;
-  position: fixed;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
