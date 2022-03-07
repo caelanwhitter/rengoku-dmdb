@@ -1,8 +1,9 @@
-import { Grid, Text, Badge, Title, Modal, Group, Card, Image, Pagination, TextInput,Button } from '@mantine/core';
+import { Grid, Text, Badge, Title, Modal, Group, Card, Image, Pagination, TextInput, Button } from '@mantine/core';
 import React, {useEffect, useState} from 'react';
 import { Outlet, Link } from "react-router-dom";
 import '../App.css';
-
+import { MagnifyingGlassIcon, ArrowUpIcon } from "@radix-ui/react-icons";
+import { useWindowScroll } from '@mantine/hooks';
 
 /**
  * Movies() is a component that fetches the list of Movies from the DB and displays it properly using pagination
@@ -15,9 +16,13 @@ export default function Movies() {
     const [activePage, setPage] = useState(1);
     const [totalPagination, setTotalPagination] = useState();
     const [opened, setOpened] = useState(false);
+
     const [searchopened, setSearchOpened] = useState(false);
-    const [backendData, setBackendData] = useState([{}])
     const [value, setValue] = useState('');
+
+    const [oneMovieData, setOneMovieData] = useState([{}]);
+    const [, scrollTo] = useWindowScroll();
+
 
     /**
      * useEffect() runs following methods once. Similar to ComponentDidMount()
@@ -39,7 +44,7 @@ export default function Movies() {
         await fetch("/api/oneMovie?id=" + movieId).then(
             response => response.json())
             .then(
-                data => {setBackendData(data[0])}
+                data => {setOneMovieData(data[0])}
             )
     }
 
@@ -86,6 +91,8 @@ export default function Movies() {
 
         // Sets activePage to update styles of Pagination
         setPage(event);
+
+        scrollTo({ y: 0 });
     }
 
     /**
@@ -95,7 +102,7 @@ export default function Movies() {
         <Grid.Col span={3}>
             <Card onClick={() => { getDetails(element._id); setOpened(true)}} style={{cursor: "pointer"}} shadow="md">
                 <Card.Section>
-                    <Image src="https://www.theyearinpictures.co.uk/images//image-placeholder.png" height={320} alt={element.title + " Poster"} />
+                    <Image src={null} height={320} alt={element.title + " Poster"} withPlaceholder/>
                 </Card.Section>
 
                 <Text weight={600}>{element.title}</Text>
@@ -111,7 +118,7 @@ export default function Movies() {
     return (    
         <>
         <nav id="tabs">
-        <Link className="tabLink" onClick={() => setSearchOpened(true)} to={{}}>Search</Link>{" | "}
+        <Link className="tabLink" onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>{" | "}
         </nav>
         <Modal
         opened={searchopened}
@@ -137,20 +144,22 @@ export default function Movies() {
         <Modal
             opened={opened}
             onClose={() => setOpened(false)}
-            title={<Title>{backendData.title}</Title>}
+            title={<Title>{oneMovieData.title}</Title>}
             size="xl"
+            overflow="inside"
+            centered
             >
             <div id="movieDetails">
-                <Image src="https://www.theyearinpictures.co.uk/images//image-placeholder.png" height={320} alt={backendData.title + " Poster"} />
-                <Title order={4}>Director: {backendData.director}</Title>
+                <Image src={null} height={320} alt={oneMovieData.title + " Poster"} withPlaceholder/>
+                <Title order={4}>Director: {oneMovieData.director}</Title>
                 <Group position="left">
-                    <Badge color="dark">{backendData.genre}</Badge>
-                    <Badge color="dark" variant="outline">{parseInt(backendData.duration)} minutes</Badge>
-                    <Badge color="gray" variant="outline">Rated {backendData.rating}</Badge> 
-                    <Badge color="yellow" variant="dot">{backendData.score} ⭐</Badge>    
+                    <Badge color="dark">{oneMovieData.genre}</Badge>
+                    <Badge color="dark" variant="outline">{parseInt(oneMovieData.duration)} minutes</Badge>
+                    <Badge color="gray" variant="outline">Rated {oneMovieData.rating}</Badge> 
+                    <Badge color="yellow" variant="dot">{oneMovieData.score} ⭐</Badge>    
                 </Group>
                 <p>This is the description of the movie.</p>
-                <Title order={6}>Gross: {backendData.gross}</Title>
+                <Title order={6}>Gross: {oneMovieData.gross}</Title>
             </div>
         </Modal>
         
