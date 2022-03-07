@@ -1,5 +1,5 @@
 import { Outlet, Link } from "react-router-dom";
-import { Title, Modal, Text, TextInput, Button, Affix, Transition } from "@mantine/core";
+import { Title, Modal, Text, TextInput, Button, Affix, Divider, Transition, Space } from "@mantine/core";
 import { MagnifyingGlassIcon, ArrowUpIcon } from "@radix-ui/react-icons";
 import { useWindowScroll } from '@mantine/hooks';
 import { useState } from 'react';
@@ -50,12 +50,17 @@ export default function App() {
             <a href="/home"><Title className="title">DMDB</Title>
             <Title className="subtitle" order={5}>Dawson Movie Database</Title></a>
           </div>
-          <p id="footContent">{"© Dawson Movie Solutions 2022, Apache License 2.0"}</p>
+          <Space h="sm"/>
+          <Text color="gray">Browse thousands of popular movies and their details<br/> or submit your own Hidden Gem</Text>
+
+          <Space h="md"/>
+          <Divider label="Built by" labelPosition="center"/>
+          <Text color="gray" id="footContent">{"© Dawson Movie Solutions 2022, Apache License 2.0"}</Text>
         </div>
 
         <div className="footSection">
           <Title order={4}>About the project</Title>
-          <Text color="dark">Hello World!</Text>
+          <Text color="dark">About Us</Text>
         </div> 
 
         <div className="footSection">
