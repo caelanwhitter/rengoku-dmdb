@@ -26,14 +26,14 @@ export default function Movies() {
         fetchMoviesPerPage(activePage);
     }, []);
 
-    async function fetchSearch(){
+    // async function fetchSearch(){
    
-        let response = await fetch("/api/getSearch?title="+value)
-        let movieSearched = await response.json();
-        setMovies(movieSearched);
-        setSearchOpened(false);
+    //     let response = await fetch("/api/getSearch?title="+value)
+    //     let movieSearched = await response.json();
+    //     setMovies(movieSearched);
+    //     setSearchOpened(false);
           
-    }
+    // }
 
     async function getDetails(movieId) {
         await fetch("/api/oneMovie?id=" + movieId).then(
@@ -48,13 +48,13 @@ export default function Movies() {
      * @param {String} pageNumber 
      */
     async function fetchMoviesPerPage(pageNumber) {
-        let response = await fetch('/api/allMovies/page/' + pageNumber);
+        let response = await fetch('/api/getSearch/page/'+pageNumber+'?title='+value);
         let moviesPaginationJson = await response.json();
         setMovies(moviesPaginationJson);
 
         // Calls calculateTotalPagination() if totalPagination not initialized yet yet
-        if (totalPagination === undefined) {
-            await calculateTotalPagination(moviesPaginationJson);
+        if(totalPagination === undefined) {
+        await calculateTotalPagination(moviesPaginationJson);
         }
     }
 
@@ -63,11 +63,16 @@ export default function Movies() {
      * @param {JSON} moviesPaginationJson 
      */
     async function calculateTotalPagination(moviesPaginationJson) {
-        let response = await fetch('/api/allMovies');
+        let response = await fetch('/api/getSearch?title='+value);
         let allMoviesJson = await response.json();
         const totalMoviePages = Math.ceil(allMoviesJson.length/moviesPaginationJson.length);
-
+        console.log(totalMoviePages);
         setTotalPagination(totalMoviePages);
+    }
+    async function buttonClick(event) {
+        setTotalPagination(undefined);
+        fetchMoviesPerPage(event);
+        setSearchOpened(false);
     }
 
     /**
@@ -123,9 +128,7 @@ export default function Movies() {
           required
         /> <br />
         <Button
-          onClick={fetchSearch}
-          component={Link}
-          to='/search'
+          onClick={buttonClick}
           color="dark"
           type="submit">
           Go!
