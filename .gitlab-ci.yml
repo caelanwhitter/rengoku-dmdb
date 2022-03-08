@@ -23,7 +23,6 @@ build:
       - server/node_modules/
       - dmdb-app/node_modules/
   artifacts:
-    reports: sast
     expire_in: 1 days
     when: on_success
     paths:
