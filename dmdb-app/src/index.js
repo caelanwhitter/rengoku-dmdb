@@ -6,7 +6,6 @@ import {
 } from "react-router-dom";
 import App from "./App";
 import Featured from "./routes/Featured";
-import Movie from "./routes/movie";
 import Movies from "./routes/Movies";
 import HiddenGems from "./routes/HiddenGems";
 import Profile from "./routes/Profile";
@@ -39,8 +38,8 @@ render(
               </main>
             }
           />
-          <Route path=":movieId" element={<Movie />}/>
-          <Route path=":movieGross" element={<Movie />} />
+          <Route path=":movieId" element={<Movies />}/>
+          <Route path=":movieGross" element={<Movies />} />
         </Route>
 
         <Route path="movies/:movieId/reviews" element={<Reviews />}/>
