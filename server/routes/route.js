@@ -151,8 +151,14 @@ async function uploadMoviePoster(movieTitle, moviePosterPath) {
     }
 }
 
+/**
+ * updateMovieDataToDB() find a movie by its ID, updates its description and poster
+ * @param {*} movieId 
+ * @param {*} movieDescription 
+ * @param {*} movieBlobUrl 
+ */
 async function updateMovieDataToDB(movieId, movieDescription, movieBlobUrl) {
-    let fieldsToUpdate = { description: movieDescription, poster: movieBlobUrl}
+    let fieldsToUpdate = { description: movieDescription, poster: movieBlobUrl }
 
     await Movies.findByIdAndUpdate(movieId, fieldsToUpdate)
 }
@@ -161,13 +167,18 @@ async function updateMovieDataToDB(movieId, movieDescription, movieBlobUrl) {
  * getOneMovieById() takes an id and Mongoose returns the movie with corresponding id
  * TO-DO: replace with findById(id)
  * @param {*} id 
- * @returns 
+ * @returns singleMovie object
  */
 async function getOneMovieById(id) {
     const singleMovie = await Movies.find({ "_id": new ObjectId(id) });
     return singleMovie;
 }
 
+/**
+ * getMovieBlobUrl() searches for the blob and returns the Azure URL for it
+ * @param {*} movieTitle 
+ * @returns blockBlobClient.url
+ */
 async function getMovieBlobUrl(movieTitle) {
     const posterBlobName = 'rengokuBlob-' + movieTitle + ".jpg";
     const blockBlobClient = containerClient.getBlockBlobClient(posterBlobName);
