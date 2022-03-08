@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { useParams } from "react-router-dom";
 import {Spoiler, Textarea, TextInput, Button, Text, Box, Avatar, NumberInput , Group, Badge} from '@mantine/core';
-import { MagnifyingGlassIcon, TrashIcon } from "@radix-ui/react-icons";
+import { TrashIcon } from "@radix-ui/react-icons";
 
 
 
@@ -54,58 +54,56 @@ export default function Reviews() {
       body: JSON.stringify({
         id: id,
       })
-    })
+    }).then(refreshPage())
 
-    refreshPage();
+    
   }
   
   async function insertReview() {
-    await fetch('/api/reviews', { 
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        username: "test",
-        movieId: params.movieId,
-        content: content,
-        rating: rating,
-        datePosted: date,
-        subtitle: headline
-      })
-    })
+
+  
+
+      await fetch('/api/reviews', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: "unknown",
+          movieId: params.movieId,
+          content: content,
+          rating: rating,
+          datePosted: date,
+          subtitle: headline
+        })
+      }).then(refreshPage())
     
     
   }
 
-    const reviews = backendData.map((element) => (
+ 
+
+  const reviews = backendData.map((element) => (
+    
+    <>
       
-      
-       // <tr>
-      //   <td><Avatar radius="xl" /></td>
-      //   <td>{element.subtitle}</td>
-      //   <Spoiler maxHeight={100} showLabel="Show more" hideLabel="Hide"><td>{element.content}</td></Spoiler>
-      //   <td>{element.rating}</td>
-      //   <td>{element.username}</td>
-      //   <td>{element.datePosted}</td>
-      //   <td><Link className="tabLink" id="searchButton" onClick={() => deleteReview()} to={{}}> <TrashIcon /></Link></td>
-      // </tr>
-      <>      <Box sx={(theme) => ({
+      <Box sx={(theme) => ({
         textAlign: 'center',
         padding: theme.spacing.sm,
         margin: theme.spacing.xl,
           border: 'solid 1px #000',
       })}>
-          <Text weight={600}>{element.subtitle}</Text>
-            <Badge color="dark">{element.rating}</Badge>
+          <Text underline weight={600}>{element.subtitle}</Text>
+            <Badge size="xl" color="gray" >{element.rating}⭐</Badge>
         
         <Spoiler maxHeight={100} showLabel="Show more" hideLabel="Hide">
           {element.content} </Spoiler>
         <Group spacing="xl">
-        <Link className="trashLink" id={element._id}  onClick={(event) => {deleteReview(event.target.id);refreshPage();}} to={{}}> <TrashIcon id={element._id} /></Link>
-        <Group position="right" >
+        <Link className="trashLink" id={element._id}  onClick={(event) => {deleteReview(event.target.id);}} to={{}}> <TrashIcon size="xl" id={element._id} /></Link>
+          <Group position="right" >
+            <Avatar/>
           <Text>{element.username}</Text>
-          <Text>/</Text>
+          <Text>|</Text>
             <Text>{element.datePosted}</Text>
         </Group>
         </Group>
@@ -149,19 +147,29 @@ export default function Reviews() {
       })}  textAlign="center" autosize radius="lg" placeholder="Write your review here" label="Your Review" required />
     
   
-        <NumberInput value={rating} onChange={(val) => setRating(val)}
+            <NumberInput value={rating} onChange={(val) => setRating(val)}
           label="Star Rating"
           placeholder="3"
           max={5}
           min={0}
         />
-        <Button onClick={()=> {insertReview();refreshPage();} } sx={(theme) => ({
+            <Button onClick={() => {
+              if (content=== "" || headline=== "") {
+                document.getElementById("visible").style.visibility = "visible";
+              } else {
+            
+                insertReview();
+            
+              }
+            }} sx={(theme) => ({
         textAlign: 'center',
         padding: theme.spacing.sm,
         marginTop: theme.radius.md,
         border: 'solid 1px #000'
       })} variant="gradient" gradient={{ from: 'orange', to: 'red', deg: 105 }}>Submit Review</Button>
-      </Box>
+                    <h4 id="visible" style={{ color: "red", visibility: "hidden" }}>Please Fill Out Every Field</h4>
+
+          </Box>
         </div>
         
 

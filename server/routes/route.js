@@ -114,7 +114,6 @@ router.post("/reviews", async (req, res) => {
 
 router.delete("/review/delete", async (req, res) => {
   const body = await req.body;
-  console.log(ObjectId(body.id));
   Reviews.findByIdAndDelete(body.id, function (err) {
     if(err) {
       console.error(err);
