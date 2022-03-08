@@ -109,7 +109,7 @@ export default function Movies() {
                 <Grid.Col span={3}>
                     <Card onClick={() => { getDetails(movie._id); setOpened(true) }} style={{ cursor: "pointer" }} shadow="md">
                         <Card.Section>
-                            <Image src={null} height={320} alt={movie.title + " Poster"} withPlaceholder />
+                            <Image src={movie.poster} height={320} alt={movie.title + " Poster"} withPlaceholder />
                         </Card.Section>
 
                         <Text weight={600}>{movie.title}</Text>
@@ -128,7 +128,7 @@ export default function Movies() {
 
     async function fetchMovieDataFromBackend(movie) {
         try {
-            let movieUrl = '/api/oneMovie/fetchMovieApi/' + movie.title;
+            let movieUrl = '/api/oneMovie/fetchMovieApi/' + movie._id;
             let response = await fetch(movieUrl);
             if (response.ok) {
                 let movieJson = await response.json();
@@ -151,7 +151,7 @@ export default function Movies() {
                 centered
             >
                 <div id="movieDetails">
-                    <Image src={null} height={320} alt={oneMovieData.title + " Poster"} withPlaceholder />
+                    <Image src={oneMovieData.poster} height={320} alt={oneMovieData.title + " Poster"} withPlaceholder />
                     <Title order={4}>Director: {oneMovieData.director}</Title>
                     <Group position="left">
                         <Badge color="dark">{oneMovieData.genre}</Badge>
@@ -159,7 +159,7 @@ export default function Movies() {
                         <Badge color="gray" variant="outline">Rated {oneMovieData.rating}</Badge>
                         <Badge color="yellow" variant="dot">{oneMovieData.score} ⭐</Badge>
                     </Group>
-                    <p>This is the description of the movie.</p>
+                    <p>{oneMovieData.description}</p>
                     <Title order={6}>Gross: {oneMovieData.gross}</Title>
                 </div>
             </Modal>
