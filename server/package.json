@@ -5,7 +5,6 @@
     "dotenv": "^16.0.0",
     "eslint-plugin-security": "^1.4.0",
     "express": "^4.17.3",
-    "into-stream": "^3.1.0",
     "mongodb": "^4.4.0",
     "mongoose": "^6.2.2",
     "node-fetch": "^2.6.7"
