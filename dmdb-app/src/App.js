@@ -1,8 +1,6 @@
 import { Outlet, Link } from "react-router-dom";
-import { Title, Modal, Text, TextInput, Button, Affix, Divider, Transition, Space } from "@mantine/core";
-import Movies from './routes/Movies'
-import fetchMoviesPerPage from './routes/Movies';
-import { MagnifyingGlassIcon, ArrowUpIcon } from "@radix-ui/react-icons";
+import { Title, Text, Button, Affix, Divider, Transition, Space } from "@mantine/core";
+import { ArrowUpIcon } from "@radix-ui/react-icons";
 import { useWindowScroll } from '@mantine/hooks';
 import './App.css';
 
@@ -12,7 +10,7 @@ export default function App() {
 
   return (
     <div className="content-container">
-      <nav id="tabs">
+      <nav className="tabs">
         <div id="titleDiv">
           <a href="/home"><Title className="title">DMDB</Title>
           <Title className="subtitle" order={5}>Dawson Movie Database</Title></a>
@@ -49,11 +47,10 @@ export default function App() {
           <Title order={4}>Feedback</Title>
           <Text color="gray">Report a bug</Text>
         </div>
-
       </footer>
 
       <Affix position={{ bottom: 20, right: 20 }}>
-        <Transition transition="slide-up" mounted={scroll.y > 0}>
+        <Transition transition="slide-up" mounted={scroll.y > 10}>
             {(transitionStyles) => (
               <Button
                 leftIcon={<ArrowUpIcon />}

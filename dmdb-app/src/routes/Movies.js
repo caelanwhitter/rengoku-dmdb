@@ -1,8 +1,9 @@
-import { Grid, Text, Badge, Title, Modal, Group, Card, Image, Pagination, TextInput, Button } from '@mantine/core';
+import { Grid, Text, Badge, Title, Modal, Group, Card, 
+    Image, Pagination, TextInput, Button, Affix } from '@mantine/core';
 import React, {useEffect, useState} from 'react';
-import { Outlet, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import '../App.css';
-import { MagnifyingGlassIcon, ArrowUpIcon } from "@radix-ui/react-icons";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { useWindowScroll } from '@mantine/hooks';
 
 /**
@@ -29,16 +30,8 @@ export default function Movies() {
      */
     useEffect(() => {
         fetchMoviesPerPage(activePage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    // async function fetchSearch(){
-   
-    //     let response = await fetch("/api/getSearch?title="+value)
-    //     let movieSearched = await response.json();
-    //     setMovies(movieSearched);
-    //     setSearchOpened(false);
-          
-    // }
 
     async function getDetails(movieId) {
         await fetch("/api/oneMovie?id=" + movieId).then(
@@ -116,11 +109,15 @@ export default function Movies() {
     ));
 
     return (    
-        <>
-        
-        <nav id="tabs">
-        <Link className="tabLink" id="searchButton"  onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
+        <>  
+        <nav id="searchNav">
+            <Link className="tabLink" onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
         </nav>
+
+        {/* <Affix position={{ top: 20, left: 20 }}>
+            <Link className="tabLink" id="searchButton"  onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
+        </Affix> */}
+
         <Modal
         opened={searchopened}
         onClose={() => setSearchOpened(false)}
