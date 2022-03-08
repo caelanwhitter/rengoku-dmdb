@@ -5,7 +5,7 @@ import {
   Route,
 } from "react-router-dom";
 import App from "./App";
-import Featured from "./routes/Featured";
+import Home from "./routes/Home";
 import Movies from "./routes/Movies";
 import HiddenGems from "./routes/HiddenGems";
 import Profile from "./routes/Profile";
@@ -17,18 +17,13 @@ render(
     <Routes>
       <Route path="/" element={<App />} >
 
-        <Route path="featured" element={<Featured />} >
-          <Route
-            index
-            element={
-              <main style={{ padding: "1rem" }}>
-                <p>Select an Feature</p>
-              </main>
-            }
-          />
+        <Route path="home" element={<Home />} >
+          <Route index/>
         </Route>
+
         <Route path="movies" element={<Movies />}>
         </Route>
+
         <Route path="hiddengems" element={<HiddenGems />} >
           <Route
             index
@@ -39,6 +34,7 @@ render(
             }
           />
         </Route>
+
         <Route path="profile" element={<Profile />} >
           <Route
             index
@@ -49,6 +45,7 @@ render(
             }
           />
         </Route>
+
         <Route path="register" element={<Register />} >
           <Route
             index
@@ -59,6 +56,7 @@ render(
             }
           />
         </Route>
+
         <Route path="admin" element={<Register />} >
           <Route
             index
@@ -69,6 +67,7 @@ render(
             }
           />
         </Route>
+
         <Route path="login" element={<Register />} >
           <Route
             index
@@ -80,6 +79,7 @@ render(
             }
           />
         </Route>
+
         <Route path="logout" element={<Register />} >
           <Route
             index
@@ -90,6 +90,7 @@ render(
             }
           />
         </Route>
+
         <Route
           path="*"
           element={

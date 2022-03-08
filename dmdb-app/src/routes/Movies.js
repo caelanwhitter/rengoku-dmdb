@@ -1,8 +1,9 @@
-import { Grid, Text, Badge, Title, Modal, Group, Card, Image, Pagination, TextInput, Button } from '@mantine/core';
+import { Grid, Text, Badge, Title, Modal, Group, Card, 
+    Image, Pagination, TextInput, Button, Affix } from '@mantine/core';
 import React, {useEffect, useState} from 'react';
-import { Outlet, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import '../App.css';
-import { MagnifyingGlassIcon, ArrowUpIcon } from "@radix-ui/react-icons";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { useWindowScroll } from '@mantine/hooks';
 
 /**
@@ -29,16 +30,8 @@ export default function Movies() {
      */
     useEffect(() => {
         fetchMoviesPerPage(activePage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    // async function fetchSearch(){
-   
-    //     let response = await fetch("/api/getSearch?title="+value)
-    //     let movieSearched = await response.json();
-    //     setMovies(movieSearched);
-    //     setSearchOpened(false);
-          
-    // }
 
     async function getDetails(movieId) {
         await fetch("/api/oneMovie?id=" + movieId).then(
@@ -116,11 +109,15 @@ export default function Movies() {
     ));
 
     return (    
-        <>
-        
-        <nav id="tabs">
-        <Link className="tabLink" id="searchButton"  onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
+        <>  
+        <nav id="searchNav">
+            <Link className="tabLink" onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
         </nav>
+
+        {/* <Affix position={{ top: 20, left: 20 }}>
+            <Link className="tabLink" id="searchButton"  onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
+        </Affix> */}
+
         <Modal
         opened={searchopened}
         onClose={() => setSearchOpened(false)}
@@ -151,26 +148,27 @@ export default function Movies() {
             centered
             >
             <div id="movieDetails">
-                <Image src={null} height={320} alt={oneMovieData.title + " Poster"} withPlaceholder/>
-                <Title order={4}>Director: {oneMovieData.director}</Title>
-                <Group position="left">
-                    <Badge color="dark">{oneMovieData.genre}</Badge>
-                    <Badge color="dark" variant="outline">{parseInt(oneMovieData.duration)} minutes</Badge>
-                    <Badge color="gray" variant="outline">Rated {oneMovieData.rating}</Badge> 
-                    <Badge color="yellow" variant="dot">{oneMovieData.score} ⭐</Badge>    
-                </Group>
-                <p>This is the description of the movie.</p>
-                <Title order={6}>Gross: {oneMovieData.gross}</Title>
+                <Image src={null} height={320} width={250} alt={oneMovieData.title + " Poster"} withPlaceholder/>
+                <div id="movieText">
+                    <Title order={4}>Director: {oneMovieData.director}</Title>
+                    <Group position="left">
+                        <Badge color="dark">{oneMovieData.genre}</Badge>
+                        <Badge color="dark" variant="outline">{parseInt(oneMovieData.duration)} minutes</Badge>
+                        <Badge color="gray" variant="outline">Rated {oneMovieData.rating}</Badge> 
+                        <Badge color="yellow" variant="dot">{oneMovieData.score} ⭐</Badge>    
+                    </Group>
+                    <p>This is the description of the movie.</p>
+                    <Title order={6}>Gross: {oneMovieData.gross}</Title>
+                </div>
             </div>
         </Modal>
-        
-        <div style={{ display: "flex" }}>
-            <nav style={{ padding: "2rem" }}>
-                <Grid gutter={80}>
-                    {cards}
-                </Grid>
-                <Pagination id="pagination" page={activePage} onChange={changePage} total={totalPagination} color="dark" sibilings={1} withEdges/>
-            </nav>
+
+        <Grid className="movieGrid" gutter={80}>
+            {cards}
+        </Grid>
+
+        <div id="pagination">
+            <Pagination page={activePage} onChange={changePage} total={totalPagination} color="dark" sibilings={1} withEdges/>
         </div>
         </>
     );
