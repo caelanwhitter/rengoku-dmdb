@@ -54,7 +54,7 @@ router.get("/allMovies/page/:pageNumber", async (req, res) => {
 
 router.get("/oneMovie", async (req, res) => {
     const id = req.query.id;
-    const singleMovie = await Movies.find({ "_id": new ObjectId(id) });
+    const singleMovie = await getOneMovieById(id);
 
     try {
         res.json(singleMovie);
@@ -66,9 +66,23 @@ router.get("/oneMovie", async (req, res) => {
     }
 });
 
-router.get("/oneMovie/fetchMovieApi/:movieTitle", async (req, res) => {
-    const title = req.params.movieTitle;
-    let movieApiJson = await fetchMovieDataFromApi(title);
+router.get("/oneMovie/fetchMovieApi/:movieId", async (req, res) => {
+    let movieId = req.params.movieId;
+    const singleMovieArray = await getOneMovieById(movieId);
+    let singleMovie = singleMovieArray[0];
+
+    let movieApiJson = await fetchMovieDataFromApi(singleMovie.title);
+
+    console.log(movieApiJson);
+
+    await uploadMoviePoster(movieApiJson.title, movieApiJson.poster);
+
+    const movieBlobUrl = await getMovieBlobUrl(movieApiJson.title);
+    console.log(movieBlobUrl);
+
+    await updateMovieDataToDB(movieId, movieApiJson.description, movieBlobUrl);
+
+    console.log("Finished updating movie data to DB!");
 
     try {
         res.json(movieApiJson);
@@ -94,14 +108,16 @@ async function fetchMovieDataFromApi(movieTitle) {
 
         // Checks if movie results has at least one movie. If there is, update description and poster
         if (moviesApiResults.length !== 0) {
+
+            // Take first movie from results, most similar result
             let firstMovieJson = moviesApiResults[0];
 
+            // Creates movieData object with title, description and poster
             movieData = {
                 title: firstMovieJson.original_title,
                 description: firstMovieJson.overview,
                 poster: firstMovieJson.poster_path,
             }
-            fetchMoviePoster(movieData.title, movieData.poster);
         }
         return movieData;
     }
@@ -109,11 +125,12 @@ async function fetchMovieDataFromApi(movieTitle) {
 }
 
 /**
- * fetchMoviePoster fetches the image from the movie poster API with the right path and uploads to Azure Blob Storage
+ * uploadMoviePoster fetches the image from the movie poster API with the right path and uploads to Azure Blob Storage
+ * TO-DO: Put this function as a seperate endpoint (/oneMovie/fetchMovieApi/:movieTitle/uploadPoster)
  * @param {*} movieTitle 
  * @param {*} moviePosterPath 
  */
-async function fetchMoviePoster(movieTitle, moviePosterPath) {
+async function uploadMoviePoster(movieTitle, moviePosterPath) {
     let moviePosterUrl = `http://image.tmdb.org/t/p/w500${moviePosterPath}`;
     let response = await fetch(moviePosterUrl);
     if (response.ok) {
@@ -124,7 +141,6 @@ async function fetchMoviePoster(movieTitle, moviePosterPath) {
 
         // Create a unique name for the blob
         const posterBlobName = 'rengokuBlob-' + movieTitle + ".jpg";
-
         const blockBlobClient = containerClient.getBlockBlobClient(posterBlobName);
 
         // set mimetype as determined from browser with images
@@ -133,6 +149,30 @@ async function fetchMoviePoster(movieTitle, moviePosterPath) {
         // Upload blob to container
         await blockBlobClient.uploadStream(imageStream, uploadOptions.bufferSize, uploadOptions.maxBuffers, options);
     }
+}
+
+async function updateMovieDataToDB(movieId, movieDescription, movieBlobUrl) {
+    let fieldsToUpdate = { description: movieDescription, poster: movieBlobUrl}
+
+    await Movies.findByIdAndUpdate(movieId, fieldsToUpdate)
+}
+
+/**
+ * getOneMovieById() takes an id and Mongoose returns the movie with corresponding id
+ * TO-DO: replace with findById(id)
+ * @param {*} id 
+ * @returns 
+ */
+async function getOneMovieById(id) {
+    const singleMovie = await Movies.find({ "_id": new ObjectId(id) });
+    return singleMovie;
+}
+
+async function getMovieBlobUrl(movieTitle) {
+    const posterBlobName = 'rengokuBlob-' + movieTitle + ".jpg";
+    const blockBlobClient = containerClient.getBlockBlobClient(posterBlobName);
+
+    return blockBlobClient.url;
 }
 
 module.exports = router;
