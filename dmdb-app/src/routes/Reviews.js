@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from "react-router-dom";
 
 import { useParams } from "react-router-dom";
-import { Table, Spoiler, Textarea, TextInput, Button, Text, Box, Avatar, NumberInput , Group, Badge} from '@mantine/core';
+import {Spoiler, Textarea, TextInput, Button, Text, Box, Avatar, NumberInput , Group, Badge} from '@mantine/core';
 import { MagnifyingGlassIcon, TrashIcon } from "@radix-ui/react-icons";
 
 
@@ -44,22 +44,22 @@ export default function Reviews() {
     window.location.reload();
   } 
   
-  async function deleteReview() {
-    
-    //console.log(element._id);
-    /*await fetch('/api/review/delete', { 
+  async function deleteReview(id) {
+
+    await fetch('/api/review/delete', {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        id: ${element._id},
+        id: id,
       })
-    })*/
+    })
+
+    refreshPage();
   }
   
   async function insertReview() {
-    console.log("here");
     await fetch('/api/reviews', { 
       method: 'POST',
       headers: {
@@ -76,7 +76,6 @@ export default function Reviews() {
     })
     
     
-    refreshPage();
   }
 
     const reviews = backendData.map((element) => (
@@ -103,7 +102,7 @@ export default function Reviews() {
         <Spoiler maxHeight={100} showLabel="Show more" hideLabel="Hide">
           {element.content} </Spoiler>
         <Group spacing="xl">
-        <Link className="trashLink" id={element._id}  onClick={(event) => console.log(this.parentNode)} to={{}}> <TrashIcon /></Link>
+        <Link className="trashLink" id={element._id}  onClick={(event) => {deleteReview(event.target.id);refreshPage();}} to={{}}> <TrashIcon id={element._id} /></Link>
         <Group position="right" >
           <Text>{element.username}</Text>
           <Text>/</Text>
@@ -156,7 +155,7 @@ export default function Reviews() {
           max={5}
           min={0}
         />
-        <Button onClick={(event)=> insertReview()} sx={(theme) => ({
+        <Button onClick={()=> {insertReview();refreshPage();} } sx={(theme) => ({
         textAlign: 'center',
         padding: theme.spacing.sm,
         marginTop: theme.radius.md,
