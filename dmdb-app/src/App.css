@@ -34,6 +34,10 @@ a, #gitLabLink {
   padding-bottom: 50px;
 }
 
+#searchButton {
+  align-content: right;
+  text-align: right;
+}
 #movieContainer {
   display: flex;
   justify-content: space-around;

@@ -1,6 +1,8 @@
-import { Grid, Text, Badge, Title, Modal, 
-    Group, Card, Image, Pagination } from '@mantine/core';
+import { Grid, Text, Badge, Title, Modal, Group, Card, Image, Pagination, TextInput, Button } from '@mantine/core';
 import React, {useEffect, useState} from 'react';
+import { Outlet, Link } from "react-router-dom";
+import '../App.css';
+import { MagnifyingGlassIcon, ArrowUpIcon } from "@radix-ui/react-icons";
 import { useWindowScroll } from '@mantine/hooks';
 
 /**
@@ -14,8 +16,13 @@ export default function Movies() {
     const [activePage, setPage] = useState(1);
     const [totalPagination, setTotalPagination] = useState();
     const [opened, setOpened] = useState(false);
+
+    const [searchopened, setSearchOpened] = useState(false);
+    const [value, setValue] = useState('');
+
     const [oneMovieData, setOneMovieData] = useState([{}]);
     const [, scrollTo] = useWindowScroll();
+
 
     /**
      * useEffect() runs following methods once. Similar to ComponentDidMount()
@@ -24,8 +31,17 @@ export default function Movies() {
         fetchMoviesPerPage(activePage);
     }, []);
 
-    function getDetails(movieId) {
-        fetch("/api/oneMovie?id=" + movieId).then(
+    // async function fetchSearch(){
+   
+    //     let response = await fetch("/api/getSearch?title="+value)
+    //     let movieSearched = await response.json();
+    //     setMovies(movieSearched);
+    //     setSearchOpened(false);
+          
+    // }
+
+    async function getDetails(movieId) {
+        await fetch("/api/oneMovie?id=" + movieId).then(
             response => response.json())
             .then(
                 data => {setOneMovieData(data[0])}
@@ -37,13 +53,13 @@ export default function Movies() {
      * @param {String} pageNumber 
      */
     async function fetchMoviesPerPage(pageNumber) {
-        let response = await fetch('/api/allMovies/page/' + pageNumber);
+        let response = await fetch('/api/getSearch/page/'+pageNumber+'?title='+value);
         let moviesPaginationJson = await response.json();
         setMovies(moviesPaginationJson);
 
         // Calls calculateTotalPagination() if totalPagination not initialized yet yet
-        if (totalPagination === undefined) {
-            await calculateTotalPagination(moviesPaginationJson);
+        if(totalPagination === undefined) {
+        await calculateTotalPagination(moviesPaginationJson);
         }
     }
 
@@ -52,11 +68,16 @@ export default function Movies() {
      * @param {JSON} moviesPaginationJson 
      */
     async function calculateTotalPagination(moviesPaginationJson) {
-        let response = await fetch('/api/allMovies');
+        let response = await fetch('/api/getSearch?title='+value);
         let allMoviesJson = await response.json();
         const totalMoviePages = Math.ceil(allMoviesJson.length/moviesPaginationJson.length);
-
+        console.log(totalMoviePages);
         setTotalPagination(totalMoviePages);
+    }
+    async function clickOnGo(event) {
+        setTotalPagination(undefined);
+        fetchMoviesPerPage(event);
+        setSearchOpened(false);
     }
 
     /**
@@ -94,8 +115,33 @@ export default function Movies() {
         </Grid.Col>
     ));
 
-    return (
+    return (    
         <>
+        
+        <nav id="tabs">
+        <Link className="tabLink" id="searchButton"  onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
+        </nav>
+        <Modal
+        opened={searchopened}
+        onClose={() => setSearchOpened(false)}
+        hideCloseButton
+      >
+        <TextInput
+          value={value}
+          onChange={(event) => setValue(event.currentTarget.value)}
+          placeholder="Search..."
+          variant="unstyled"
+          size="lg"
+          radius="md"
+          required
+        /> <br />
+        <Button
+          onClick={clickOnGo}
+          color="dark"
+          type="submit">
+          Go!
+        </Button>
+      </Modal>
         <Modal
             opened={opened}
             onClose={() => setOpened(false)}

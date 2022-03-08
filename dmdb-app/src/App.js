@@ -1,32 +1,17 @@
 import { Outlet, Link } from "react-router-dom";
 import { Title, Modal, Text, TextInput, Button, Affix, Divider, Transition, Space } from "@mantine/core";
+import Movies from './routes/Movies'
+import fetchMoviesPerPage from './routes/Movies';
 import { MagnifyingGlassIcon, ArrowUpIcon } from "@radix-ui/react-icons";
 import { useWindowScroll } from '@mantine/hooks';
-import { useState } from 'react';
 import './App.css';
 
 //This function is the main application component. It holds all the tabs that will be used for the application.
 export default function App() {
-  const [opened, setOpened] = useState(false);
   const [scroll, scrollTo] = useWindowScroll();
 
   return (
-    <div>
-      <Modal
-        opened={opened}
-        onClose={() => setOpened(false)}
-        hideCloseButton
-      >
-        <TextInput
-          placeholder="Search..."
-          variant="unstyled"
-          size="lg"
-          radius="md"
-          required
-        /> <br/>
-        <Button color="dark" type="submit">Go!</Button>
-      </Modal>
-
+    <div className="content-container">
       <nav id="tabs">
         <div id="titleDiv">
           <a href="/home"><Title className="title">DMDB</Title>
@@ -34,16 +19,13 @@ export default function App() {
         </div>
         <Link className="tabLink" to="/home">Home</Link>
         <Link className="tabLink" to="/movies">Movies</Link>
-        <Link className="tabLink" to="/hiddenGems">Hidden Gems</Link>
-        <Link className="tabLink" onClick={() => setOpened(true)} to={{}}> <MagnifyingGlassIcon/> Search</Link>{" | "}
+        <Link className="tabLink" to="/hiddenGems">Hidden Gems</Link>{" | "}
         <Link className="tabLink" to="/register">Register</Link>
         <Link className="tabLink" to="/login">Login</Link>
-        <Link className="tabLink" to="/logout">Logout</Link> {/* {" · "} */}
-        {/* <Link className="tabLink" to="/profile">Profile</Link>{" · "}
-        <Link className="tabLink" to="/admin">Admin</Link> */}
+        <Link className="tabLink" to="/logout">Logout</Link>
       </nav>
       <Outlet />
-      
+
       <footer>
         <div className="footSection">
           <div id="brandIcon">
