@@ -132,33 +132,35 @@ export default function Movies() {
                 onClose={() => setSearchOpened(false)}
                 hideCloseButton
             >
-                <h4>Enter title below</h4>
                 <TextInput
+                    label="Title"
                     value={valueTitle}
                     onChange={(event) => setValueTitle(event.currentTarget.value)}
-                    placeholder="Search..."
-                    variant="unstyled"
-                    size="lg"
+                    placeholder="Enter the title"
+                    //variant="unstyled"
+                    size="md"
                     radius="md"
                     required
                 />
-                <h4>Enter director below</h4>
+
                 <TextInput
+                    label="Director"
                     value={valueDirector}
                     onChange={(event) => setValueDirector(event.currentTarget.value)}
-                    placeholder="Search..."
-                    variant="unstyled"
-                    size="lg"
+                    placeholder="Enter the Director"
+                    //variant="unstyled"
+                    size="md"
                     radius="md"
                     required
                 />
-                <h4>Enter genre below</h4>
+
                 <TextInput
+                    label="Genre"
                     value={valueGenre}
                     onChange={(event) => setValueGenre(event.currentTarget.value)}
-                    placeholder="Search..."
-                    variant="unstyled"
-                    size="lg"
+                    placeholder="Enter the Genre"
+                    //variant="unstyled"
+                    size="md"
                     radius="md"
                     required
                 />
@@ -182,13 +184,14 @@ export default function Movies() {
                     radius="md"
                     required
                 /> */}
-                <h4>Enter Rating below</h4>
+
                 <TextInput
+                    label="Rating"
                     value={valueRating}
                     onChange={(event) => setValueRating(event.currentTarget.value)}
-                    placeholder="Search..."
-                    variant="unstyled"
-                    size="lg"
+                    placeholder="Enter the Rating: (R, PG, PG-13)"
+                    //variant="unstyled"
+                    size="md"
                     radius="md"
                     required
                 />
