@@ -104,7 +104,7 @@ export default function Reviews() {
     
     <>
       
-      <Box class="reviewDetails" sx={(theme) => ({
+      <Box sx={(theme) => ({
         backgroundColor: "#f6f6f5",
         textAlign: 'center',
         padding: theme.spacing.sm,
