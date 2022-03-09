@@ -106,7 +106,6 @@ router.post("/reviews", async (req, res) => {
   // eslint-disable-next-line max-len
   const doc = new Reviews({username: body.username, movieId: body.movieId, content: body.content, rating: body.rating, datePosted: body.datePosted, subtitle: body.subtitle});
   await doc.save();
-  console.log(body);
   res.status(201).json({
     message: "Post worked!"
   });

@@ -9,10 +9,12 @@ import { TrashIcon } from "@radix-ui/react-icons";
 
 
 export default function Reviews() {
+      //Initializes variables and sets up "settters to variables"
   let params = useParams();
   const [backendData, setBackendData] = useState([{}]);
   const [headline, setHeadline] = useState("");
   const [content, setContent] = useState("");
+  const [movieTitle, setMovieTitle] = useState("");
   const [rating, setRating] = useState(3);
   const date = new Date().toLocaleDateString('en-us', {year:"numeric", month:"short", day:"numeric"}) 
 
@@ -23,8 +25,7 @@ export default function Reviews() {
   /**
      * useEffect() runs following methods once. Similar to ComponentDidMount()
      */
-   useEffect(() => {
-    fetchReviews();}, []);
+  useEffect(() => { getTitle(); fetchReviews();}, []);
 
   
       /**
@@ -32,18 +33,33 @@ export default function Reviews() {
      * 
      */
   async function fetchReviews() {
-         console.log("fetch")
+        console.log(params.movieId);
         let response = await fetch('/api/oneMovie/reviews?id='+params.movieId);
         let moviesPaginationJson = await response.json();
-        setBackendData(moviesPaginationJson);
+       setBackendData(moviesPaginationJson);
+  
   
   }
+/**
+ * Get the title of the movie
+ */
+  async function getTitle() {
+    let response = await fetch('/api/oneMovie?id='+params.movieId);
+    let movieTitle = await response.json();
+    setMovieTitle(movieTitle[0].title);
 
+}
 
+/**
+ * function that refreshes the page
+ */
   function refreshPage(){
     window.location.reload();
   } 
-  
+  /**
+   * deleteReview(id) does a DELETE request with a specific id so that it deletes that review from mongo
+   * @param {String} id 
+   */
   async function deleteReview(id) {
 
     await fetch('/api/review/delete', {
@@ -58,11 +74,10 @@ export default function Reviews() {
 
     
   }
-  
+  /**
+   * insertReview() does a POST request to insert a review into the database
+   */
   async function insertReview() {
-
-  
-
       await fetch('/api/reviews', {
         method: 'POST',
         headers: {
@@ -82,31 +97,34 @@ export default function Reviews() {
   }
 
  
-
+    /**
+     * reach review is put into a box and styled accordingly
+     */
   const reviews = backendData.map((element) => (
     
     <>
       
-      <Box sx={(theme) => ({
+      <Box class="reviewDetails" sx={(theme) => ({
+        backgroundColor: "#f6f6f5",
         textAlign: 'center',
         padding: theme.spacing.sm,
         margin: theme.spacing.xl,
           border: 'solid 1px #000',
       })}>
-          <Text underline weight={600}>{element.subtitle}</Text>
-            <Badge size="xl" color="gray" >{element.rating}⭐</Badge>
+          <Text underline size="lg" weight={500}>{element.subtitle}</Text>
+            <Badge size="xl" color="dark" >{element.rating}⭐</Badge>
         
-        <Spoiler maxHeight={100} showLabel="Show more" hideLabel="Hide">
-          {element.content} </Spoiler>
-        <Group spacing="xl">
-        <Link className="trashLink" id={element._id}  onClick={(event) => {deleteReview(event.target.id);}} to={{}}> <TrashIcon size="xl" id={element._id} /></Link>
-          <Group position="right" >
+        <Spoiler  maxHeight={100} showLabel="Show more" hideLabel="Hide"> {element.content} </Spoiler>
+        
+          <Group position="center" >
             <Avatar/>
           <Text>{element.username}</Text>
           <Text>|</Text>
             <Text>{element.datePosted}</Text>
         </Group>
-        </Group>
+        <Link className="trashLink" id={element._id}  onClick={(event) => {deleteReview(event.target.id);}} to={{}}> <TrashIcon size="xl" id={element._id} /></Link>
+
+    
 
         </Box></>
     ));
@@ -115,14 +133,12 @@ export default function Reviews() {
     return (
     
       <>
-              <div style={{ display: "flex" }}>
-          
-          
+        <Text weight={700} size="xl" underline align="center">{movieTitle}</Text>
+          <div style={{ display: "flex" }}>
           <div style={{ width: "50%" }}>{reviews}</div>
-    
-        
-        
-        <Box sx={(theme) => ({
+
+          <Box sx={(theme) => ({
+        backgroundColor: "#f6f6f5",
         textAlign: 'center',
         padding: theme.spacing.sm,
         margin: theme.spacing.xl,
@@ -130,7 +146,7 @@ export default function Reviews() {
             border: 'solid 1px #000',
             height: "50%",
       })}>
-        <Text underline align="center" size="xl">Your Rating and Review</Text>
+        <Text weight={500} underline align="center" size="xl">Your Rating and Review</Text>
         <TextInput value={headline} onChange={(event) => setHeadline(event.currentTarget.value)} sx={(theme) => ({
         textAlign: 'center',
           paddingLeft: theme.spacing.xl,
@@ -138,7 +154,7 @@ export default function Reviews() {
 
         marginTop: theme.radius.md,
       })} size="sm" radius="lg" placeholder="Headline for your review" label="Subtitle" required />
-        <Textarea value={content} onChange={(event) => setContent(event.currentTarget.value)} sx={(theme) => ({
+        <Textarea id="headline" value={content} onChange={(event) => setContent(event.currentTarget.value)} sx={(theme) => ({
         textAlign: 'center',
           paddingLeft: theme.spacing.xl,
           paddingRight: theme.spacing.xl,
@@ -147,7 +163,9 @@ export default function Reviews() {
       })}  textAlign="center" autosize radius="lg" placeholder="Write your review here" label="Your Review" required />
     
   
-            <NumberInput value={rating} onChange={(val) => setRating(val)}
+            <NumberInput sx={(theme) => ({
+          width: "10%",margin:"auto"
+      })} value={rating} onChange={(val) => setRating(val)}
           label="Star Rating"
           placeholder="3"
           max={5}
