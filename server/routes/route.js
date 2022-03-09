@@ -22,11 +22,23 @@ const ObjectId = require("mongodb").ObjectId;
 //     }
 // })
 router.get("/getSearch", async (req, res) => {
-    const keyword = req.query.title;
-    const findTitle = await Movies.find({
-        title: { $regex: `${keyword}`, $options: "i"}});
+    const keywordTitle = req.query.title;
+    const keywordDirector = req.query.director;
+    const keywordGenre = req.query.genre;
+    // req.query.releaseYear = 0;
+    // req.query.score = 0;
+    const keywordRating = req.query.rating;
+    const findMovies = await Movies.find({
+        title: { $regex: `${keywordTitle}`, $options: "i" },
+        director: { $regex: `${keywordDirector}`, $options: "i" },
+        genre: { $regex: `${keywordGenre}`, $options: "i" },
+        // releaseYear: req.query.releaseYear ,
+        // score: req.query.score ,
+        rating: { $regex: `${keywordRating}`, $options: "i" },
+    })
+        
     try {
-        res.json(findTitle);
+        res.json(findMovies);
         res.end();
     } catch (error) {
         console.error(error.message);
@@ -35,10 +47,20 @@ router.get("/getSearch", async (req, res) => {
 })
 router.get("/getSearch/page/:pageNumber", async (req, res) => {
     const pageNumber = req.params.pageNumber;
-    const keyword = req.query.title;
+    const keywordTitle = req.query.title;
+    const keywordDirector = req.query.director;
+    const keywordGenre = req.query.genre;
+    // req.query.releaseYear = 0;
+    // req.query.score = 0;
+    const keywordRating = req.query.rating;
     const elemsPerPage = 52;
     const moviesPerPage = await Movies.find({
-        title: { $regex: `${keyword}`, $options: "i"}
+        title: { $regex: `${keywordTitle}`, $options: "i" },
+        director: { $regex: `${keywordDirector}`, $options: "i" },
+        genre: { $regex: `${keywordGenre}`, $options: "i" },
+        // releaseYear: req.query.releaseYear ,
+        // score: req.query.score ,
+        rating: { $regex: `${keywordRating}`, $options: "i" },
     }).skip(elemsPerPage * (pageNumber - 1)).limit(elemsPerPage);
 
     try {
