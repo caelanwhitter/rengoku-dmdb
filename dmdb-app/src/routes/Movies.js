@@ -149,7 +149,7 @@ export default function Movies() {
             >
             <div id="movieDetails">
                     <Image src={null} height={320} width={250} alt={oneMovieData.title + " Poster"} withPlaceholder />
-                    <div if="movieText">
+                    <div id="movieText">
                 <Title order={4}>Director: {oneMovieData.director}</Title>
                 <Group position="left">
                     <Badge color="dark">{oneMovieData.genre}</Badge>
