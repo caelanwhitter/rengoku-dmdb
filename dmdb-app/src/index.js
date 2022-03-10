@@ -10,6 +10,7 @@ import Movies from "./routes/Movies";
 import HiddenGems from "./routes/HiddenGems";
 import Profile from "./routes/Profile";
 import Register from "./routes/Register";
+import Reviews from "./routes/Reviews";
 
 const rootElement = document.getElementById("root");
 render(
@@ -20,10 +21,24 @@ render(
         <Route path="home" element={<Home />} >
           <Route index/>
         </Route>
-
         <Route path="movies" element={<Movies />}>
+          <Route
+            index
+            element={
+              <main style={{ padding: "1rem" }}>
+                <p>Select a Movie</p>
+              </main>
+            }
+          />
+          <Route path=":movieId" element={<Movies />}/>
+          <Route path=":movieGross" element={<Movies />} />
         </Route>
 
+        <Route path="movies/:movieId/reviews" element={<Reviews />}/>
+
+
+  
+        
         <Route path="hiddengems" element={<HiddenGems />} >
           <Route
             index
