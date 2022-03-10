@@ -11,7 +11,6 @@ import { useWindowScroll } from '@mantine/hooks';
  * @returns Table Of Movies + Pagination
  */
 export default function Movies() {
-
     //Initializes variables and sets up "settters to variables"
     const [movies, setMovies] = useState([{}]);
     const [activePage, setPage] = useState(1);
