@@ -64,7 +64,6 @@ export default function Movies() {
         let response = await fetch('/api/getSearch?title='+value);
         let allMoviesJson = await response.json();
         const totalMoviePages = Math.ceil(allMoviesJson.length/moviesPaginationJson.length);
-        console.log(totalMoviePages);
         setTotalPagination(totalMoviePages);
     }
     async function clickOnGo(event) {
