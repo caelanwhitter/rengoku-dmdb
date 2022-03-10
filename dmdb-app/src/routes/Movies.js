@@ -11,7 +11,6 @@ import { useWindowScroll } from '@mantine/hooks';
  * @returns Table Of Movies + Pagination
  */
 export default function Movies() {
-
     //Initializes variables and sets up "settters to variables"
     const [movies, setMovies] = useState([{}]);
     const [activePage, setPage] = useState(1);
@@ -64,7 +63,6 @@ export default function Movies() {
         let response = await fetch('/api/getSearch?title='+value);
         let allMoviesJson = await response.json();
         const totalMoviePages = Math.ceil(allMoviesJson.length/moviesPaginationJson.length);
-        console.log(totalMoviePages);
         setTotalPagination(totalMoviePages);
     }
     async function clickOnGo(event) {
@@ -114,10 +112,6 @@ export default function Movies() {
             <Link className="tabLink" onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
         </nav>
 
-        {/* <Affix position={{ top: 20, left: 20 }}>
-            <Link className="tabLink" id="searchButton"  onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
-        </Affix> */}
-
         <Modal
         opened={searchopened}
         onClose={() => setSearchOpened(false)}
@@ -139,6 +133,7 @@ export default function Movies() {
           Go!
         </Button>
       </Modal>
+      
         <Modal
             opened={opened}
             onClose={() => setOpened(false)}
