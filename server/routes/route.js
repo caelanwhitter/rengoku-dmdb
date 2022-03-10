@@ -69,20 +69,21 @@ router.get("/oneMovie", async (req, res) => {
 router.get("/oneMovie/fetchMovieApi/:movieId", async (req, res) => {
     let movieId = req.params.movieId;
     const singleMovieArray = await getOneMovieById(movieId);
+    console.log(singleMovieArray);
     let singleMovie = singleMovieArray[0];
 
-    let movieApiJson = await fetchMovieDataFromApi(singleMovie.title);
+    console.log(singleMovie);
+    let movieApiJson = await fetchMovieDataFromApi(singleMovie);
 
-    console.log(movieApiJson);
+    let movieTitle = movieApiJson.title;
+    let movieYear = movieApiJson.year;
+    const posterBlobName = 'rengokuBlob-' + movieTitle + "-" + movieYear + ".jpg";
+    await uploadMoviePoster(posterBlobName, movieApiJson.poster);
 
-    await uploadMoviePoster(movieApiJson.title, movieApiJson.poster);
-
-    const movieBlobUrl = await getMovieBlobUrl(movieApiJson.title);
+    const movieBlobUrl = await getMovieBlobUrl(posterBlobName);
     console.log(movieBlobUrl);
 
     await updateMovieDataToDB(movieId, movieApiJson.description, movieBlobUrl);
-
-    console.log("Finished updating movie data to DB!");
 
     try {
         res.json(movieApiJson);
@@ -99,8 +100,10 @@ router.get("/oneMovie/fetchMovieApi/:movieId", async (req, res) => {
  * @param {*} movieTitle 
  * @returns Object with description & movie poster URL
  */
-async function fetchMovieDataFromApi(movieTitle) {
-    let response = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${movieTitle}`);
+async function fetchMovieDataFromApi(movie) {
+    let movieTitle = movie.title;
+    let movieYear = movie.releaseYear;
+    let response = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${movieTitle}&year=${movieYear}`);
     if (response.ok) {
         let moviesJsonApi = await response.json();
         let moviesApiResults = moviesJsonApi.results;
@@ -117,6 +120,7 @@ async function fetchMovieDataFromApi(movieTitle) {
                 title: firstMovieJson.original_title,
                 description: firstMovieJson.overview,
                 poster: firstMovieJson.poster_path,
+                year: movieYear,
             }
         }
         return movieData;
@@ -130,7 +134,7 @@ async function fetchMovieDataFromApi(movieTitle) {
  * @param {*} movieTitle 
  * @param {*} moviePosterPath 
  */
-async function uploadMoviePoster(movieTitle, moviePosterPath) {
+async function uploadMoviePoster(posterBlobName, moviePosterPath) {
     let moviePosterUrl = `http://image.tmdb.org/t/p/w500${moviePosterPath}`;
     let response = await fetch(moviePosterUrl);
     if (response.ok) {
@@ -140,7 +144,6 @@ async function uploadMoviePoster(movieTitle, moviePosterPath) {
         const imageStream = image.stream();
 
         // Create a unique name for the blob
-        const posterBlobName = 'rengokuBlob-' + movieTitle + ".jpg";
         const blockBlobClient = containerClient.getBlockBlobClient(posterBlobName);
 
         // set mimetype as determined from browser with images
@@ -179,8 +182,7 @@ async function getOneMovieById(id) {
  * @param {*} movieTitle 
  * @returns blockBlobClient.url
  */
-async function getMovieBlobUrl(movieTitle) {
-    const posterBlobName = 'rengokuBlob-' + movieTitle + ".jpg";
+async function getMovieBlobUrl(posterBlobName) {
     const blockBlobClient = containerClient.getBlockBlobClient(posterBlobName);
 
     return blockBlobClient.url;

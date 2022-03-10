@@ -83,4 +83,6 @@ async function deleteContainer() {
 }
 
 // Runs setupBlobStorage.js
-setupBlobContainer().catch((ex) => console.log(ex.message));
+//setupBlobContainer().catch((ex) => console.log(ex.message));
+
+deleteContainer();
