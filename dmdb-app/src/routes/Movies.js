@@ -1,7 +1,7 @@
 import { Grid, Text, Badge, Title, Modal, Group, Card, 
     Image, Pagination, TextInput, Button } from '@mantine/core';
 import React, {useEffect, useState} from 'react';
-import { Link } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import '../App.css';
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { useWindowScroll } from '@mantine/hooks';
@@ -143,17 +143,21 @@ export default function Movies() {
             centered
             >
             <div id="movieDetails">
-                <Image src={null} height={320} width={250} alt={oneMovieData.title + " Poster"} withPlaceholder/>
-                <div id="movieText">
-                    <Title order={4}>Director: {oneMovieData.director}</Title>
-                    <Group position="left">
-                        <Badge color="dark">{oneMovieData.genre}</Badge>
-                        <Badge color="dark" variant="outline">{parseInt(oneMovieData.duration)} minutes</Badge>
-                        <Badge color="gray" variant="outline">Rated {oneMovieData.rating}</Badge> 
-                        <Badge color="yellow" variant="dot">{oneMovieData.score} ⭐</Badge>    
-                    </Group>
+                    <Image src={null} height={320} width={250} alt={oneMovieData.title + " Poster"} withPlaceholder />
+                    <div id="movieText">
+                <Title order={4}>Director: {oneMovieData.director}</Title>
+                <Group position="left">
+                    <Badge color="dark">{oneMovieData.genre}</Badge>
+                    <Badge color="dark" variant="outline">{parseInt(oneMovieData.duration)} minutes</Badge>
+                    <Badge color="gray" variant="outline">Rated {oneMovieData.rating}</Badge> 
+                        <Badge color="yellow" variant="dot">{oneMovieData.score} ⭐</Badge> 
+
+                </Group>
                     <p>This is the description of the movie.</p>
-                    <Title order={6}>Gross: {oneMovieData.gross}</Title>
+                        <Title order={6}>Gross: {oneMovieData.gross}</Title>
+                        <Badge variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}><NavLink style={{ textDecoration: 'none' , color: 'black'}} to={`${oneMovieData._id}/reviews`}>View Reviews</NavLink></Badge>
+
+
                 </div>
             </div>
         </Modal>

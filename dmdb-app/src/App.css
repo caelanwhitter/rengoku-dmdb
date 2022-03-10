@@ -75,6 +75,9 @@ a, .tabLink, #gitLabLink {
   border-radius: 5px;
   color: white;
 }
+.trashLink:hover{
+color: red;
+}
 
 .intro { 
   font-size: 60px;

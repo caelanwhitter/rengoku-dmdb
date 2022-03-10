@@ -12,6 +12,7 @@ import Register from "./routes/Register";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import BttAffix from "./components/BttAffix";
+import Reviews from "./routes/Reviews";
 
 const rootElement = document.getElementById("root");
 render(
@@ -32,6 +33,8 @@ render(
           }
         />
       </Route>
+
+      <Route path="movies/:movieId/reviews" element={<Reviews />}/>
 
       <Route path="profile" element={<Profile />} >
         <Route
