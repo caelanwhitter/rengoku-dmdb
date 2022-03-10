@@ -133,7 +133,7 @@ export default function Reviews() {
     return (
     
       <>
-        <Text weight={700} size="xl" underline align="center">{movieTitle}</Text>
+        <Text sx={(theme) => ({paddingTop: "10px", fontSize:"300%"})} weight={700}  underline align="center">{movieTitle}</Text>
           <div style={{ display: "flex" }}>
           <div style={{ width: "50%" }}>{reviews}</div>
 
