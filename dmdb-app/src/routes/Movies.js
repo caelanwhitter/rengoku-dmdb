@@ -114,10 +114,6 @@ export default function Movies() {
             <Link className="tabLink" onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
         </nav>
 
-        {/* <Affix position={{ top: 20, left: 20 }}>
-            <Link className="tabLink" id="searchButton"  onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
-        </Affix> */}
-
         <Modal
         opened={searchopened}
         onClose={() => setSearchOpened(false)}
@@ -139,6 +135,7 @@ export default function Movies() {
           Go!
         </Button>
       </Modal>
+      
         <Modal
             opened={opened}
             onClose={() => setOpened(false)}

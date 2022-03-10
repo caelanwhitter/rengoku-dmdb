@@ -10,19 +10,21 @@ import Movies from "./routes/Movies";
 import HiddenGems from "./routes/HiddenGems";
 import Profile from "./routes/Profile";
 import Register from "./routes/Register";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import BttAffix from "./components/BttAffix";
 
 const rootElement = document.getElementById("root");
 render(
   <BrowserRouter>
+    {<Navbar/>}
     <Routes>
       <Route path="/" element={<App />} >
-
         <Route path="home" element={<Home />} >
           <Route index/>
         </Route>
 
-        <Route path="movies" element={<Movies />}>
-        </Route>
+        <Route path="movies" element={<Movies />}/>
 
         <Route path="hiddengems" element={<HiddenGems />} >
           <Route
@@ -101,6 +103,8 @@ render(
         />
       </Route>
     </Routes>
+    {<Footer/>}
+    {<BttAffix/>}
   </BrowserRouter>,
   rootElement
 );
