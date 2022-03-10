@@ -7,7 +7,7 @@ export default class Footer extends Component {
             <footer>
                 <div className="footSection">
                 <div id="brandIcon">
-                    <a href="/home"><Title className="title">DMDB</Title>
+                    <a href="/"><Title className="title">DMDB</Title>
                     <Title className="subtitle" order={5}>Dawson Movie Database</Title></a>
                 </div>
                 <Space h="sm"/>

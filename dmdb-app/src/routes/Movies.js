@@ -1,5 +1,5 @@
 import { Grid, Text, Badge, Title, Modal, Group, Card, 
-    Image, Pagination, TextInput, Button, Affix } from '@mantine/core';
+    Image, Pagination, TextInput, Button } from '@mantine/core';
 import React, {useEffect, useState} from 'react';
 import { Link } from "react-router-dom";
 import '../App.css';

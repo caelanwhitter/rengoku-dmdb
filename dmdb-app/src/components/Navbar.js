@@ -7,10 +7,10 @@ export default class Navbar extends Component {
         return (
         <nav className="tabs">
           <div id="titleDiv">
-            <a href="/home"><Title className="title">DMDB</Title>
+            <a href="/"><Title className="title">DMDB</Title>
             <Title className="subtitle" order={5}>Dawson Movie Database</Title></a>
           </div>
-          <Link className="tabLink" to="/home">Home</Link>
+          <Link className="tabLink" to="/">Home</Link>
           <Link className="tabLink" to="/movies">Movies</Link>
           <Link className="tabLink" to="/hiddenGems">Hidden Gems</Link>{" | "}
           <Link className="tabLink" to="/register">Register</Link>
