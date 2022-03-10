@@ -24,8 +24,8 @@ export default function Movies() {
     const [valueTitle, setValueTitle] = useState('');
     const [valueDirector, setValueDirector] = useState('');
     const [valueGenre, setValueGenre] = useState('');
-    // const [valueReleaseYear, setValueReleaseYear] = useState(1980);
-    // const [valueScore, setValueScore] = useState(5.3);
+    const [valueReleaseYear, setValueReleaseYear] = useState();
+    const [valueScore, setValueScore] = useState();
     const [valueRating, setValueRating] = useState('');
 
     const [oneMovieData, setOneMovieData] = useState([{}]);
@@ -54,7 +54,7 @@ export default function Movies() {
      */
     //  '&releaseYear=' + valueReleaseYear+ '&score=' + valueScore+ 
     async function fetchMoviesPerPage(pageNumber) {
-        let response = await fetch('/api/getSearch/page/' + pageNumber + '?title=' + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre+'&rating=' + valueRating);
+        let response = await fetch('/api/getSearch/page/' + pageNumber + '?title=' + valueTitle + '&director=' + valueDirector + '&genre=' +valueGenre+ '&releaseYear=' + valueReleaseYear+ '&score=' + valueScore+ valueGenre+'&rating=' + valueRating);
         let moviesPaginationJson = await response.json();
         setMovies(moviesPaginationJson);
 
@@ -68,9 +68,9 @@ export default function Movies() {
      * calculateTotalPagination() calculates how many pages should the entire list of movies be separated for pagination
      * @param {JSON} moviesPaginationJson 
      */
-    //  '&releaseYear=' + valueReleaseYear+ '&score=' + valueScore+ 
+    //
     async function calculateTotalPagination(moviesPaginationJson) {
-        let response = await fetch('/api/getSearch?title=' + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre+'&rating=' + valueRating);
+        let response = await fetch('/api/getSearch?title=' + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre+   '&releaseYear=' + valueReleaseYear+ '&score=' + valueScore+ '&rating=' + valueRating);
         let allMoviesJson = await response.json();
         const totalMoviePages = Math.ceil(allMoviesJson.length / moviesPaginationJson.length);
         console.log(totalMoviePages);
@@ -164,7 +164,7 @@ export default function Movies() {
                     radius="md"
                     required
                 />
-                {/* <h4>Enter Release Year below</h4>
+                <h4>Enter Release Year below</h4>
                 <TextInput
                     value={valueReleaseYear}
                     onChange={(event) => setValueReleaseYear(event.currentTarget.value)}
@@ -183,7 +183,7 @@ export default function Movies() {
                     size="lg"
                     radius="md"
                     required
-                /> */}
+                />
 
                 <TextInput
                     label="Rating"
