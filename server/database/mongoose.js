@@ -24,8 +24,8 @@ const movieSchema = new Schema({
   gross: String,
   poster: String,
   rating: String,
-  releaseYear: Number,
-  score: Number,
+  releaseYear: String,
+  score: String,
   title: String,
 }, { collection: "movies" });
 

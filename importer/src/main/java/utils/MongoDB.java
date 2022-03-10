@@ -45,8 +45,12 @@ public class MongoDB {
         MongoCollection<Movie> movies = database.getCollection(COLLECTION_NAME, Movie.class);
 
         Importer importer = new Importer("importer/src/main/java/utils/resources/movies.csv");
-        List<Movie> movieList = importer.fetchDataFromDataset();            
+        List<Movie> movieList = importer.fetchDataFromDataset();
 
+        // for (Movie movie : movieList)
+        // {
+        //         System.out.println(movie);
+        // }
         movies.insertMany(movieList);
         
         System.out.println("Importing data into: '" + DATABASE_NAME + "' done!");

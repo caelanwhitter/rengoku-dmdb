@@ -5,25 +5,24 @@ import org.bson.types.*;
 public class Movie {
 	// TO-DO: find better replacement than empty string
 	private ObjectId id;
-	private String title, description, duration, genre, rating, poster, director, gross;
-	private double score;
-	private int releaseYear;
+	private String title, description, duration, genre, rating, poster, director, gross, score, releaseYear;
+
 
 	public Movie() {
-		this.title = "";
+		this.title = "Unknown";
 		this.description = "";
-		this.duration = "";
-		this.genre = "";
-		this.rating = "";
+		this.duration = "Unknown";
+		this.genre = "Unknown";
+		this.rating = "Unknown";
 		this.poster = "";
-		this.director = "";
-		this.score = 0.0;
-		this.gross = "";
-		this.releaseYear = 0;
+		this.director = "Unknown";
+		this.score = "Unknown";
+		this.gross = "Unknown";
+		this.releaseYear = "Unknown";
 	}
 
 	public Movie(String title, String description, String duration, String genre, String rating,
-			String poster, String director, double score, String gross, int releaseYear) {
+			String poster, String director, String score, String gross, String releaseYear) {
 		this.title = title;
 		this.description = description;
 		this.duration = duration;
@@ -100,11 +99,11 @@ public class Movie {
 		this.director = director;
 	}
 
-	public double getScore() {
+	public String getScore() {
 		return score;
 	}
 
-	public void setScore(double score) {
+	public void setScore(String score) {
 		this.score = score;
 	}
 
@@ -116,17 +115,17 @@ public class Movie {
 		this.gross = gross;
 	}
 
-	public int getReleaseYear() {
+	public String getReleaseYear() {
 		return releaseYear;
 	}
 
-	public void setReleaseYear(int releaseYear) {
+	public void setReleaseYear(String releaseYear) {
 		this.releaseYear = releaseYear;
 	}
 
 	@Override
 	public String toString() {
-		return "MOVIE: " + title + " | " + description + " | " + genre + " | " + rating + " | " + poster + " | "
-				+ director + " | " + score + " | " + gross + " | " + releaseYear;
+		return "MOVIE: " + description + " | " + director + " | "+ duration +" | " + genre + " | " + gross + " | " + poster + " | "
+				+ rating + " | " + releaseYear + " | " + score + " | " + title;
 	}
 }

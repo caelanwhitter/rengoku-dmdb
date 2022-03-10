@@ -107,7 +107,7 @@ export default function Reviews() {
         border: 'solid 1px #000',
       })}>
         <Text underline size="lg" weight={500}>{element.subtitle}</Text>
-        <Badge size="xl" color="dark" >{element.rating}⭐</Badge>
+        <Badge sx={(theme) => ({margin:"10px"})} size="xl" color="dark" >{element.rating}⭐</Badge>
 
         <Spoiler maxHeight={100} showLabel="Show more" hideLabel="Hide"> {element.content} </Spoiler>
 
@@ -150,6 +150,7 @@ export default function Reviews() {
             marginTop: theme.radius.md,
           })} size="sm" radius="lg" placeholder="Headline for your review" label="Subtitle" required />
           <Textarea id="headline" value={content} onChange={(event) => setContent(event.currentTarget.value)} sx={(theme) => ({
+            paddingTop:"10px",
             textAlign: 'center',
             paddingLeft: theme.spacing.xl,
             paddingRight: theme.spacing.xl,
@@ -159,14 +160,14 @@ export default function Reviews() {
 
 
           <NumberInput sx={(theme) => ({
-            width: "25%", margin: "auto"
+            width: "25%", margin: "auto", padding:"10px"
           })} value={rating} onChange={(val) => setRating(val)}
             label="Star Rating"
             placeholder="3"
             max={5}
             min={0}
           />
-          <Button onClick={() => {
+          <Button  onClick={() => {
             if (content === "" || headline === "") {
               document.getElementById("visible").style.visibility = "visible";
             } else {
