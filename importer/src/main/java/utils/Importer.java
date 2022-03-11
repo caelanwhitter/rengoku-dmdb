@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.text.NumberFormat;
 
 /**
  * Importer.java reads through every line of dataset, cleans each line and creates a Movie object
@@ -16,6 +17,8 @@ public class Importer {
      */
     private String movieAttributesPath;
     private List<Movie> movieList = new ArrayList<Movie>();
+    private NumberFormat formatter = NumberFormat.getCurrencyInstance();
+
 
     /**
      * set the path to the csv file
@@ -25,6 +28,7 @@ public class Importer {
     }
 
     public List<Movie> fetchDataFromDataset() {
+
 
         String line = " ";
         String splitby = ",";
@@ -63,10 +67,10 @@ public class Importer {
                      * line is missing information
                      */
                     movie.setTitle(movieAttributes[0]);
-                    movie.setRating(movieAttributes[1]);
+                    movie.setRating(formatRating(movieAttributes[1]));
                     movie.setGenre(movieAttributes[2]);
-                    movie.setReleaseYear(Integer.parseInt(movieAttributes[3]));
-                    movie.setScore(parseDouble(movieAttributes[6]));
+                    movie.setReleaseYear(movieAttributes[3]);
+                    movie.setScore(formatNumber(movieAttributes[6]));
 
                     /**
                      * Since the release date column can contain a comma,
@@ -81,7 +85,10 @@ public class Importer {
                             movie.setDuration(movieAttributes[15]);
                         }
                         movie.setDirector(movieAttributes[8]);
-                        movie.setGross(movieAttributes[13]);
+                        movie.setGross(formatGross(movieAttributes[13]));
+
+
+
 
                     }
                     /**
@@ -90,7 +97,7 @@ public class Importer {
                      */
                     else if (movieAttributes.length == 10) {
                         movie.setDirector(movieAttributes[7]);
-                        movie.setScore(parseDouble(movieAttributes[5]));
+                        movie.setScore(formatNumber(movieAttributes[5]));
                     }
                     /**
                      * In case if movieAttributes where the release date have no comma, go through
@@ -100,7 +107,7 @@ public class Importer {
                     else {
                         movie.setDuration(movieAttributes[14]);
                         movie.setDirector(movieAttributes[7]);
-                        movie.setGross(movieAttributes[12]);
+                        movie.setGross(formatGross(movieAttributes[12]));
                     }
 
                     /* Add movie into movie list after changes */
@@ -127,9 +134,45 @@ public class Importer {
      * @param number A String containing either a number or is empty
      * @return the parsed double of the string or the default number of 0
      */
-    public double parseDouble(String number) {
-        return number != "" ? Double.parseDouble(number) : 0;
+    public String formatNumber(String number) {
+        if (number.equals(""))
+        {
+
+            return "Unknown";
+        }
+        return number;
     }
+
+
+    /**
+     * Formats the gross into a more readable number
+     * 
+     * @param number A String containing either a number or is empty
+     * @return the formatted number
+     */
+    public String formatGross(String number) {
+
+        if (formatNumber(number).equals("Unknown")) {
+            return "Unknown";
+        }
+        String newNumber = formatter.format(Double.parseDouble(formatNumber(number)));
+
+        return newNumber;
+    }
+    
+    /**
+     * Checks if rating is empty and make it unknown or keeps it
+     * @param letter string containing rating
+     * @return the formatted rating
+     */
+    public String formatRating(String letter) {
+        if(letter.equals(""))
+        {
+            return "Unknown";
+        }
+        return letter;
+    }
+
 
     /**
      * 
@@ -151,13 +194,13 @@ public class Importer {
          */
         movie.setTitle(commas[0].substring(1));
         movie.setDuration(secondHalf[9]);
-        movie.setRating(firstHalf[0]);
+        movie.setRating(formatRating(firstHalf[0]));
         movie.setGenre(firstHalf[1]);
-        movie.setReleaseYear(Integer.parseInt(firstHalf[2]));
+        movie.setReleaseYear(firstHalf[2]);
         movie.setDirector(secondHalf[2]);
-        movie.setScore(parseDouble(secondHalf[0]));
-        movie.setGross(secondHalf[7]);
-        movie.setReleaseYear(Integer.parseInt(firstHalf[2]));
+        movie.setScore(formatNumber(secondHalf[0]));
+        movie.setGross(formatGross(secondHalf[7]));
+        //movie.setReleaseYear(firstHalf[2]);
 
         /**
          * create a movie object and add it to List of movies

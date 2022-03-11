@@ -1,9 +1,7 @@
-import {
-    Grid, Text, Badge, Title, Modal, Group, Card,
-    Image, Pagination, TextInput, Button, Affix
-} from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
+import { Grid, Text, Badge, Title, Modal, Group, Card, 
+    Image, Pagination, TextInput, Button } from '@mantine/core';
 import '../App.css';
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { useWindowScroll } from '@mantine/hooks';
@@ -13,7 +11,6 @@ import { useWindowScroll } from '@mantine/hooks';
  * @returns Table Of Movies + Pagination
  */
 export default function Movies() {
-
     //Initializes variables and sets up "settters to variables"
     const [movies, setMovies] = useState([{}]);
     const [activePage, setPage] = useState(1);
@@ -72,8 +69,7 @@ export default function Movies() {
     async function calculateTotalPagination(moviesPaginationJson) {
         let response = await fetch('/api/getSearch?title=' + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre+   '&releaseYear=' + valueReleaseYear+ '&score=' + valueScore+ '&rating=' + valueRating);
         let allMoviesJson = await response.json();
-        const totalMoviePages = Math.ceil(allMoviesJson.length / moviesPaginationJson.length);
-        console.log(totalMoviePages);
+        const totalMoviePages = Math.ceil(allMoviesJson.length/moviesPaginationJson.length);
         setTotalPagination(totalMoviePages);
     }
     async function clickOnGo(event) {
