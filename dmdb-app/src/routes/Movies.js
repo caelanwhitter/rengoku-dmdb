@@ -21,8 +21,8 @@ export default function Movies() {
     const [valueTitle, setValueTitle] = useState('');
     const [valueDirector, setValueDirector] = useState('');
     const [valueGenre, setValueGenre] = useState('');
-    const [valueReleaseYear, setValueReleaseYear] = useState();
-    const [valueScore, setValueScore] = useState();
+    const [valueReleaseYear, setValueReleaseYear] = useState('');
+    const [valueScore, setValueScore] = useState('');
     const [valueRating, setValueRating] = useState('');
 
     const [oneMovieData, setOneMovieData] = useState([{}]);
@@ -51,7 +51,7 @@ export default function Movies() {
      */
     //  '&releaseYear=' + valueReleaseYear+ '&score=' + valueScore+ 
     async function fetchMoviesPerPage(pageNumber) {
-        let response = await fetch('/api/getSearch/page/' + pageNumber + '?title=' + valueTitle + '&director=' + valueDirector + '&genre=' +valueGenre+ '&releaseYear=' + valueReleaseYear+ '&score=' + valueScore+ valueGenre+'&rating=' + valueRating);
+        let response = await fetch('/api/getSearch/page/' + pageNumber + '?title=' + valueTitle + '&director=' + valueDirector + '&genre=' +valueGenre+ '&releaseYear=' + valueReleaseYear+ '&score=' + valueScore+ '&rating=' + valueRating);
         let moviesPaginationJson = await response.json();
         setMovies(moviesPaginationJson);
 
@@ -160,23 +160,24 @@ export default function Movies() {
                     radius="md"
                     required
                 />
-                <h4>Enter Release Year below</h4>
+                
                 <TextInput
+                    label="Release Year "
                     value={valueReleaseYear}
                     onChange={(event) => setValueReleaseYear(event.currentTarget.value)}
-                    placeholder="Search..."
-                    variant="unstyled"
-                    size="lg"
+                    placeholder="Enter the Release Year"
+                    //variant="unstyled"
+                    size="md"
                     radius="md"
                     required
                 />
-                <h4>Enter Score below</h4>
                 <TextInput
+                    label="Score"
                     value={valueScore}
                     onChange={(event) => setValueScore(event.currentTarget.value)}
-                    placeholder="Search..."
-                    variant="unstyled"
-                    size="lg"
+                    placeholder="Enter the Score "
+                   // variant="unstyled"
+                    size="md"
                     radius="md"
                     required
                 />
