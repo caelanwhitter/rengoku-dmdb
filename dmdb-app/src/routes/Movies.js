@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { Grid, Text, Badge, Title, Modal, Group, Card, 
-    Image, Pagination, TextInput, Button } from '@mantine/core';
+    Image, Pagination, TextInput,NativeSelect, Button } from '@mantine/core';
 import '../App.css';
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { useWindowScroll } from '@mantine/hooks';
@@ -51,7 +51,7 @@ export default function Movies() {
      */
     //  '&releaseYear=' + valueReleaseYear+ '&score=' + valueScore+ 
     async function fetchMoviesPerPage(pageNumber) {
-        let response = await fetch('/api/getSearch/page/' + pageNumber + '?title=' + valueTitle + '&director=' + valueDirector + '&genre=' +valueGenre+ '&releaseYear=' + valueReleaseYear+ '&score=' + valueScore+ '&rating=' + valueRating);
+        let response = await fetch('/api/getSearch/page/' + pageNumber + '?title=' + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre + '&releaseYear=' + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
         let moviesPaginationJson = await response.json();
         setMovies(moviesPaginationJson);
 
@@ -67,7 +67,7 @@ export default function Movies() {
      */
     //
     async function calculateTotalPagination(moviesPaginationJson) {
-        let response = await fetch('/api/getSearch?title=' + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre+   '&releaseYear=' + valueReleaseYear+ '&score=' + valueScore+ '&rating=' + valueRating);
+        let response = await fetch('/api/getSearch?title=' + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre +   '&releaseYear=' + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
         let allMoviesJson = await response.json();
         const totalMoviePages = Math.ceil(allMoviesJson.length/moviesPaginationJson.length);
         setTotalPagination(totalMoviePages);
@@ -182,15 +182,12 @@ export default function Movies() {
                     required
                 />
 
-                <TextInput
+                <NativeSelect
                     label="Rating"
                     value={valueRating}
+                    data={['R','PG','PG-13']}
                     onChange={(event) => setValueRating(event.currentTarget.value)}
-                    placeholder="Enter the Rating: (R, PG, PG-13)"
-                    //variant="unstyled"
-                    size="md"
-                    radius="md"
-                    required
+                    placeholder="Select a Rating"
                 />
                 <br />
                 <Button
@@ -208,20 +205,25 @@ export default function Movies() {
                 overflow="inside"
                 centered
             >
-                <div id="movieDetails">
+                 <div id="movieDetails">
                     <Image src={null} height={320} width={250} alt={oneMovieData.title + " Poster"} withPlaceholder />
                     <div id="movieText">
-                        <Title order={4}>Director: {oneMovieData.director}</Title>
-                        <Group position="left">
-                            <Badge color="dark">{oneMovieData.genre}</Badge>
-                            <Badge color="dark" variant="outline">{parseInt(oneMovieData.duration)} minutes</Badge>
-                            <Badge color="gray" variant="outline">Rated {oneMovieData.rating}</Badge>
-                            <Badge color="yellow" variant="dot">{oneMovieData.score} ⭐</Badge>
-                        </Group>
-                        <p>This is the description of the movie.</p>
+                <Title order={4}>Director: {oneMovieData.director}</Title>
+                <Group position="left">
+                    <Badge color="dark">{oneMovieData.genre}</Badge>
+                    <Badge color="dark" variant="outline">{parseInt(oneMovieData.duration)} minutes</Badge>
+                    <Badge color="gray" variant="outline">Rated {oneMovieData.rating}</Badge> 
+                        <Badge color="yellow" variant="dot">{oneMovieData.score} ⭐</Badge> 
+
+                </Group>
+                    <p>This is the description of the movie.</p>
                         <Title order={6}>Gross: {oneMovieData.gross}</Title>
-                    </div>
+                        <Badge variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}><NavLink style={{ textDecoration: 'none' , color: 'black'}} to={`${oneMovieData._id}/reviews`}>View Reviews</NavLink></Badge>
+
+
                 </div>
+            </div>
+
             </Modal>
 
             <Grid className="movieGrid" gutter={80}>

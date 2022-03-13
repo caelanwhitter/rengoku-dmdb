@@ -14,18 +14,7 @@ const bp = require("body-parser");
 router.use(bp.json());
 router.use(bp.urlencoded({ extended: true }));
 
-// router.get("/allMovies", async (req, res) => {
-//     const allMovies = await Movies.find({});
 
-//     try {
-//         res.json(allMovies);
-//         res.end();
-//     }
-//     catch (error) {
-//         console.error(error.message);
-//         res.sendStatus(404).end();
-//     }
-// })
 router.get("/getSearch", async (req, res) => {
     const keywordTitle = req.query.title;
     const keywordDirector = req.query.director;
@@ -76,22 +65,6 @@ router.get("/getSearch/page/:pageNumber", async (req, res) => {
         res.sendStatus(404).end();
     }
 })
-
-// router.get("/allMovies/page/:pageNumber", async (req, res) => {
-//     const pageNumber = req.params.pageNumber;
-//     const elemsPerPage = 52;
-//     const moviesPerPage = await Movies.find({}).skip(elemsPerPage * (pageNumber - 1)).limit(elemsPerPage);
-
-//     try {
-//         res.json(moviesPerPage);
-//         res.end();
-//     }
-//     catch (error) {
-//         console.error(error.message);
-//         res.sendStatus(404).end();
-//     }
-// })
-
 
 router.get("/oneMovie", async (req, res) => {
 
