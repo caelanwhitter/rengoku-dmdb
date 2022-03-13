@@ -9,6 +9,7 @@ const Movies = require("../database/mongoose");
 const ObjectId = require("mongodb").ObjectId;
 const fetch = require("node-fetch");
 const { BlobServiceClient } = require('@azure/storage-blob');
+const bp = require('body-parser');
 const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const CONTAINER_NAME = "rengokublobs";
@@ -23,6 +24,9 @@ console.log("Connecting to Azure Blob Storage...");
 const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
 const containerClient = blobServiceClient.getContainerClient(CONTAINER_NAME);
 console.log("Connected to container " + CONTAINER_NAME + "!\n");
+
+router.use(bp.json());
+router.use(bp.urlencoded({ extended: true }));
 
 router.get("/allMovies", async (req, res) => {
     const allMovies = await Movies.find({});
@@ -66,43 +70,14 @@ router.get("/oneMovie", async (req, res) => {
     }
 });
 
-router.get("/oneMovie/fetchMovieApi/:movieId", async (req, res) => {
-    let movieId = req.params.movieId;
-    const singleMovieArray = await getOneMovieById(movieId);
-    console.log(singleMovieArray);
-    let singleMovie = singleMovieArray[0];
-
-    console.log(singleMovie);
-    let movieApiJson = await fetchMovieDataFromApi(singleMovie);
-
-    let movieTitle = movieApiJson.title;
-    let movieYear = movieApiJson.year;
-    const posterBlobName = 'rengokuBlob-' + movieTitle + "-" + movieYear + ".jpg";
-    await uploadMoviePoster(posterBlobName, movieApiJson.poster);
-
-    const movieBlobUrl = await getMovieBlobUrl(posterBlobName);
-    console.log(movieBlobUrl);
-
-    await updateMovieDataToDB(movieId, movieApiJson.description, movieBlobUrl);
-
-    try {
-        res.json(movieApiJson);
-        res.end();
-    }
-    catch (error) {
-        console.error(error.message);
-        res.sendStatus(404).end();
-    }
-});
-
 /**
- * fetchMovieDataFromApi() takes a Movie Title, fetches description and movie poster URL from backend and returns it as an object
+ * fetchMovieDataFromApi endpoints takes a Movie Title and Year, fetches description and movie poster URL from API and returns it as a JSON
  * @param {*} movieTitle 
  * @returns Object with description & movie poster URL
  */
-async function fetchMovieDataFromApi(movie) {
-    let movieTitle = movie.title;
-    let movieYear = movie.releaseYear;
+router.get("/oneMovie/fetchMovieDataFromApi/", async (req, res) => {
+    let movieTitle = req.query.title;
+    let movieYear = req.query.year;
     let response = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${movieTitle}&year=${movieYear}`);
     if (response.ok) {
         let moviesJsonApi = await response.json();
@@ -122,11 +97,31 @@ async function fetchMovieDataFromApi(movie) {
                 poster: firstMovieJson.poster_path,
                 year: movieYear,
             }
+            console.log(movieData);
         }
-        return movieData;
+        res.json(movieData);
+        res.end();
     }
-    throw new Error('TMDB Movie API failed!');
-}
+    else {
+        res.status(404).send("404: Can't fetch movie data from API.");
+    }
+});
+
+router.post("/oneMovie/updateMovieDataToAzure/", async (req, res) => {
+    const requestBody = await req.body;
+    console.log(requestBody);
+
+    const posterBlobName = 'rengokuBlob-' + requestBody.title + "-" + requestBody.year + ".jpg";
+    await uploadMoviePoster(posterBlobName, requestBody.poster);
+
+    const movieBlobUrl = await getMovieBlobUrl(posterBlobName);
+
+    //await updateMovieDataToDB(movieId, requestBody.description, movieBlobUrl);
+
+    res.status(201).json({
+        message: "POST Updating Movie worked!"
+    });
+});
 
 /**
  * uploadMoviePoster fetches the image from the movie poster API with the right path and uploads to Azure Blob Storage

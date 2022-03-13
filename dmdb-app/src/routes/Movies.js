@@ -1,6 +1,6 @@
 import {
     Grid, Text, Badge, Title, Modal,
-    Group, Card, Image, Pagination
+    Group, Card, Image, Pagination, JsonInput
 } from '@mantine/core';
 import React, { useEffect, useState } from 'react';
 import { useWindowScroll } from '@mantine/hooks';
@@ -103,7 +103,9 @@ export default function Movies() {
         let cards = moviesJson.map((movie) => {
             // Checks if movie description and poster are missing and checks if movie isn't an empty object
             if ((!movie.description || !movie.poster) && Object.keys(movie).length !== 0) {
-                fetchMovieDataFromBackend(movie);
+                /*TO-DO: You cannot add multiple async calls here because map doesn't support async functions so anything returning a Promise won't work. 
+                         Mitigated through calling one function that will run all the async functions instead*/
+                updateMovieDetails(movie);
             }
             return (
                 <Grid.Col span={3}>
@@ -126,14 +128,39 @@ export default function Movies() {
         return cards;
     }
 
-    async function fetchMovieDataFromBackend(movie) {
+    async function updateMovieDetails(movie) {
+        let movieData = await fetchMovieDataFromApi(movie);
+        await updateMovieDataToBlobStorage(movieData);
+    }
+
+    async function fetchMovieDataFromApi(movie) {
         try {
-            let movieUrl = '/api/oneMovie/fetchMovieApi/' + movie._id;
+            let movieUrl = '/api/oneMovie/fetchMovieDataFromApi?title=' + movie.title + '&year=' + movie.releaseYear;
             let response = await fetch(movieUrl);
             if (response.ok) {
-                let movieJson = await response.json();
-                console.log(movieJson.title + ": " + movieJson.poster);
+                let movieData = await response.json();
+                return movieData;
             }
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    async function updateMovieDataToBlobStorage(movieData) {
+        try {
+            await fetch('/api/oneMovie/updateMovieDataToAzure', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: movieData.title,
+                    year: movieData.year,
+                    poster: movieData.poster,
+                    description: movieData.description
+                })
+            });
         }
         catch (e) {
             console.log(e);
