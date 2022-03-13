@@ -109,17 +109,24 @@ router.get("/oneMovie/fetchMovieDataFromApi/", async (req, res) => {
 
 router.post("/oneMovie/updateMovieDataToAzure/", async (req, res) => {
     const requestBody = await req.body;
+
     console.log(requestBody);
-
-    const posterBlobName = 'rengokuBlob-' + requestBody.title + "-" + requestBody.year + ".jpg";
-    await uploadMoviePoster(posterBlobName, requestBody.poster);
-
-    const movieBlobUrl = await getMovieBlobUrl(posterBlobName);
-
-    //await updateMovieDataToDB(movieId, requestBody.description, movieBlobUrl);
+    let blobData = getMovieBlobNameAndUrl(requestBody);
+    await uploadMoviePoster(blobData.posterBlobName, requestBody.poster);
 
     res.status(201).json({
-        message: "POST Updating Movie worked!"
+        message: "POST Updating Movie to Blob Storage succeeded!"
+    });
+});
+
+router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
+    const requestBody = await req.body;
+
+    let blobData = getMovieBlobNameAndUrl(requestBody);
+    await updateMovieDataToDB(requestBody.id, requestBody.description, blobData.url);
+
+    res.status(201).json({
+        message: "POST Updating Movie to Database succeeded!"
     });
 });
 
@@ -177,10 +184,16 @@ async function getOneMovieById(id) {
  * @param {*} movieTitle 
  * @returns blockBlobClient.url
  */
-async function getMovieBlobUrl(posterBlobName) {
+function getMovieBlobNameAndUrl(movieData) {
+    const posterBlobName = 'rengokuBlob-' + movieData.title + "-" + movieData.year + ".jpg";
+    console.log(posterBlobName);
     const blockBlobClient = containerClient.getBlockBlobClient(posterBlobName);
 
-    return blockBlobClient.url;
+    let data = {
+        posterBlobName: posterBlobName,
+        url: blockBlobClient.url,
+    }
+    return data;
 }
 
 module.exports = router;

@@ -129,8 +129,7 @@ export default function Movies() {
     }
 
     async function updateMovieDetails(movie) {
-        let movieData = await fetchMovieDataFromApi(movie);
-        await updateMovieDataToBlobStorage(movieData);
+        await fetchMovieDataFromApi(movie);
     }
 
     async function fetchMovieDataFromApi(movie) {
@@ -138,8 +137,9 @@ export default function Movies() {
             let movieUrl = '/api/oneMovie/fetchMovieDataFromApi?title=' + movie.title + '&year=' + movie.releaseYear;
             let response = await fetch(movieUrl);
             if (response.ok) {
-                let movieData = await response.json();
-                return movieData;
+                let movieApiData = await response.json();
+                await updateMovieDataToBlobStorage(movieApiData);
+                await updateMovieDataToDB(movie, movieApiData)
             }
         }
         catch (e) {
@@ -159,6 +159,26 @@ export default function Movies() {
                     year: movieData.year,
                     poster: movieData.poster,
                     description: movieData.description
+                })
+            });
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    async function updateMovieDataToDB(movie, movieApiData) {
+        try {
+            await fetch('/api/oneMovie/updateMovieDataToDB', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: movie._id,
+                    title: movie.title,
+                    description: movieApiData.description,
+                    year: movie.releaseYear
                 })
             });
         }
