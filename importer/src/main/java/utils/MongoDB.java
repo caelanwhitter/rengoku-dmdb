@@ -15,6 +15,9 @@ import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
+import java.text.NumberFormat;
+
+
 /**
  * MongoDB.java sets up initial connection to MongoDB database, creates Importer and inserts movies into database
  * @author Caelan Whitter & Daniel Lam
@@ -30,19 +33,26 @@ public class MongoDB {
         System.out.println("Importing data into: '" + DATABASE_NAME + "'...");
 
         ConnectionString connectionString = new ConnectionString(ATLAS_URI);
-        CodecRegistry pojoCodecRegistry = CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build());
-        CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), pojoCodecRegistry);
-        MongoClientSettings clientSettings = MongoClientSettings.builder().applyConnectionString(connectionString).codecRegistry(codecRegistry).build();
+        CodecRegistry pojoCodecRegistry = CodecRegistries
+                .fromProviders(PojoCodecProvider.builder().automatic(true).build());
+        CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
+                pojoCodecRegistry);
+        MongoClientSettings clientSettings = MongoClientSettings.builder().applyConnectionString(connectionString)
+                .codecRegistry(codecRegistry).build();
         MongoClient client = MongoClients.create(clientSettings);
 
-        MongoDatabase database = client.getDatabase(DATABASE_NAME);  
+        MongoDatabase database = client.getDatabase(DATABASE_NAME);
         MongoCollection<Movie> movies = database.getCollection(COLLECTION_NAME, Movie.class);
 
         Importer importer = new Importer("importer/src/main/java/utils/resources/movies.csv");
-        List<Movie> movieList = importer.fetchDataFromDataset();            
-        
-        movies.insertMany(movieList);
+        List<Movie> movieList = importer.fetchDataFromDataset();
 
+        // for (Movie movie : movieList)
+        // {
+        //         System.out.println(movie);
+        // }
+        movies.insertMany(movieList);
+        
         System.out.println("Importing data into: '" + DATABASE_NAME + "' done!");
     }
 }

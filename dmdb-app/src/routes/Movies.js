@@ -1,8 +1,9 @@
-import {
-    Grid, Text, Badge, Title, Modal,
-    Group, Card, Image, Pagination, JsonInput
-} from '@mantine/core';
 import React, { useEffect, useState } from 'react';
+import { Grid, Text, Badge, Title, Modal, Group, Card, 
+    Image, Pagination, TextInput, Button } from '@mantine/core';
+import { NavLink, Link } from "react-router-dom";
+import '../App.css';
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { useWindowScroll } from '@mantine/hooks';
 
 /**
@@ -18,7 +19,11 @@ export default function Movies() {
     const [activePage, setPage] = useState(DEFAULT_ACTIVE_PAGE);
     const [totalPagination, setTotalPagination] = useState();
     const [opened, setOpened] = useState(false);
+    const [movies, setMovies] = useState([{}]);
+    const [searchopened, setSearchOpened] = useState(false);
+    const [value, setValue] = useState('');
     const [, scrollTo] = useWindowScroll();
+
 
     /**
      * useEffect() runs following methods once. Similar to ComponentDidMount()
@@ -28,8 +33,8 @@ export default function Movies() {
 
     }, []);
 
-    function getDetails(movieId) {
-        fetch("/api/oneMovie?id=" + movieId).then(
+    async function getDetails(movieId) {
+        await fetch("/api/oneMovie?id=" + movieId).then(
             response => response.json())
             .then(
                 data => { setOneMovieData(data[0]) }
@@ -41,13 +46,13 @@ export default function Movies() {
      * @param {String} pageNumber 
      */
     async function displayMoviesPerPage(pageNumber) {
-        let response = await fetch('/api/allMovies/page/' + pageNumber);
+        let response = await fetch('/api/getSearch/page/'+pageNumber+'?title='+value);
         let moviesPaginationJson = await response.json();
         setCards(getCards(moviesPaginationJson));
 
         // Calls calculateTotalPagination() if totalPagination not initialized yet yet
-        if (totalPagination === undefined) {
-            await calculateTotalPagination(moviesPaginationJson);
+        if(totalPagination === undefined) {
+        await calculateTotalPagination(moviesPaginationJson);
         }
     }
 
@@ -56,11 +61,16 @@ export default function Movies() {
      * @param {JSON} moviesPaginationJson 
      */
     async function calculateTotalPagination(moviesPaginationJson) {
-        let response = await fetch('/api/allMovies');
+        let response = await fetch('/api/getSearch?title='+value);
         let allMoviesJson = await response.json();
         const totalMoviePages = Math.ceil(allMoviesJson.length / moviesPaginationJson.length);
 
         setTotalPagination(totalMoviePages);
+    }
+    async function clickOnGo(event) {
+        setTotalPagination(undefined);
+        fetchMoviesPerPage(event);
+        setSearchOpened(false);
     }
 
     /**
@@ -187,38 +197,69 @@ export default function Movies() {
         }
     }
 
-    return (
-        <>
-            <Modal
-                opened={opened}
-                onClose={() => setOpened(false)}
-                title={<Title>{oneMovieData.title}</Title>}
-                size="xl"
-                overflow="inside"
-                centered
-            >
-                <div id="movieDetails">
-                    <Image src={oneMovieData.poster} height={320} alt={oneMovieData.title + " Poster"} withPlaceholder />
-                    <Title order={4}>Director: {oneMovieData.director}</Title>
-                    <Group position="left">
-                        <Badge color="dark">{oneMovieData.genre}</Badge>
-                        <Badge color="dark" variant="outline">{parseInt(oneMovieData.duration)} minutes</Badge>
-                        <Badge color="gray" variant="outline">Rated {oneMovieData.rating}</Badge>
-                        <Badge color="yellow" variant="dot">{oneMovieData.score} ⭐</Badge>
-                    </Group>
-                    <p>{oneMovieData.description}</p>
-                    <Title order={6}>Gross: {oneMovieData.gross}</Title>
-                </div>
-            </Modal>
+    return (    
+        <>  
+        <nav id="searchNav">
+            <Link className="tabLink" onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
+        </nav>
 
-            <div style={{ display: "flex" }}>
-                <nav style={{ padding: "2rem" }}>
-                    <Grid gutter={80}>
-                        {cards}
-                    </Grid>
-                    <Pagination id="pagination" page={activePage} onChange={changePage} total={totalPagination} color="dark" sibilings={1} withEdges />
-                </nav>
+        <Modal
+        opened={searchopened}
+        onClose={() => setSearchOpened(false)}
+        hideCloseButton
+      >
+        <TextInput
+          value={value}
+          onChange={(event) => setValue(event.currentTarget.value)}
+          placeholder="Search..."
+          variant="unstyled"
+          size="lg"
+          radius="md"
+          required
+        /> <br />
+        <Button
+          onClick={clickOnGo}
+          color="dark"
+          type="submit">
+          Go!
+        </Button>
+      </Modal>
+      
+        <Modal
+            opened={opened}
+            onClose={() => setOpened(false)}
+            title={<Title>{oneMovieData.title}</Title>}
+            size="xl"
+            overflow="inside"
+            centered
+            >
+            <div id="movieDetails">
+                    <Image src={null} height={320} width={250} alt={oneMovieData.title + " Poster"} withPlaceholder />
+                    <div id="movieText">
+                <Title order={4}>Director: {oneMovieData.director}</Title>
+                <Group position="left">
+                    <Badge color="dark">{oneMovieData.genre}</Badge>
+                    <Badge color="dark" variant="outline">{parseInt(oneMovieData.duration)} minutes</Badge>
+                    <Badge color="gray" variant="outline">Rated {oneMovieData.rating}</Badge> 
+                        <Badge color="yellow" variant="dot">{oneMovieData.score} ⭐</Badge> 
+
+                </Group>
+                    <p>This is the description of the movie.</p>
+                        <Title order={6}>Gross: {oneMovieData.gross}</Title>
+                        <Badge variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}><NavLink style={{ textDecoration: 'none' , color: 'black'}} to={`${oneMovieData._id}/reviews`}>View Reviews</NavLink></Badge>
+
+
+                </div>
             </div>
+        </Modal>
+
+        <Grid className="movieGrid" gutter={80}>
+            {cards}
+        </Grid>
+
+        <div id="pagination">
+            <Pagination page={activePage} onChange={changePage} total={totalPagination} color="dark" sibilings={1} withEdges/>
+        </div>
         </>
     );
 }
