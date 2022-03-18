@@ -47,7 +47,8 @@ router.use(bp.urlencoded({ extended: true }));
 router.get("/getSearch", async (req, res) => {
   const keyword = req.query.title;
   const findTitle = await Movies.find({
-    title: { $regex: `${keyword}`, $options: "i"}});
+    title: { $regex: `${keyword}`, $options: "i" }
+  });
   try {
     res.json(findTitle);
     res.end();
@@ -60,9 +61,9 @@ router.get("/getSearch", async (req, res) => {
 router.get("/getSearch/page/:pageNumber", async (req, res) => {
   const pageNumber = req.params.pageNumber;
   const keyword = req.query.title;
-  const elemsPerPage = 52;
+  const elemsPerPage = 4;
   const moviesPerPage = await Movies.find({
-    title: { $regex: `${keyword}`, $options: "i"}
+    title: { $regex: `${keyword}`, $options: "i" }
   }).skip(elemsPerPage * (pageNumber - 1)).limit(elemsPerPage);
 
   try {
@@ -91,7 +92,7 @@ router.get("/getSearch/page/:pageNumber", async (req, res) => {
 
 router.get("/oneMovie", async (req, res) => {
   const id = req.query.id;
-  const singleMovie = await Movies.find({"_id": new ObjectId(id)});
+  const singleMovie = await Movies.find({ "_id": new ObjectId(id) });
 
   try {
     res.json(singleMovie);
@@ -105,7 +106,7 @@ router.get("/oneMovie", async (req, res) => {
 router.get("/oneMovie/reviews", async (req, res) => {
   const id = req.query.id;
 
-  const reviewForMovie = await Reviews.find({"movieId": id});
+  const reviewForMovie = await Reviews.find({ "movieId": id });
   try {
     res.json(reviewForMovie);
     res.end();
@@ -120,7 +121,7 @@ router.post("/reviews", async (req, res) => {
   const body = await req.body;
   // // eslint-disable-next-line max-len
   // eslint-disable-next-line max-len
-  const doc = new Reviews({username: body.username, movieId: body.movieId, content: body.content, rating: body.rating, datePosted: body.datePosted, subtitle: body.subtitle});
+  const doc = new Reviews({ username: body.username, movieId: body.movieId, content: body.content, rating: body.rating, datePosted: body.datePosted, subtitle: body.subtitle });
   await doc.save();
   res.status(201).json({
     message: "Post worked!"
@@ -132,9 +133,9 @@ router.delete("/review/delete", async (req, res) => {
   Reviews.findByIdAndDelete(body.id, function (err) {
     if (err) {
       console.error(err);
-    }    
+    }
     console.log("Successful deletion");
-    });
+  });
 });
 
 /**
@@ -143,58 +144,76 @@ router.delete("/review/delete", async (req, res) => {
  * @returns Object with description & movie poster URL
  */
 router.get("/oneMovie/fetchMovieDataFromApi/", async (req, res) => {
-    let movieTitle = req.query.title;
-    let movieYear = req.query.year;
-    let response = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${movieTitle}&year=${movieYear}`);
+  let movieTitle = req.query.title;
+  let movieYear = parseInt(req.query.year);
+  let url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${movieTitle}&year=${movieYear}`;
+
+  let response = await fetch(url);
+  try {
     if (response.ok) {
-        let moviesJsonApi = await response.json();
-        let moviesApiResults = moviesJsonApi.results;
-        let movieData = {};
+      let moviesJsonApi = await response.json();
+      let moviesApiResults = moviesJsonApi.results;
+      let closestMovieJson = {};
+      let movieData = {};
 
-        // Checks if movie results has at least one movie. If there is, update description and poster
-        if (moviesApiResults.length !== 0) {
+      // Checks if movie results has at least one movie. If there is, update description and poster
+      if (moviesApiResults.length !== 0) {
 
-            // Take first movie from results, most similar result
-            let firstMovieJson = moviesApiResults[0];
+        console.log("Reach more than one result!");
+        // Take first movie from results, most similar result
+        closestMovieJson = moviesApiResults[0];
 
-            // Creates movieData object with title, description and poster
-            movieData = {
-                title: firstMovieJson.original_title,
-                description: firstMovieJson.overview,
-                poster: firstMovieJson.poster_path,
-                year: movieYear,
-            }
-            console.log(movieData);
-        }
-        res.json(movieData);
-        res.end();
+      }
+      // If there isn't, find most similar movie based on matching original movie title and closest year.
+      else {
+
+        console.log("Reach no result.");
+        let closestMovieResults = await fetchClosestMovies(movieTitle);
+        console.log(closestMovieResults);
+        closestMovieJson = findClosestMovie(closestMovieResults, movieTitle, movieYear);
+        console.log(closestMovieJson);
+      }
+
+      // Creates movieData object with title, description and poster
+      movieData = {
+        title: closestMovieJson.title,
+        description: closestMovieJson.overview,
+        poster: closestMovieJson.poster_path,
+        year: movieYear,
+      }
+      console.log(movieData);
+      res.json(movieData);
+      res.end();
     }
     else {
-        res.status(404).send("404: Can't fetch movie data from API.");
+      throw new Error("404: Response not OK");
     }
+  }
+  catch (e) {
+    res.status(404).send("404: Movie API Fetch Failed!");
+  }
 });
 
 router.post("/oneMovie/updateMovieDataToAzure/", async (req, res) => {
-    const requestBody = await req.body;
+  const requestBody = await req.body;
 
-    console.log(requestBody);
-    let blobData = getMovieBlobNameAndUrl(requestBody);
-    await uploadMoviePoster(blobData.posterBlobName, requestBody.poster);
+  let blobData = getMovieBlobNameAndUrl(requestBody);
+  await uploadMoviePoster(blobData.posterBlobName, requestBody.poster);
 
-    res.status(201).json({
-        message: "POST Updating Movie to Blob Storage succeeded!"
-    });
+  res.status(201).json({
+    message: "POST Updating Movie to Blob Storage succeeded!"
+  });
 });
 
 router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
-    const requestBody = await req.body;
+  const requestBody = await req.body;
 
-    let blobData = getMovieBlobNameAndUrl(requestBody);
-    await updateMovieDataToDB(requestBody.id, requestBody.description, blobData.url);
+  let blobData = getMovieBlobNameAndUrl(requestBody);
+  await updateMovieDataToDB(requestBody.id, requestBody.description, blobData.url);
 
-    res.status(201).json({
-        message: "POST Updating Movie to Database succeeded!"
-    });
+  res.status(201).json({
+    message: "POST Updating Movie to Database succeeded!"
+  });
 });
 
 /**
@@ -204,23 +223,23 @@ router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
  * @param {*} moviePosterPath 
  */
 async function uploadMoviePoster(posterBlobName, moviePosterPath) {
-    let moviePosterUrl = `http://image.tmdb.org/t/p/w500${moviePosterPath}`;
-    let response = await fetch(moviePosterUrl);
-    if (response.ok) {
+  let moviePosterUrl = `http://image.tmdb.org/t/p/w500${moviePosterPath}`;
+  let response = await fetch(moviePosterUrl);
+  if (response.ok) {
 
-        // Return the response as a blob and turn it into a Readeable stream
-        const image = await response.blob();
-        const imageStream = image.stream();
+    // Return the response as a blob and turn it into a Readeable stream
+    const image = await response.blob();
+    const imageStream = image.stream();
 
-        // Create a unique name for the blob
-        const blockBlobClient = containerClient.getBlockBlobClient(posterBlobName);
+    // Create a unique name for the blob
+    const blockBlobClient = containerClient.getBlockBlobClient(posterBlobName);
 
-        // set mimetype as determined from browser with images
-        const options = { blobHTTPHeaders: { blobContentType: "image/jpeg" } };
+    // set mimetype as determined from browser with images
+    const options = { blobHTTPHeaders: { blobContentType: "image/jpeg" } };
 
-        // Upload blob to container
-        await blockBlobClient.uploadStream(imageStream, uploadOptions.bufferSize, uploadOptions.maxBuffers, options);
-    }
+    // Upload blob to container
+    await blockBlobClient.uploadStream(imageStream, uploadOptions.bufferSize, uploadOptions.maxBuffers, options);
+  }
 }
 
 /**
@@ -230,9 +249,9 @@ async function uploadMoviePoster(posterBlobName, moviePosterPath) {
  * @param {*} movieBlobUrl 
  */
 async function updateMovieDataToDB(movieId, movieDescription, movieBlobUrl) {
-    let fieldsToUpdate = { description: movieDescription, poster: movieBlobUrl }
+  let fieldsToUpdate = { description: movieDescription, poster: movieBlobUrl }
 
-    await Movies.findByIdAndUpdate(movieId, fieldsToUpdate)
+  await Movies.findByIdAndUpdate(movieId, fieldsToUpdate)
 }
 
 /**
@@ -242,8 +261,8 @@ async function updateMovieDataToDB(movieId, movieDescription, movieBlobUrl) {
  * @returns singleMovie object
  */
 async function getOneMovieById(id) {
-    const singleMovie = await Movies.find({ "_id": new ObjectId(id) });
-    return singleMovie;
+  const singleMovie = await Movies.find({ "_id": new ObjectId(id) });
+  return singleMovie;
 }
 
 /**
@@ -252,15 +271,62 @@ async function getOneMovieById(id) {
  * @returns blockBlobClient.url
  */
 function getMovieBlobNameAndUrl(movieData) {
-    const posterBlobName = 'rengokuBlob-' + movieData.title + "-" + movieData.year + ".jpg";
-    console.log(posterBlobName);
-    const blockBlobClient = containerClient.getBlockBlobClient(posterBlobName);
+  const posterBlobName = 'rengokuBlob-' + movieData.title + "-" + movieData.year + ".jpg";
+  console.log(posterBlobName);
+  const blockBlobClient = containerClient.getBlockBlobClient(posterBlobName);
 
-    let data = {
-        posterBlobName: posterBlobName,
-        url: blockBlobClient.url,
-    }
-    return data;
+  let data = {
+    posterBlobName: posterBlobName,
+    url: blockBlobClient.url,
+  }
+  return data;
 }
 
+async function fetchClosestMovies(movieTitle) {
+  let url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${movieTitle}`
+  let response = await fetch(url);
+  if (response.ok) {
+    console.log("reach");
+    let movieApiJson = await response.json();
+    let moviesApiResults = movieApiJson.results;
+    return moviesApiResults;
+  }
+  else {
+    throw new Error("Failed to query movie title only");
+  }
+}
+
+function findClosestMovie(movies, movieTitle, movieYearQuery) {
+  console.log("movieTitle: " + movieTitle);
+  let moviesWithExactTitle = [];
+  movies.forEach((movie) => {
+    if (equalsIgnoreCase(movie.original_title, movieTitle) && movie.release_date) {
+      moviesWithExactTitle.push(movie);
+    }
+  });
+
+  console.log(moviesWithExactTitle);
+
+  let closestMovie = moviesWithExactTitle[0];
+  let closestMovieYear = parseReleaseYear(closestMovie.release_date);
+  moviesWithExactTitle.forEach((movie) => {
+    let formattedMovieYear = parseReleaseYear(movie.release_date);
+    if (Math.abs(movieYearQuery - formattedMovieYear) < Math.abs(movieYearQuery - closestMovieYear)) {
+      closestMovie = movie;
+      closestMovieYear = parseReleaseYear(closestMovie.release_date);
+    }
+  });
+  console.log("Closest Movie:\n");
+  console.log(closestMovie);
+
+  return closestMovie;
+}
+
+function parseReleaseYear(releaseDate) {
+  return parseInt(releaseDate.substring(0, 3));
+}
+
+function equalsIgnoreCase(firstString, secondString) {
+  return firstString.localeCompare(secondString, undefined, { sensitivity: 'base' }) === 0;
+}
 module.exports = router;
