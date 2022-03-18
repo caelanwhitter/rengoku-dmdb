@@ -139,9 +139,7 @@ router.delete("/review/delete", async (req, res) => {
 });
 
 /**
- * fetchMovieDataFromApi endpoints takes a Movie Title and Year, fetches description and movie poster URL from API and returns it as a JSON
- * @param {*} movieTitle 
- * @returns Object with description & movie poster URL
+ * fetchMovieDataFromApi endpoint takes a Movie Title and Year, fetches description and movie poster URL from API and returns it as a JSON
  */
 router.get("/oneMovie/fetchMovieDataFromApi/", async (req, res) => {
   let movieTitle = req.query.title;
@@ -169,7 +167,6 @@ router.get("/oneMovie/fetchMovieDataFromApi/", async (req, res) => {
 
         console.log("Reach no result.");
         let closestMovieResults = await fetchClosestMovies(movieTitle);
-        console.log(closestMovieResults);
         closestMovieJson = findClosestMovie(closestMovieResults, movieTitle, movieYear);
         console.log(closestMovieJson);
       }
@@ -194,6 +191,9 @@ router.get("/oneMovie/fetchMovieDataFromApi/", async (req, res) => {
   }
 });
 
+/**
+ * updateMovieDataToAzure endpoint takes the Request Body, fetches the Blob Name URL and poster and uploads it to Blob Storage
+ */
 router.post("/oneMovie/updateMovieDataToAzure/", async (req, res) => {
   const requestBody = await req.body;
 
@@ -205,6 +205,9 @@ router.post("/oneMovie/updateMovieDataToAzure/", async (req, res) => {
   });
 });
 
+/**
+ * updateMovieDataToDB endpoint takes request Body, fetches description and Azure URL and uploads it to database
+ */
 router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
   const requestBody = await req.body;
 
@@ -218,7 +221,6 @@ router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
 
 /**
  * uploadMoviePoster fetches the image from the movie poster API with the right path and uploads to Azure Blob Storage
- * TO-DO: Put this function as a seperate endpoint (/oneMovie/fetchMovieApi/:movieTitle/uploadPoster)
  * @param {*} movieTitle 
  * @param {*} moviePosterPath 
  */
@@ -256,7 +258,6 @@ async function updateMovieDataToDB(movieId, movieDescription, movieBlobUrl) {
 
 /**
  * getOneMovieById() takes an id and Mongoose returns the movie with corresponding id
- * TO-DO: replace with findById(id)
  * @param {*} id 
  * @returns singleMovie object
  */
@@ -282,11 +283,15 @@ function getMovieBlobNameAndUrl(movieData) {
   return data;
 }
 
+/**
+ * fetchClosestMovies() takes a title and fetches a generalized query to the API querying by title and returning the results array
+ * @param {*} movieTitle 
+ * @returns results
+ */
 async function fetchClosestMovies(movieTitle) {
   let url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${movieTitle}`
   let response = await fetch(url);
   if (response.ok) {
-    console.log("reach");
     let movieApiJson = await response.json();
     let moviesApiResults = movieApiJson.results;
     return moviesApiResults;
@@ -296,8 +301,14 @@ async function fetchClosestMovies(movieTitle) {
   }
 }
 
+/**
+ * findClosestMovie() loops through movies array, filters only the ones with exact title and valid year and returns movie with closest matching year
+ * @param {*} movies 
+ * @param {*} movieTitle 
+ * @param {*} movieYearQuery 
+ * @returns movie
+ */
 function findClosestMovie(movies, movieTitle, movieYearQuery) {
-  console.log("movieTitle: " + movieTitle);
   let moviesWithExactTitle = [];
   movies.forEach((movie) => {
     if (equalsIgnoreCase(movie.original_title, movieTitle) && movie.release_date) {
@@ -305,28 +316,41 @@ function findClosestMovie(movies, movieTitle, movieYearQuery) {
     }
   });
 
-  console.log(moviesWithExactTitle);
+  let closestMovie = findClosestMovieByYear(moviesWithExactTitle, movieYearQuery);
 
-  let closestMovie = moviesWithExactTitle[0];
+  return closestMovie;
+}
+
+/**
+ * parseReleaseYear() is a helper method that takes movie API date string (YYYY-MM-DD), parses it as a year and returns it
+ * @param {*} releaseDate 
+ * @returns year
+ */
+function parseReleaseYear(releaseDate) {
+  return parseInt(releaseDate.substring(0, 3));
+}
+
+/**
+ * equalsIgnoreCase is a helper method that returns true if both string matches (case insensitive)
+ * @param {*} firstString 
+ * @param {*} secondString 
+ * @returns boolean
+ */
+function equalsIgnoreCase(firstString, secondString) {
+  return firstString.localeCompare(secondString, undefined, { sensitivity: 'base' }) === 0;
+}
+
+function findClosestMovieByYear(movies, movieYearQuery) {
+  let closestMovie = movies[0];
   let closestMovieYear = parseReleaseYear(closestMovie.release_date);
-  moviesWithExactTitle.forEach((movie) => {
+  movies.forEach((movie) => {
     let formattedMovieYear = parseReleaseYear(movie.release_date);
     if (Math.abs(movieYearQuery - formattedMovieYear) < Math.abs(movieYearQuery - closestMovieYear)) {
       closestMovie = movie;
       closestMovieYear = parseReleaseYear(closestMovie.release_date);
     }
   });
-  console.log("Closest Movie:\n");
-  console.log(closestMovie);
-
   return closestMovie;
 }
 
-function parseReleaseYear(releaseDate) {
-  return parseInt(releaseDate.substring(0, 3));
-}
-
-function equalsIgnoreCase(firstString, secondString) {
-  return firstString.localeCompare(secondString, undefined, { sensitivity: 'base' }) === 0;
-}
 module.exports = router;

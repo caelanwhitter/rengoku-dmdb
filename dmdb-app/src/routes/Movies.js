@@ -191,7 +191,7 @@ export default function Movies() {
                     id: movie._id,
                     title: movie.title,
                     description: movieApiData.description,
-                    year: movie.releaseYear
+                    year: movieApiData.year
                 })
             });
         }
