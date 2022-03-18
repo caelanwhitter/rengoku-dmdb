@@ -151,8 +151,8 @@ export default function Movies() {
             let response = await fetch(movieUrl);
             if (response.ok) {
                 let movieApiData = await response.json();
-                //await updateMovieDataToBlobStorage(movieApiData);
-                //await updateMovieDataToDB(movie, movieApiData)
+                await updateMovieDataToBlobStorage(movieApiData);
+                await updateMovieDataToDB(movie, movieApiData)
             }
         }
         catch (e) {
@@ -189,7 +189,7 @@ export default function Movies() {
                 },
                 body: JSON.stringify({
                     id: movie._id,
-                    title: movie.title,
+                    title: movieApiData.title,
                     description: movieApiData.description,
                     year: movieApiData.year
                 })

@@ -61,7 +61,7 @@ router.get("/getSearch", async (req, res) => {
 router.get("/getSearch/page/:pageNumber", async (req, res) => {
   const pageNumber = req.params.pageNumber;
   const keyword = req.query.title;
-  const elemsPerPage = 4;
+  const elemsPerPage = 52;
   const moviesPerPage = await Movies.find({
     title: { $regex: `${keyword}`, $options: "i" }
   }).skip(elemsPerPage * (pageNumber - 1)).limit(elemsPerPage);
