@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "test": "jest"
+  },
   "dependencies": {
     "@azure/storage-blob": "^12.8.0",
     "body-parser": "^1.19.2",
@@ -9,5 +12,15 @@
     "mongodb": "^4.4.0",
     "mongoose": "^6.2.2",
     "node-fetch": "^2.6.7"
+  },
+  "devDependencies": {
+    "jest": "^27.5.1",
+    "supertest": "^6.2.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
   }
 }
