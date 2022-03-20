@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
     Grid, Text, Badge, Title, Modal, Group, Card,
-    Image, Pagination, TextInput, Button
+    Image, Pagination, TextInput, Button, NativeSelect
 } from '@mantine/core';
 import { NavLink, Link } from "react-router-dom";
 import '../App.css';
@@ -23,7 +23,12 @@ export default function Movies() {
     const [opened, setOpened] = useState(false);
     const [movies, setMovies] = useState([{}]);
     const [searchopened, setSearchOpened] = useState(false);
-    const [value, setValue] = useState('');
+    const [valueTitle, setValueTitle] = useState('');
+    const [valueDirector, setValueDirector] = useState('');
+    const [valueGenre, setValueGenre] = useState('');
+    const [valueReleaseYear, setValueReleaseYear] = useState('');
+    const [valueScore, setValueScore] = useState('');
+    const [valueRating, setValueRating] = useState('');
     const [, scrollTo] = useWindowScroll();
 
 
@@ -62,8 +67,9 @@ export default function Movies() {
      * calculateTotalPagination() calculates how many pages should the entire list of movies be separated for pagination
      * @param {JSON} moviesPaginationJson 
      */
+    //
     async function calculateTotalPagination(moviesPaginationJson) {
-        let response = await fetch('/api/getSearch?title=' + value);
+        let response = await fetch('/api/getSearch?title=' + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre +   '&releaseYear=' + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
         let allMoviesJson = await response.json();
         const totalMoviePages = Math.ceil(allMoviesJson.length / moviesPaginationJson.length);
 
@@ -213,14 +219,67 @@ export default function Movies() {
                 hideCloseButton
             >
                 <TextInput
-                    value={value}
-                    onChange={(event) => setValue(event.currentTarget.value)}
-                    placeholder="Search..."
-                    variant="unstyled"
-                    size="lg"
+                    label="Title"
+                    value={valueTitle}
+                    onChange={(event) => setValueTitle(event.currentTarget.value)}
+                    placeholder="Enter the title"
+                    //variant="unstyled"
+                    size="md"
                     radius="md"
                     required
-                /> <br />
+                />
+
+                <TextInput
+                    label="Director"
+                    value={valueDirector}
+                    onChange={(event) => setValueDirector(event.currentTarget.value)}
+                    placeholder="Enter the Director"
+                    //variant="unstyled"
+                    size="md"
+                    radius="md"
+                    required
+                />
+
+                <TextInput
+                    label="Genre"
+                    value={valueGenre}
+                    onChange={(event) => setValueGenre(event.currentTarget.value)}
+                    placeholder="Enter the Genre"
+                    //variant="unstyled"
+                    size="md"
+                    radius="md"
+                    required
+                />
+                
+                <TextInput
+                    label="Release Year "
+                    value={valueReleaseYear}
+                    onChange={(event) => setValueReleaseYear(event.currentTarget.value)}
+                    placeholder="Enter the Release Year"
+                    //variant="unstyled"
+                    size="md"
+                    radius="md"
+                    required
+                />
+                <TextInput
+                    label="Score"
+                    value={valueScore}
+                    onChange={(event) => setValueScore(event.currentTarget.value)}
+                    placeholder="Enter the Score "
+                   // variant="unstyled"
+                    size="md"
+                    radius="md"
+                    required
+                />
+
+                <NativeSelect
+                    label="Rating"
+                    value={valueRating}
+                    data={['R','PG','PG-13']}
+                    onChange={(event) => setValueRating(event.currentTarget.value)}
+                    placeholder="Select a Rating"
+                />
+                <br />
                 <Button
                     onClick={clickOnGo}
                     color="dark"
@@ -228,7 +287,7 @@ export default function Movies() {
                     Go!
                 </Button>
             </Modal>
-
+            
             <Modal
                 opened={opened}
                 onClose={() => setOpened(false)}
