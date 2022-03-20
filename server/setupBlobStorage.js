@@ -1,6 +1,14 @@
+/**
+ * setupBlobStorage.js is a file that is run one time to set up the Azure Blob Storage and will be kept running by Microsoft.
+ * In case the blob storage gets deleted, we can create a new one by running this file.
+ * @author Daniel Lam
+ */
 require('dotenv').config();
 const { BlobServiceClient } = require('@azure/storage-blob');
 
+/**
+ * setupBlobContainer() is a method that creates the `rengokublobs` Azure Storage container to store all the blobs needed for the website
+ */
 async function setupBlobContainer() {
     /* Get connection string */
     console.log('Setting up Azure Blob Storage...');
@@ -26,18 +34,6 @@ async function setupBlobContainer() {
 
     /* Upload blobs to a container */
 
-    // Create a unique name for the blob
-    const blobName = 'rengokutest.txt';
-
-    const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-
-    console.log('\nUploading to Azure storage as blob:\n\t', blobName);
-
-    // Upload data to blob
-    const data = 'Hello, World!';
-    const uploadBlobResponse = await blockBlobClient.upload(data, data.length);
-    console.log("Blob was uploaded successfully. requestId: ", uploadBlobResponse.requestId);
-
     /* List all blobs */
     console.log("\nListing blobs...");
 
@@ -53,8 +49,6 @@ async function setupBlobContainer() {
     const downloadBlockBlobResponse = await blockBlobClient.download(0);
     console.log('\nDownloaded blob content...');
     console.log('\t', await streamToString(downloadBlockBlobResponse.readableStreamBody));
-
-    //deleteContainer();
 
     console.log("Done!");
 }
@@ -73,16 +67,5 @@ async function streamToString(readableStream) {
     });
 }
 
-async function deleteContainer() {
-    /* Delete a container */
-    console.log('\nDeleting container...');
-
-    // Delete container
-    const deleteContainerResponse = await containerClient.delete();
-    console.log("Container was deleted successfully. requestId: ", deleteContainerResponse.requestId);
-}
-
 // Runs setupBlobStorage.js
-//setupBlobContainer().catch((ex) => console.log(ex.message));
-
-deleteContainer();
+setupBlobContainer().catch((ex) => console.log(ex.message));

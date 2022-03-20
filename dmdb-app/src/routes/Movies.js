@@ -92,25 +92,10 @@ export default function Movies() {
     }
 
     /**
-     * rows returns a table body of the appropriate list of movies
+     * getCards() returns an array of cards that displays all the movies of a certain page
+     * @param {*} moviesJson 
+     * @returns cards
      */
-    // const cards = movies.map((movie) => (
-    //     <Grid.Col span={3}>
-    //         <Card onClick={() => { getDetails(movie._id); setOpened(true) }} style={{ cursor: "pointer" }} shadow="md">
-    //             <Card.Section>
-    //                 <Image src={null} height={320} alt={movie.title + " Poster"} withPlaceholder />
-    //             </Card.Section>
-
-    //             <Text weight={600}>{movie.title}</Text>
-
-    //             <Group position="apart">
-    //                 <Text size="sm">{movie.director}</Text>
-    //                 <Badge color="dark">{movie.releaseYear}</Badge>
-    //             </Group>
-    //         </Card>
-    //     </Grid.Col>
-    // ));
-
     function getCards(moviesJson) {
 
         let cards = moviesJson.map((movie) => {
@@ -137,14 +122,21 @@ export default function Movies() {
                 </Grid.Col>
             );
         });
-        console.log(cards);
         return cards;
     }
 
+    /**
+     * updateMovieDetails() takes a movie and calls all the async functions to retrive movie data API, save to Azure and save to DB
+     * @param {*} movie 
+     */
     async function updateMovieDetails(movie) {
         await fetchMovieDataFromApi(movie);
     }
 
+    /**
+     * fetchMovieDataFromApi() calls to backend route to return json of necessary movie data from API
+     * @param {*} movie 
+     */
     async function fetchMovieDataFromApi(movie) {
         try {
             let movieUrl = '/api/oneMovie/fetchMovieDataFromApi?title=' + movie.title + '&year=' + movie.releaseYear;
@@ -160,6 +152,10 @@ export default function Movies() {
         }
     }
 
+    /**
+     * updateMovieDataToBlobStorage() takes movieData and makes a POST request to backend which uploads to Blob Storage
+     * @param {*} movieData 
+     */
     async function updateMovieDataToBlobStorage(movieData) {
         try {
             await fetch('/api/oneMovie/updateMovieDataToAzure', {
@@ -180,6 +176,11 @@ export default function Movies() {
         }
     }
 
+    /**
+     * updateMovieDataToDB() takes movie id and movieApiData and makes a POST request to backend which uploads to database
+     * @param {*} movie 
+     * @param {*} movieApiData 
+     */
     async function updateMovieDataToDB(movie, movieApiData) {
         try {
             await fetch('/api/oneMovie/updateMovieDataToDB', {
