@@ -1,7 +1,7 @@
+import React, { useEffect, useState } from 'react';
+import { Link, NavLink } from "react-router-dom";
 import { Grid, Text, Badge, Title, Modal, Group, Card, 
-    Image, Pagination, TextInput, Button } from '@mantine/core';
-import React, {useEffect, useState} from 'react';
-import { NavLink, Link } from "react-router-dom";
+    Image, Pagination, TextInput,NativeSelect, Button } from '@mantine/core';
 import '../App.css';
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { useWindowScroll } from '@mantine/hooks';
@@ -18,7 +18,12 @@ export default function Movies() {
     const [opened, setOpened] = useState(false);
 
     const [searchopened, setSearchOpened] = useState(false);
-    const [value, setValue] = useState('');
+    const [valueTitle, setValueTitle] = useState('');
+    const [valueDirector, setValueDirector] = useState('');
+    const [valueGenre, setValueGenre] = useState('');
+    const [valueReleaseYear, setValueReleaseYear] = useState('');
+    const [valueScore, setValueScore] = useState('');
+    const [valueRating, setValueRating] = useState('');
 
     const [oneMovieData, setOneMovieData] = useState([{}]);
     const [, scrollTo] = useWindowScroll();
@@ -29,14 +34,14 @@ export default function Movies() {
      */
     useEffect(() => {
         fetchMoviesPerPage(activePage);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     async function getDetails(movieId) {
         await fetch("/api/oneMovie?id=" + movieId).then(
             response => response.json())
             .then(
-                data => {setOneMovieData(data[0])}
+                data => { setOneMovieData(data[0]) }
             )
     }
 
@@ -44,14 +49,15 @@ export default function Movies() {
      * fetchMoviesPerPage() fetches list of movies following pagination endpoints and calculates totalPagination on first render
      * @param {String} pageNumber 
      */
+    //  '&releaseYear=' + valueReleaseYear+ '&score=' + valueScore+ 
     async function fetchMoviesPerPage(pageNumber) {
-        let response = await fetch('/api/getSearch/page/'+pageNumber+'?title='+value);
+        let response = await fetch('/api/getSearch/page/' + pageNumber + '?title=' + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre + '&releaseYear=' + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
         let moviesPaginationJson = await response.json();
         setMovies(moviesPaginationJson);
 
         // Calls calculateTotalPagination() if totalPagination not initialized yet yet
-        if(totalPagination === undefined) {
-        await calculateTotalPagination(moviesPaginationJson);
+        if (totalPagination === undefined) {
+            await calculateTotalPagination(moviesPaginationJson);
         }
     }
 
@@ -59,8 +65,9 @@ export default function Movies() {
      * calculateTotalPagination() calculates how many pages should the entire list of movies be separated for pagination
      * @param {JSON} moviesPaginationJson 
      */
+    //
     async function calculateTotalPagination(moviesPaginationJson) {
-        let response = await fetch('/api/getSearch?title='+value);
+        let response = await fetch('/api/getSearch?title=' + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre +   '&releaseYear=' + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
         let allMoviesJson = await response.json();
         const totalMoviePages = Math.ceil(allMoviesJson.length/moviesPaginationJson.length);
         setTotalPagination(totalMoviePages);
@@ -91,9 +98,9 @@ export default function Movies() {
      */
     const cards = movies.map((element) => (
         <Grid.Col span={3}>
-            <Card onClick={() => { getDetails(element._id); setOpened(true)}} style={{cursor: "pointer"}} shadow="md">
+            <Card onClick={() => { getDetails(element._id); setOpened(true) }} style={{ cursor: "pointer" }} shadow="md">
                 <Card.Section>
-                    <Image src={null} height={320} alt={element.title + " Poster"} withPlaceholder/>
+                    <Image src={null} height={320} alt={element.title + " Poster"} withPlaceholder />
                 </Card.Section>
 
                 <Text weight={600}>{element.title}</Text>
@@ -106,43 +113,99 @@ export default function Movies() {
         </Grid.Col>
     ));
 
-    return (    
-        <>  
-        <nav id="searchNav">
-            <Link className="tabLink" onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
-        </nav>
+    return (
+        <>
+            <nav id="searchNav">
+                <Link className="tabLink" onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
+            </nav>
 
-        <Modal
-        opened={searchopened}
-        onClose={() => setSearchOpened(false)}
-        hideCloseButton
-      >
-        <TextInput
-          value={value}
-          onChange={(event) => setValue(event.currentTarget.value)}
-          placeholder="Search..."
-          variant="unstyled"
-          size="lg"
-          radius="md"
-          required
-        /> <br />
-        <Button
-          onClick={clickOnGo}
-          color="dark"
-          type="submit">
-          Go!
-        </Button>
-      </Modal>
-      
-        <Modal
-            opened={opened}
-            onClose={() => setOpened(false)}
-            title={<Title>{oneMovieData.title}</Title>}
-            size="xl"
-            overflow="inside"
-            centered
+            {/* <Affix position={{ top: 20, left: 20 }}>
+            <Link className="tabLink" id="searchButton"  onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
+        </Affix> */}
+
+            <Modal
+                opened={searchopened}
+                onClose={() => setSearchOpened(false)}
+                hideCloseButton
             >
-            <div id="movieDetails">
+                <TextInput
+                    label="Title"
+                    value={valueTitle}
+                    onChange={(event) => setValueTitle(event.currentTarget.value)}
+                    placeholder="Enter the title"
+                    //variant="unstyled"
+                    size="md"
+                    radius="md"
+                    required
+                />
+
+                <TextInput
+                    label="Director"
+                    value={valueDirector}
+                    onChange={(event) => setValueDirector(event.currentTarget.value)}
+                    placeholder="Enter the Director"
+                    //variant="unstyled"
+                    size="md"
+                    radius="md"
+                    required
+                />
+
+                <TextInput
+                    label="Genre"
+                    value={valueGenre}
+                    onChange={(event) => setValueGenre(event.currentTarget.value)}
+                    placeholder="Enter the Genre"
+                    //variant="unstyled"
+                    size="md"
+                    radius="md"
+                    required
+                />
+                
+                <TextInput
+                    label="Release Year "
+                    value={valueReleaseYear}
+                    onChange={(event) => setValueReleaseYear(event.currentTarget.value)}
+                    placeholder="Enter the Release Year"
+                    //variant="unstyled"
+                    size="md"
+                    radius="md"
+                    required
+                />
+                <TextInput
+                    label="Score"
+                    value={valueScore}
+                    onChange={(event) => setValueScore(event.currentTarget.value)}
+                    placeholder="Enter the Score "
+                   // variant="unstyled"
+                    size="md"
+                    radius="md"
+                    required
+                />
+
+                <NativeSelect
+                    label="Rating"
+                    value={valueRating}
+                    data={['R','PG','PG-13']}
+                    onChange={(event) => setValueRating(event.currentTarget.value)}
+                    placeholder="Select a Rating"
+                />
+                <br />
+                <Button
+                    onClick={clickOnGo}
+                    color="dark"
+                    type="submit">
+                    Go!
+                </Button>
+            </Modal>
+            <Modal
+                opened={opened}
+                onClose={() => setOpened(false)}
+                title={<Title>{oneMovieData.title}</Title>}
+                size="xl"
+                overflow="inside"
+                centered
+            >
+                 <div id="movieDetails">
                     <Image src={null} height={320} width={250} alt={oneMovieData.title + " Poster"} withPlaceholder />
                     <div id="movieText">
                 <Title order={4}>Director: {oneMovieData.director}</Title>
@@ -160,15 +223,16 @@ export default function Movies() {
 
                 </div>
             </div>
-        </Modal>
 
-        <Grid className="movieGrid" gutter={80}>
-            {cards}
-        </Grid>
+            </Modal>
 
-        <div id="pagination">
-            <Pagination page={activePage} onChange={changePage} total={totalPagination} color="dark" sibilings={1} withEdges/>
-        </div>
+            <Grid className="movieGrid" gutter={80}>
+                {cards}
+            </Grid>
+
+            <div id="pagination">
+                <Pagination page={activePage} onChange={changePage} total={totalPagination} color="dark" sibilings={1} withEdges />
+            </div>
         </>
     );
 }
