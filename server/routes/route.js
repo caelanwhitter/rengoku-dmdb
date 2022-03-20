@@ -149,19 +149,14 @@ router.get("/oneMovie/fetchMovieDataFromApi/", async (req, res) => {
 
       // Checks if movie results has at least one movie. If there is, update description and poster
       if (moviesApiResults.length !== 0) {
-
-        console.log("Reach more than one result!");
         // Take first movie from results, most similar result
         closestMovieJson = moviesApiResults[0];
 
       }
       // If there isn't, find most similar movie based on matching original movie title and closest year.
       else {
-
-        console.log("Reach no result.");
         let closestMovieResults = await fetchClosestMovies(movieTitle);
         closestMovieJson = findClosestMovie(closestMovieResults, movieTitle, movieYear);
-        console.log(closestMovieJson);
       }
 
       // Creates movieData object with title, description and poster
@@ -205,6 +200,11 @@ router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
   const requestBody = await req.body;
 
   let blobData = getMovieBlobNameAndUrl(requestBody);
+
+  // Checks if poster url is null (aka no movie poster). If it is, upload null to DB instead of blobData.url
+  if (!requestBody.poster) {
+    blobData.url = null;
+  }
   await updateMovieDataToDB(requestBody.id, requestBody.description, blobData.url);
 
   res.status(201).json({
@@ -244,19 +244,10 @@ async function uploadMoviePoster(posterBlobName, moviePosterPath) {
  * @param {*} movieBlobUrl 
  */
 async function updateMovieDataToDB(movieId, movieDescription, movieBlobUrl) {
+  console.log("Uploading movieBlobUrl to DB: " + movieBlobUrl);
   let fieldsToUpdate = { description: movieDescription, poster: movieBlobUrl }
 
   await Movies.findByIdAndUpdate(movieId, fieldsToUpdate)
-}
-
-/**
- * getOneMovieById() takes an id and Mongoose returns the movie with corresponding id
- * @param {*} id 
- * @returns singleMovie object
- */
-async function getOneMovieById(id) {
-  const singleMovie = await Movies.find({ "_id": new ObjectId(id) });
-  return singleMovie;
 }
 
 /**
@@ -266,7 +257,6 @@ async function getOneMovieById(id) {
  */
 function getMovieBlobNameAndUrl(movieData) {
   const posterBlobName = 'rengokuBlob-' + movieData.title + "-" + movieData.year + ".jpg";
-  console.log(posterBlobName);
   const blockBlobClient = containerClient.getBlockBlobClient(posterBlobName);
 
   let data = {

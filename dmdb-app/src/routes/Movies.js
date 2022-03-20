@@ -53,7 +53,7 @@ export default function Movies() {
      * @param {String} pageNumber 
      */
     async function displayMoviesPerPage(pageNumber) {
-        let response = await fetch('/api/getSearch/page/' + pageNumber + '?title=' + value);
+        let response = await fetch('/api/getSearch/page/' + pageNumber + '?title=' + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre +   '&releaseYear=' + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
         let moviesPaginationJson = await response.json();
         setCards(getCards(moviesPaginationJson));
 
@@ -67,7 +67,6 @@ export default function Movies() {
      * calculateTotalPagination() calculates how many pages should the entire list of movies be separated for pagination
      * @param {JSON} moviesPaginationJson 
      */
-    //
     async function calculateTotalPagination(moviesPaginationJson) {
         let response = await fetch('/api/getSearch?title=' + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre +   '&releaseYear=' + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
         let allMoviesJson = await response.json();
@@ -106,16 +105,16 @@ export default function Movies() {
 
         let cards = moviesJson.map((movie) => {
             // Checks if movie description and poster are missing and checks if movie isn't an empty object
-            if ((!movie.description || !movie.poster) && Object.keys(movie).length !== 0) {
+            if ((!movie.description || movie.poster == "") && Object.keys(movie).length !== 0) {
                 /*TO-DO: You cannot add multiple async calls here because map doesn't support async functions so anything returning a Promise won't work. 
                          Mitigated through calling one function that will run all the async functions instead*/
                 updateMovieDetails(movie);
             }
             return (
                 <Grid.Col span={3}>
-                    <Card onClick={() => { getDetails(movie._id); setOpened(true) }} style={{ cursor: "pointer" }} shadow="md">
+                    <Card onClick={() => { getDetails(movie._id); setOpened(true) }} style={{ cursor: "pointer" }} shadow="md" withBorder={true}>
                         <Card.Section>
-                            <Image src={movie.poster} height={320} alt={movie.title + " Poster"} withPlaceholder />
+                            <Image src={movie.poster} height={movie.poster ? "100%" : 562} width={movie.poster ? "100%" : 324} alt={movie.title + " Poster"} withPlaceholder />
                         </Card.Section>
 
                         <Text weight={600}>{movie.title}</Text>
@@ -162,7 +161,7 @@ export default function Movies() {
      * updateMovieDataToBlobStorage() takes movieData and makes a POST request to backend which uploads to Blob Storage
      * @param {*} movieData 
      */
-    async function updateMovieDataToBlobStorage(movieData) {
+    async function updateMovieDataToBlobStorage(movieApiData) {
         try {
             await fetch('/api/oneMovie/updateMovieDataToAzure', {
                 method: 'POST',
@@ -170,10 +169,10 @@ export default function Movies() {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    title: movieData.title,
-                    year: movieData.year,
-                    poster: movieData.poster,
-                    description: movieData.description
+                    title: movieApiData.title,
+                    year: movieApiData.year,
+                    poster: movieApiData.poster,
+                    description: movieApiData.description
                 })
             });
         }
@@ -198,7 +197,8 @@ export default function Movies() {
                     id: movie._id,
                     title: movieApiData.title,
                     description: movieApiData.description,
-                    year: movieApiData.year
+                    year: movieApiData.year,
+                    poster: movieApiData.poster
                 })
             });
         }
