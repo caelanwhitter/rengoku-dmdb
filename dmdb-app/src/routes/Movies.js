@@ -1,6 +1,8 @@
-import { Grid, Text, Badge, Title, Modal, Group, Card, 
-    Image, Pagination, TextInput, Button } from '@mantine/core';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
+import {
+    Grid, Text, Badge, Title, Modal, Group, Card,
+    Image, Pagination, TextInput, Button, NativeSelect
+} from '@mantine/core';
 import { NavLink, Link } from "react-router-dom";
 import '../App.css';
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
@@ -11,16 +13,22 @@ import { useWindowScroll } from '@mantine/hooks';
  * @returns Table Of Movies + Pagination
  */
 export default function Movies() {
-    //Initializes variables and sets up "settters to variables"
-    const [movies, setMovies] = useState([{}]);
-    const [activePage, setPage] = useState(1);
+
+    //Initializes variables and sets up "setters to variables"
+    const DEFAULT_ACTIVE_PAGE = 1;
+    const [oneMovieData, setOneMovieData] = useState([{}]);
+    const [cards, setCards] = useState([]);
+    const [activePage, setPage] = useState(DEFAULT_ACTIVE_PAGE);
     const [totalPagination, setTotalPagination] = useState();
     const [opened, setOpened] = useState(false);
-
+    const [movies, setMovies] = useState([{}]);
     const [searchopened, setSearchOpened] = useState(false);
-    const [value, setValue] = useState('');
-
-    const [oneMovieData, setOneMovieData] = useState([{}]);
+    const [valueTitle, setValueTitle] = useState('');
+    const [valueDirector, setValueDirector] = useState('');
+    const [valueGenre, setValueGenre] = useState('');
+    const [valueReleaseYear, setValueReleaseYear] = useState('');
+    const [valueScore, setValueScore] = useState('');
+    const [valueRating, setValueRating] = useState('');
     const [, scrollTo] = useWindowScroll();
 
 
@@ -28,30 +36,30 @@ export default function Movies() {
      * useEffect() runs following methods once. Similar to ComponentDidMount()
      */
     useEffect(() => {
-        fetchMoviesPerPage(activePage);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        displayMoviesPerPage(activePage);
+
     }, []);
 
     async function getDetails(movieId) {
         await fetch("/api/oneMovie?id=" + movieId).then(
             response => response.json())
             .then(
-                data => {setOneMovieData(data[0])}
+                data => { setOneMovieData(data[0]) }
             )
     }
 
     /**
-     * fetchMoviesPerPage() fetches list of movies following pagination endpoints and calculates totalPagination on first render
+     * displayMoviesPerPage() fetches list of movies following pagination endpoints and calculates totalPagination on first render
      * @param {String} pageNumber 
      */
-    async function fetchMoviesPerPage(pageNumber) {
-        let response = await fetch('/api/getSearch/page/'+pageNumber+'?title='+value);
+    async function displayMoviesPerPage(pageNumber) {
+        let response = await fetch('/api/getSearch/page/' + pageNumber + '?title=' + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre +   '&releaseYear=' + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
         let moviesPaginationJson = await response.json();
-        setMovies(moviesPaginationJson);
+        setCards(getCards(moviesPaginationJson));
 
         // Calls calculateTotalPagination() if totalPagination not initialized yet yet
-        if(totalPagination === undefined) {
-        await calculateTotalPagination(moviesPaginationJson);
+        if (totalPagination === undefined) {
+            await calculateTotalPagination(moviesPaginationJson);
         }
     }
 
@@ -60,14 +68,16 @@ export default function Movies() {
      * @param {JSON} moviesPaginationJson 
      */
     async function calculateTotalPagination(moviesPaginationJson) {
-        let response = await fetch('/api/getSearch?title='+value);
+        let response = await fetch('/api/getSearch?title=' + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre +   '&releaseYear=' + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
         let allMoviesJson = await response.json();
-        const totalMoviePages = Math.ceil(allMoviesJson.length/moviesPaginationJson.length);
+        const totalMoviePages = Math.ceil(allMoviesJson.length / moviesPaginationJson.length);
+
         setTotalPagination(totalMoviePages);
     }
+
     async function clickOnGo(event) {
         setTotalPagination(undefined);
-        fetchMoviesPerPage(event);
+        displayMoviesPerPage(event);
         setSearchOpened(false);
     }
 
@@ -78,7 +88,7 @@ export default function Movies() {
     const changePage = (event) => {
 
         // Re-fetches the list of movies with proper page number
-        fetchMoviesPerPage(event);
+        displayMoviesPerPage(event);
 
         // Sets activePage to update styles of Pagination
         setPage(event);
@@ -87,88 +97,232 @@ export default function Movies() {
     }
 
     /**
-     * rows returns a table body of the appropriate list of movies
+     * getCards() returns an array of cards that displays all the movies of a certain page
+     * @param {*} moviesJson 
+     * @returns cards
      */
-    const cards = movies.map((element) => (
-        <Grid.Col span={3}>
-            <Card onClick={() => { getDetails(element._id); setOpened(true)}} style={{cursor: "pointer"}} shadow="md">
-                <Card.Section>
-                    <Image src={null} height={320} alt={element.title + " Poster"} withPlaceholder/>
-                </Card.Section>
+    function getCards(moviesJson) {
 
-                <Text weight={600}>{element.title}</Text>
+        let cards = moviesJson.map((movie) => {
+            // Checks if movie description and poster are missing and checks if movie isn't an empty object
+            if ((!movie.description || movie.poster == "") && Object.keys(movie).length !== 0) {
+                /*TO-DO: You cannot add multiple async calls here because map doesn't support async functions so anything returning a Promise won't work. 
+                         Mitigated through calling one function that will run all the async functions instead*/
+                updateMovieDetails(movie);
+            }
+            return (
+                <Grid.Col span={3}>
+                    <Card onClick={() => { getDetails(movie._id); setOpened(true) }} style={{ cursor: "pointer" }} shadow="md" withBorder={true}>
+                        <Card.Section>
+                            <Image src={movie.poster} height={movie.poster ? "100%" : 562} width={movie.poster ? "100%" : 324} alt={movie.title + " Poster"} withPlaceholder />
+                        </Card.Section>
 
-                <Group position="apart">
-                    <Text size="sm">{element.director}</Text>
-                    <Badge color="dark">{element.releaseYear}</Badge>
-                </Group>
-            </Card>
-        </Grid.Col>
-    ));
+                        <Text weight={600}>{movie.title}</Text>
 
-    return (    
-        <>  
-        <nav id="searchNav">
-            <Link className="tabLink" onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
-        </nav>
+                        <Group position="apart">
+                            <Text size="sm">{movie.director}</Text>
+                            <Badge color="dark">{movie.releaseYear}</Badge>
+                        </Group>
+                    </Card>
+                </Grid.Col>
+            );
+        });
+        return cards;
+    }
 
-        <Modal
-        opened={searchopened}
-        onClose={() => setSearchOpened(false)}
-        hideCloseButton
-      >
-        <TextInput
-          value={value}
-          onChange={(event) => setValue(event.currentTarget.value)}
-          placeholder="Search..."
-          variant="unstyled"
-          size="lg"
-          radius="md"
-          required
-        /> <br />
-        <Button
-          onClick={clickOnGo}
-          color="dark"
-          type="submit">
-          Go!
-        </Button>
-      </Modal>
-      
-        <Modal
-            opened={opened}
-            onClose={() => setOpened(false)}
-            title={<Title>{oneMovieData.title}</Title>}
-            size="xl"
-            overflow="inside"
-            centered
+    /**
+     * updateMovieDetails() takes a movie and calls all the async functions to retrive movie data API, save to Azure and save to DB
+     * @param {*} movie 
+     */
+    async function updateMovieDetails(movie) {
+        await fetchMovieDataFromApi(movie);
+    }
+
+    /**
+     * fetchMovieDataFromApi() calls to backend route to return json of necessary movie data from API
+     * @param {*} movie 
+     */
+    async function fetchMovieDataFromApi(movie) {
+        try {
+            let movieUrl = '/api/oneMovie/fetchMovieDataFromApi?title=' + movie.title + '&year=' + movie.releaseYear;
+            let response = await fetch(movieUrl);
+            if (response.ok) {
+                let movieApiData = await response.json();
+                await updateMovieDataToBlobStorage(movieApiData);
+                await updateMovieDataToDB(movie, movieApiData)
+            }
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    /**
+     * updateMovieDataToBlobStorage() takes movieData and makes a POST request to backend which uploads to Blob Storage
+     * @param {*} movieData 
+     */
+    async function updateMovieDataToBlobStorage(movieApiData) {
+        try {
+            await fetch('/api/oneMovie/updateMovieDataToAzure', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: movieApiData.title,
+                    year: movieApiData.year,
+                    poster: movieApiData.poster,
+                    description: movieApiData.description
+                })
+            });
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    /**
+     * updateMovieDataToDB() takes movie id and movieApiData and makes a POST request to backend which uploads to database
+     * @param {*} movie 
+     * @param {*} movieApiData 
+     */
+    async function updateMovieDataToDB(movie, movieApiData) {
+        try {
+            await fetch('/api/oneMovie/updateMovieDataToDB', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: movie._id,
+                    title: movieApiData.title,
+                    description: movieApiData.description,
+                    year: movieApiData.year,
+                    poster: movieApiData.poster
+                })
+            });
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
+
+    return (
+        <>
+            <nav id="searchNav">
+                <Link className="tabLink" onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
+            </nav>
+
+            <Modal
+                opened={searchopened}
+                onClose={() => setSearchOpened(false)}
+                hideCloseButton
             >
-            <div id="movieDetails">
-                    <Image src={null} height={320} width={250} alt={oneMovieData.title + " Poster"} withPlaceholder />
+                <TextInput
+                    label="Title"
+                    value={valueTitle}
+                    onChange={(event) => setValueTitle(event.currentTarget.value)}
+                    placeholder="Enter the title"
+                    //variant="unstyled"
+                    size="md"
+                    radius="md"
+                    required
+                />
+
+                <TextInput
+                    label="Director"
+                    value={valueDirector}
+                    onChange={(event) => setValueDirector(event.currentTarget.value)}
+                    placeholder="Enter the Director"
+                    //variant="unstyled"
+                    size="md"
+                    radius="md"
+                    required
+                />
+
+                <TextInput
+                    label="Genre"
+                    value={valueGenre}
+                    onChange={(event) => setValueGenre(event.currentTarget.value)}
+                    placeholder="Enter the Genre"
+                    //variant="unstyled"
+                    size="md"
+                    radius="md"
+                    required
+                />
+                
+                <TextInput
+                    label="Release Year "
+                    value={valueReleaseYear}
+                    onChange={(event) => setValueReleaseYear(event.currentTarget.value)}
+                    placeholder="Enter the Release Year"
+                    //variant="unstyled"
+                    size="md"
+                    radius="md"
+                    required
+                />
+                <TextInput
+                    label="Score"
+                    value={valueScore}
+                    onChange={(event) => setValueScore(event.currentTarget.value)}
+                    placeholder="Enter the Score "
+                   // variant="unstyled"
+                    size="md"
+                    radius="md"
+                    required
+                />
+
+                <NativeSelect
+                    label="Rating"
+                    value={valueRating}
+                    data={['R','PG','PG-13']}
+                    onChange={(event) => setValueRating(event.currentTarget.value)}
+                    placeholder="Select a Rating"
+                />
+                <br />
+                <Button
+                    onClick={clickOnGo}
+                    color="dark"
+                    type="submit">
+                    Go!
+                </Button>
+            </Modal>
+            
+            <Modal
+                opened={opened}
+                onClose={() => setOpened(false)}
+                title={<Title>{oneMovieData.title}</Title>}
+                size="xl"
+                overflow="inside"
+                centered
+            >
+                <div id="movieDetails">
+                    <Image src={oneMovieData.poster} height={320} width={250} alt={oneMovieData.title + " Poster"} withPlaceholder />
+
                     <div id="movieText">
-                <Title order={4}>Director: {oneMovieData.director}</Title>
-                <Group position="left">
-                    <Badge color="dark">{oneMovieData.genre}</Badge>
-                    <Badge color="dark" variant="outline">{parseInt(oneMovieData.duration)} minutes</Badge>
-                    <Badge color="gray" variant="outline">Rated {oneMovieData.rating}</Badge> 
-                        <Badge color="yellow" variant="dot">{oneMovieData.score} ⭐</Badge> 
+                        <Title order={4}>Director: {oneMovieData.director}</Title>
+                        <Group position="left">
+                            <Badge color="dark">{oneMovieData.genre}</Badge>
+                            <Badge color="dark" variant="outline">{parseInt(oneMovieData.duration)} minutes</Badge>
+                            <Badge color="gray" variant="outline">Rated {oneMovieData.rating}</Badge>
+                            <Badge color="yellow" variant="dot">{oneMovieData.score} ⭐</Badge>
 
-                </Group>
-                    <p>This is the description of the movie.</p>
+                        </Group>
+                        <p>{oneMovieData.description}</p>
+
                         <Title order={6}>Gross: {oneMovieData.gross}</Title>
-                        <Badge variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}><NavLink style={{ textDecoration: 'none' , color: 'black'}} to={`${oneMovieData._id}/reviews`}>View Reviews</NavLink></Badge>
-
-
+                        <Badge variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}><NavLink style={{ textDecoration: 'none', color: 'black' }} to={`${oneMovieData._id}/reviews`}>View Reviews</NavLink></Badge>
+                    </div>
                 </div>
+            </Modal>
+
+            <Grid className="movieGrid" gutter={80}>
+                {cards}
+            </Grid>
+
+            <div id="pagination">
+                <Pagination page={activePage} onChange={changePage} total={totalPagination} color="dark" sibilings={1} withEdges />
             </div>
-        </Modal>
-
-        <Grid className="movieGrid" gutter={80}>
-            {cards}
-        </Grid>
-
-        <div id="pagination">
-            <Pagination page={activePage} onChange={changePage} total={totalPagination} color="dark" sibilings={1} withEdges/>
-        </div>
         </>
     );
 }

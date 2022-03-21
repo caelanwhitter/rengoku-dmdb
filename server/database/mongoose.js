@@ -8,10 +8,11 @@ require("dotenv").config();
 
 // Connect Mongoose to MongoDB Movies (do "node server/database/mongoose.js" at root dir)
 // eslint-disable-next-line max-len
-mongoose.connect(process.env.ATLAS_URI, { useNewUrlParser: true }, () => console.log("Connected to database!"));
+mongoose.connect(process.env.ATLAS_URI, { useNewUrlParser: true });
 
 //Get the default connection
 let db = mongoose.connection;
+console.log("Connected to database!\n");
 
 //Bind connection to error event (to get notification of connection errors)
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
@@ -24,8 +25,8 @@ const movieSchema = new Schema({
   gross: String,
   poster: String,
   rating: String,
-  releaseYear: Number,
-  score: Number,
+  releaseYear: String,
+  score: String,
   title: String,
 }, { collection: "movies" });
 

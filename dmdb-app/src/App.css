@@ -64,6 +64,11 @@ a, .tabLink, #gitLabLink {
   padding: 10px;
 }
 
+#movieText {
+  padding: 10px;
+  margin: 5px;
+}
+
 #pagination {
   display: flex;
   justify-content: center;
