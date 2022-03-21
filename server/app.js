@@ -7,7 +7,6 @@
 const express = require("express");
 const app = express();
 const route = require("./routes/route");
-const path = require("path");
 
 app.use(express.static(path.join(__dirname, "../dmdb-app/build")));
 
