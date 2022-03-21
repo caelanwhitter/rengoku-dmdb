@@ -16,7 +16,7 @@ build:
     - staging
     - main
   script:
-    - cd server && npm install && npm run build && cd ../dmdb-app && npm install
+    - cd server && npm install && cd ../dmdb-app && npm install
 
   cache:
     paths:
