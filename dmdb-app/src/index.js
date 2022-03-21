@@ -36,16 +36,7 @@ render(
 
       <Route path="movies/:movieId/reviews" element={<Reviews />}/>
 
-      <Route path="profile" element={<Profile />} >
-        <Route
-          index
-          element={
-            <main style={{ padding: "1rem" }}>
-              <p>Select a Profile</p>
-            </main>
-          }
-        />
-      </Route>
+      <Route path="profile" element={<Profile />}/>
 
       <Route path="register" element={<Register />} >
         <Route
@@ -96,6 +87,7 @@ render(
         path="*"
         element={
           <main style={{ padding: "1rem" }}>
+            { /* eslint-disable-next-line react/no-unescaped-entities */ }
             <p>There's nothing here!</p>
           </main>
         }

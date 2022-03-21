@@ -1,4 +1,4 @@
-import { Link,Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 //This function is used to return the admin page
 export default function Admin() {

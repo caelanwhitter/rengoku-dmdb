@@ -4,9 +4,9 @@ import { Outlet } from "react-router-dom";
 export default function Login() {
   return (
     <div style={{ display: "flex" }}>
-        <nav >
+      <nav >
               
-        </nav>
+      </nav>
       <Outlet/>
     </div>
   );

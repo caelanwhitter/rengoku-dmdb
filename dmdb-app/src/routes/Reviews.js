@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from "react-router-dom";
 
 import { useParams } from "react-router-dom";
-import { Spoiler, Textarea, TextInput, Button, Text, Box, Avatar, NumberInput, Group, Badge } from '@mantine/core';
+import { Spoiler, Textarea, TextInput, Button, Text, 
+  Box, Avatar, NumberInput, Group, Badge } from '@mantine/core';
 import { TrashIcon } from "@radix-ui/react-icons";
 
 
@@ -16,15 +17,19 @@ export default function Reviews() {
   const [content, setContent] = useState("");
   const [movieTitle, setMovieTitle] = useState("");
   const [rating, setRating] = useState(3);
-  const date = new Date().toLocaleDateString('en-us', { year: "numeric", month: "short", day: "numeric" })
+  const date = new Date().
+    toLocaleDateString('en-us', { year: "numeric", month: "short", day: "numeric" })
 
   /**
   * useEffect() runs following methods once. Similar to ComponentDidMount()
   */
-  useEffect(() => { getTitle(); fetchReviews(); }, []);
+  useEffect(() => {
+    getTitle(); fetchReviews(); 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
-/**
+  /**
  * fetchReviews() fetches list of reviews for specific movie
  * 
  */
@@ -52,7 +57,8 @@ export default function Reviews() {
   }
 
   /**
-   * deleteReview(id) does a DELETE request with a specific id so that it deletes that review from mongo
+   * deleteReview(id) does a DELETE request with a specific id 
+   * so that it deletes that review from mongo
    * @param {String} id 
    */
   async function deleteReview(id) {
@@ -95,7 +101,7 @@ export default function Reviews() {
   /**
    * reach review is put into a box and styled accordingly
    */
-  const reviews = backendData.map((element) => (
+  const reviews = backendData.map((element) => 
 
     <>
 
@@ -109,7 +115,8 @@ export default function Reviews() {
         <Text underline size="lg" weight={500}>{element.subtitle}</Text>
         <Badge sx={(theme) => ({margin:"10px"})} size="xl" color="dark" >{element.rating}⭐</Badge>
 
-        <Spoiler maxHeight={100} showLabel="Show more" hideLabel="Hide"> {element.content} </Spoiler>
+        <Spoiler maxHeight={100} showLabel="Show more" 
+          hideLabel="Hide"> {element.content} </Spoiler>
 
         <Group position="center" >
           <Avatar />
@@ -117,18 +124,21 @@ export default function Reviews() {
           <Text>|</Text>
           <Text>{element.datePosted}</Text>
         </Group>
-        <Link className="trashLink" id={element._id} onClick={(event) => { deleteReview(event.target.id); }} to={{}}> <TrashIcon size="xl" id={element._id} /></Link>
+        <Link className="trashLink" id={element._id} onClick={(event) => {
+          deleteReview(event.target.id); 
+        }} to={{}}> <TrashIcon size="xl" id={element._id} /></Link>
 
 
 
       </Box></>
-  ));
+  );
 
 
   return (
 
     <>
-      <Text sx={(theme) => ({ paddingTop: "10px", fontSize: "300%" })} weight={700} underline align="center">{movieTitle}</Text>
+      <Text sx={(theme) => ({ paddingTop: "10px", fontSize: "300%" })} 
+        weight={700} underline align="center">{movieTitle}</Text>
       <div style={{ display: "flex" }}>
         <div style={{ width: "50%" }}>{reviews}</div>
 
@@ -142,30 +152,37 @@ export default function Reviews() {
           height: "50%",
         })}>
           <Text weight={500} underline align="center" size="xl">Your Rating and Review</Text>
-          <TextInput value={headline} onChange={(event) => setHeadline(event.currentTarget.value)} sx={(theme) => ({
-            textAlign: 'center',
-            paddingLeft: theme.spacing.xl,
-            paddingRight: theme.spacing.xl,
+          <TextInput value={headline} 
+            onChange={(event) => setHeadline(event.currentTarget.value)} 
+            sx={(theme) => ({
+              textAlign: 'center',
+              paddingLeft: theme.spacing.xl,
+              paddingRight: theme.spacing.xl,
 
-            marginTop: theme.radius.md,
-          })} size="sm" radius="lg" placeholder="Headline for your review" label="Subtitle" required />
-          <Textarea id="headline" value={content} onChange={(event) => setContent(event.currentTarget.value)} sx={(theme) => ({
-            paddingTop:"10px",
-            textAlign: 'center',
-            paddingLeft: theme.spacing.xl,
-            paddingRight: theme.spacing.xl,
+              marginTop: theme.radius.md,
+            })} size="sm" radius="lg" placeholder="Headline for your review" 
+            label="Subtitle" required />
 
-            marginTop: theme.radius.md,
-          })} textAlign="center" autosize radius="lg" placeholder="Write your review here" label="Your Review" required />
+          <Textarea id="headline" value={content} 
+            onChange={(event) => setContent(event.currentTarget.value)} 
+            sx={(theme) => ({
+              paddingTop:"10px",
+              textAlign: 'center',
+              paddingLeft: theme.spacing.xl,
+              paddingRight: theme.spacing.xl,
+
+              marginTop: theme.radius.md,
+            })} textAlign="center" autosize radius="lg" placeholder="Write your review here" 
+            label="Your Review" required />
 
 
           <NumberInput sx={(theme) => ({
             width: "25%", margin: "auto", padding:"10px"
           })} value={rating} onChange={(val) => setRating(val)}
-            label="Star Rating"
-            placeholder="3"
-            max={5}
-            min={0}
+          label="Star Rating"
+          placeholder="3"
+          max={5}
+          min={0}
           />
           <Button  onClick={() => {
             if (content === "" || headline === "") {
@@ -180,9 +197,11 @@ export default function Reviews() {
             padding: theme.spacing.sm,
             marginTop: theme.radius.md,
             border: 'solid 1px #000'
-          })} variant="gradient" gradient={{ from: 'orange', to: 'red', deg: 105 }}>Submit Review</Button>
-          <h4 id="visible" style={{ color: "red", visibility: "hidden" }}>Please Fill Out Every Field</h4>
+          })} variant="gradient" 
+          gradient={{ from: 'orange', to: 'red', deg: 105 }}>Submit Review</Button>
 
+          <h4 id="visible" 
+            style={{ color: "red", visibility: "hidden" }}>Please Fill Out Every Field</h4>
         </Box>
       </div>
     </>

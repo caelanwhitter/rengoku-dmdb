@@ -10,14 +10,14 @@ const Movies = Mongoose.Movie;
 const Reviews = Mongoose.Review;
 const ObjectId = require("mongodb").ObjectId;
 const fetch = require("node-fetch");
-const { BlobServiceClient } = require('@azure/storage-blob');
-const bp = require('body-parser');
+const { BlobServiceClient } = require("@azure/storage-blob");
+const bp = require("body-parser");
 const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const CONTAINER_NAME = "rengokublobs";
 const ONE_MEGABYTE = 1024 * 1024;
 const uploadOptions = { bufferSize: 4 * ONE_MEGABYTE, maxBuffers: 20 };
-require('dotenv').config();
+require("dotenv").config();
 
 /**
  * Start up connection to Azure Blob Storage
@@ -33,54 +33,54 @@ router.use(bp.urlencoded({ extended: true }));
 
 
 router.get("/getSearch", async (req, res) => {
-    const keywordTitle = req.query.title;
-    const keywordDirector = req.query.director;
-    const keywordGenre = req.query.genre;
-    const keywordReleaseYear = req.query.releaseYear;
-    const keywordScore = req.query.score;
-    const keywordRating = req.query.rating;
-    const findMovies = await Movies.find({
-        title: { $regex: `${keywordTitle}`, $options: "i" },
-        director: { $regex: `${keywordDirector}`, $options: "i" },
-        genre: { $regex: `${keywordGenre}`, $options: "i" },
-        releaseYear: { $regex: `${keywordReleaseYear}`, $options: "i" },
-        score: { $regex: `${keywordScore}`, $options: "i" },
-        rating: { $regex: `${keywordRating}`, $options: "i" },
-    })
+  const keywordTitle = req.query.title;
+  const keywordDirector = req.query.director;
+  const keywordGenre = req.query.genre;
+  const keywordReleaseYear = req.query.releaseYear;
+  const keywordScore = req.query.score;
+  const keywordRating = req.query.rating;
+  const findMovies = await Movies.find({
+    title: { $regex: `${keywordTitle}`, $options: "i" },
+    director: { $regex: `${keywordDirector}`, $options: "i" },
+    genre: { $regex: `${keywordGenre}`, $options: "i" },
+    releaseYear: { $regex: `${keywordReleaseYear}`, $options: "i" },
+    score: { $regex: `${keywordScore}`, $options: "i" },
+    rating: { $regex: `${keywordRating}`, $options: "i" },
+  })
         
-    try {
-        res.json(findMovies);
-        res.end();
-    } catch (error) {
-        console.error(error.message);
-        res.sendStatus(404).end();
-    }
+  try {
+    res.json(findMovies);
+    res.end();
+  } catch (error) {
+    console.error(error.message);
+    res.sendStatus(404).end();
+  }
 })
 router.get("/getSearch/page/:pageNumber", async (req, res) => {
-    const pageNumber = req.params.pageNumber;
-    const keywordTitle = req.query.title;
-    const keywordDirector = req.query.director;
-    const keywordGenre = req.query.genre;
-    const keywordReleaseYear = req.query.releaseYear;
-    const keywordScore = req.query.score;
-    const keywordRating = req.query.rating;
-    const elemsPerPage = 52;
-    const moviesPerPage = await Movies.find({
-        title: { $regex: `${keywordTitle}`, $options: "i" },
-        director: { $regex: `${keywordDirector}`, $options: "i" },
-        genre: { $regex: `${keywordGenre}`, $options: "i" },
-        releaseYear: { $regex: `${keywordReleaseYear}`, $options: "i" },
-        score: { $regex: `${keywordScore}`, $options: "i" },
-        rating: { $regex: `${keywordRating}`, $options: "i" },
-    }).skip(elemsPerPage * (pageNumber - 1)).limit(elemsPerPage);
+  const pageNumber = req.params.pageNumber;
+  const keywordTitle = req.query.title;
+  const keywordDirector = req.query.director;
+  const keywordGenre = req.query.genre;
+  const keywordReleaseYear = req.query.releaseYear;
+  const keywordScore = req.query.score;
+  const keywordRating = req.query.rating;
+  const elemsPerPage = 52;
+  const moviesPerPage = await Movies.find({
+    title: { $regex: `${keywordTitle}`, $options: "i" },
+    director: { $regex: `${keywordDirector}`, $options: "i" },
+    genre: { $regex: `${keywordGenre}`, $options: "i" },
+    releaseYear: { $regex: `${keywordReleaseYear}`, $options: "i" },
+    score: { $regex: `${keywordScore}`, $options: "i" },
+    rating: { $regex: `${keywordRating}`, $options: "i" },
+  }).skip(elemsPerPage * (pageNumber - 1)).limit(elemsPerPage);
 
-    try {
-        res.json(moviesPerPage);
-        res.end();
-    } catch (error) {
-        console.error(error.message);
-        res.sendStatus(404).end();
-    }
+  try {
+    res.json(moviesPerPage);
+    res.end();
+  } catch (error) {
+    console.error(error.message);
+    res.sendStatus(404).end();
+  }
 })
 
 router.get("/oneMovie", async (req, res) => {
@@ -112,16 +112,19 @@ router.get("/oneMovie/reviews", async (req, res) => {
 
 router.post("/reviews", async (req, res) => {
   const body = await req.body;
-  // // eslint-disable-next-line max-len
-  // eslint-disable-next-line max-len
-  const doc = new Reviews({ username: body.username, movieId: body.movieId, content: body.content, rating: body.rating, datePosted: body.datePosted, subtitle: body.subtitle });
+  const doc = new Reviews({ username: body.username,
+    movieId: body.movieId, 
+    content: body.content, 
+    rating: body.rating, 
+    datePosted: body.datePosted, 
+    subtitle: body.subtitle });
   await doc.save();
   res.status(201).json({
     message: "Post worked!"
   });
 })
 
-router.delete("/review/delete", async (req, res) => {
+router.delete("/review/delete", async (req) => {
   const body = await req.body;
   Reviews.findByIdAndDelete(body.id, function (err) {
     if (err) {
@@ -132,12 +135,14 @@ router.delete("/review/delete", async (req, res) => {
 });
 
 /**
- * fetchMovieDataFromApi endpoint takes a Movie Title and Year, fetches description and movie poster URL from API and returns it as a JSON
+ * fetchMovieDataFromApi endpoint takes a Movie Title and Year, 
+ * fetches description and movie poster URL from API and returns it as a JSON
  */
 router.get("/oneMovie/fetchMovieDataFromApi/", async (req, res) => {
   let movieTitle = req.query.title;
   let movieYear = parseInt(req.query.year);
-  let url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${movieTitle}&year=${movieYear}`;
+  let url = `https://api.themoviedb.org/3/search/
+  movie?api_key=${TMDB_API_KEY}&query=${movieTitle}&year=${movieYear}`;
 
   let response = await fetch(url);
   try {
@@ -151,10 +156,9 @@ router.get("/oneMovie/fetchMovieDataFromApi/", async (req, res) => {
       if (moviesApiResults.length !== 0) {
         // Take first movie from results, most similar result
         closestMovieJson = moviesApiResults[0];
-
-      }
-      // If there isn't, find most similar movie based on matching original movie title and closest year.
-      else {
+      // If there isn't, find most similar movie based 
+      // on matching original movie title and closest year.
+      } else {
         let closestMovieResults = await fetchClosestMovies(movieTitle);
         closestMovieJson = findClosestMovie(closestMovieResults, movieTitle, movieYear);
       }
@@ -169,18 +173,17 @@ router.get("/oneMovie/fetchMovieDataFromApi/", async (req, res) => {
       console.log(movieData);
       res.json(movieData);
       res.end();
-    }
-    else {
+    } else {
       throw new Error("404: Response not OK");
     }
-  }
-  catch (e) {
+  } catch (e) {
     res.status(404).send("404: Movie API Fetch Failed!");
   }
 });
 
 /**
- * updateMovieDataToAzure endpoint takes the Request Body, fetches the Blob Name URL and poster and uploads it to Blob Storage
+ * updateMovieDataToAzure endpoint takes the Request Body, 
+ * fetches the Blob Name URL and poster and uploads it to Blob Storage
  */
 router.post("/oneMovie/updateMovieDataToAzure/", async (req, res) => {
   const requestBody = await req.body;
@@ -194,14 +197,16 @@ router.post("/oneMovie/updateMovieDataToAzure/", async (req, res) => {
 });
 
 /**
- * updateMovieDataToDB endpoint takes request Body, fetches description and Azure URL and uploads it to database
+ * updateMovieDataToDB endpoint takes request Body, 
+ * fetches description and Azure URL and uploads it to database
  */
 router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
   const requestBody = await req.body;
 
   let blobData = getMovieBlobNameAndUrl(requestBody);
 
-  // Checks if poster url is null (aka no movie poster). If it is, upload null to DB instead of blobData.url
+  // Checks if poster url is null (aka no movie poster). 
+  // If it is, upload null to DB instead of blobData.url
   if (!requestBody.poster) {
     blobData.url = null;
   }
@@ -213,7 +218,8 @@ router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
 });
 
 /**
- * uploadMoviePoster fetches the image from the movie poster API with the right path and uploads to Azure Blob Storage
+ * uploadMoviePoster fetches the image from the movie poster API 
+ * with the right path and uploads to Azure Blob Storage
  * @param {*} movieTitle 
  * @param {*} moviePosterPath 
  */
@@ -233,7 +239,8 @@ async function uploadMoviePoster(posterBlobName, moviePosterPath) {
     const options = { blobHTTPHeaders: { blobContentType: "image/jpeg" } };
 
     // Upload blob to container
-    await blockBlobClient.uploadStream(imageStream, uploadOptions.bufferSize, uploadOptions.maxBuffers, options);
+    await blockBlobClient.uploadStream(imageStream, 
+      uploadOptions.bufferSize, uploadOptions.maxBuffers, options);
   }
 }
 
@@ -256,7 +263,7 @@ async function updateMovieDataToDB(movieId, movieDescription, movieBlobUrl) {
  * @returns blockBlobClient.url
  */
 function getMovieBlobNameAndUrl(movieData) {
-  const posterBlobName = 'rengokuBlob-' + movieData.title + "-" + movieData.year + ".jpg";
+  const posterBlobName = "rengokuBlob-" + movieData.title + "-" + movieData.year + ".jpg";
   const blockBlobClient = containerClient.getBlockBlobClient(posterBlobName);
 
   let data = {
@@ -267,7 +274,8 @@ function getMovieBlobNameAndUrl(movieData) {
 }
 
 /**
- * fetchClosestMovies() takes a title and fetches a generalized query to the API querying by title and returning the results array
+ * fetchClosestMovies() takes a title and fetches a generalized query to the API querying 
+ * by title and returning the results array
  * @param {*} movieTitle 
  * @returns results
  */
@@ -278,14 +286,14 @@ async function fetchClosestMovies(movieTitle) {
     let movieApiJson = await response.json();
     let moviesApiResults = movieApiJson.results;
     return moviesApiResults;
-  }
-  else {
+  } else {
     throw new Error("Failed to query movie title only");
   }
 }
 
 /**
- * findClosestMovie() loops through movies array, filters only the ones with exact title and valid year and returns movie with closest matching year
+ * findClosestMovie() loops through movies array, filters only the ones 
+ * with exact title and valid year and returns movie with closest matching year
  * @param {*} movies 
  * @param {*} movieTitle 
  * @param {*} movieYearQuery 
@@ -305,7 +313,8 @@ function findClosestMovie(movies, movieTitle, movieYearQuery) {
 }
 
 /**
- * parseReleaseYear() is a helper method that takes movie API date string (YYYY-MM-DD), parses it as a year and returns it
+ * parseReleaseYear() is a helper method that 
+ * takes movie API date string (YYYY-MM-DD), parses it as a year and returns it
  * @param {*} releaseDate 
  * @returns year
  */
@@ -320,7 +329,7 @@ function parseReleaseYear(releaseDate) {
  * @returns boolean
  */
 function equalsIgnoreCase(firstString, secondString) {
-  return firstString.localeCompare(secondString, undefined, { sensitivity: 'base' }) === 0;
+  return firstString.localeCompare(secondString, undefined, { sensitivity: "base" }) === 0;
 }
 
 function findClosestMovieByYear(movies, movieYearQuery) {
@@ -328,7 +337,8 @@ function findClosestMovieByYear(movies, movieYearQuery) {
   let closestMovieYear = parseReleaseYear(closestMovie.release_date);
   movies.forEach((movie) => {
     let formattedMovieYear = parseReleaseYear(movie.release_date);
-    if (Math.abs(movieYearQuery - formattedMovieYear) < Math.abs(movieYearQuery - closestMovieYear)) {
+    if (Math.abs(movieYearQuery - formattedMovieYear)
+     < Math.abs(movieYearQuery - closestMovieYear)) {
       closestMovie = movie;
       closestMovieYear = parseReleaseYear(closestMovie.release_date);
     }
