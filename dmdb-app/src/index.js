@@ -13,6 +13,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import BttAffix from "./components/BttAffix";
 import Reviews from "./routes/Reviews";
+import Login from "./routes/Login";
 
 const rootElement = document.getElementById("root");
 render(
@@ -60,7 +61,7 @@ render(
         />
       </Route>
 
-      <Route path="login" element={<Register />} >
+      <Route path="login" element={<Login />} >
         <Route
           index
           element={
