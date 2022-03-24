@@ -1,4 +1,4 @@
-import { Container, Text, Group, Space, Image, ThemeIcon, Button } from "@mantine/core";
+import { Container, Text, Group, Space, Image, ThemeIcon, Button, Modal } from "@mantine/core";
 import { Link } from "react-router-dom";
 
 //This function is used to render the featured movies of our movie database
@@ -30,7 +30,8 @@ export default function Home() {
             src="https://about.gitlab.com/images/press/logo/png/gitlab-icon-1-color-white-rgb.png"/>
         </ThemeIcon>
         <a id="gitLabLink" target="_blank" rel="noreferrer" 
-          href="https://gitlab.com/zhuxiaoj1/rengoku-dmdb"><Text>Check us out on GitLab!</Text></a>
+          href="https://gitlab.com/zhuxiaoj1/rengoku-dmdb">
+          <Text>Check us out on GitLab!</Text></a>
       </Group>
     </Container>
   );

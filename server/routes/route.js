@@ -143,10 +143,7 @@ router.delete("/review/delete", async (req) => {
 router.get("/oneMovie/fetchMovieDataFromApi/", async (req, res) => {
   let movieTitle = req.query.title;
   let movieYear = parseInt(req.query.year);
-<<<<<<< HEAD
-=======
   // eslint-disable-next-line max-len
->>>>>>> 8a7747bd4046980c3f5435f004c1c688dc65ead5
   let url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${movieTitle}&year=${movieYear}`;
 
   let response = await fetch(url);

@@ -1,9 +1,30 @@
-import React from "react";
-import { Title, Image, Space, Text, Divider } from "@mantine/core";
+import { useState } from 'react';
+import { Divider, Image, List, Modal, Space, Text, Title } from "@mantine/core";
 
-export default class Footer extends React.Component {
-  render() {
-    return (
+export default function Footer() {
+  const [aboutOpened, setAboutOpened] = useState(false);
+
+  return (
+    <>
+      <Modal
+        opened={aboutOpened}
+        onClose={() => setAboutOpened(false)}
+        title={<Title order={2}>About Us</Title>}
+        size="lg"
+      >
+        <Text>Dawson Movie Solutions is a small team consisting of four<Space/>
+        Dawson College Computer Science & Technology student developers: </Text>
+        <List withPadding>
+          <List.Item>Mikael Baril</List.Item>
+          <List.Item>Daniel Lam</List.Item>
+          <List.Item>Caelan Whitter</List.Item>
+          <List.Item>Danilo Zhu (1943382)</List.Item>
+        </List>
+        <Text align="center" underline><a rel="noreferrer" target="_blank"
+          href="https://gitlab.com/zhuxiaoj1/rengoku-dmdb/-/graphs/deploy">
+            [View Contributors]</a></Text>
+      </Modal>
+
       <footer>
         <div className="footSection">
           <div id="brandIcon">
@@ -22,7 +43,7 @@ export default class Footer extends React.Component {
 
         <div className="footSection">
           <Title order={4}>About the project</Title>
-          <Text color="gray">About Us</Text>
+          <Text onClick={() => setAboutOpened(true)} color="gray">About Us</Text>
           <Space h="xl"/>
           <Title order={4}>Feedback</Title>
           <Text color="gray">Report a bug</Text>
@@ -37,6 +58,6 @@ export default class Footer extends React.Component {
           </a>
         </div>
       </footer>
-    )
-  }
+    </>
+  )
 }
