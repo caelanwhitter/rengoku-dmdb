@@ -47,7 +47,7 @@ router.get("/getSearch", async (req, res) => {
     score: { $regex: `${keywordScore}`, $options: "i" },
     rating: { $regex: `${keywordRating}`, $options: "i" },
   })
-        
+
   try {
     res.json(findMovies);
     res.end();
@@ -112,12 +112,14 @@ router.get("/oneMovie/reviews", async (req, res) => {
 
 router.post("/reviews", async (req, res) => {
   const body = await req.body;
-  const doc = new Reviews({ username: body.username,
-    movieId: body.movieId, 
-    content: body.content, 
-    rating: body.rating, 
-    datePosted: body.datePosted, 
-    subtitle: body.subtitle });
+  const doc = new Reviews({
+    username: body.username,
+    movieId: body.movieId,
+    content: body.content,
+    rating: body.rating,
+    datePosted: body.datePosted,
+    subtitle: body.subtitle
+  });
   await doc.save();
   res.status(201).json({
     message: "Post worked!"
@@ -141,6 +143,10 @@ router.delete("/review/delete", async (req) => {
 router.get("/oneMovie/fetchMovieDataFromApi/", async (req, res) => {
   let movieTitle = req.query.title;
   let movieYear = parseInt(req.query.year);
+<<<<<<< HEAD
+=======
+  // eslint-disable-next-line max-len
+>>>>>>> 8a7747bd4046980c3f5435f004c1c688dc65ead5
   let url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${movieTitle}&year=${movieYear}`;
 
   let response = await fetch(url);
@@ -155,8 +161,8 @@ router.get("/oneMovie/fetchMovieDataFromApi/", async (req, res) => {
       if (moviesApiResults.length !== 0) {
         // Take first movie from results, most similar result
         closestMovieJson = moviesApiResults[0];
-      // If there isn't, find most similar movie based 
-      // on matching original movie title and closest year.
+        // If there isn't, find most similar movie based 
+        // on matching original movie title and closest year.
       } else {
         let closestMovieResults = await fetchClosestMovies(movieTitle);
         closestMovieJson = findClosestMovie(closestMovieResults, movieTitle, movieYear);
@@ -238,7 +244,7 @@ async function uploadMoviePoster(posterBlobName, moviePosterPath) {
     const options = { blobHTTPHeaders: { blobContentType: "image/jpeg" } };
 
     // Upload blob to container
-    await blockBlobClient.uploadStream(imageStream, 
+    await blockBlobClient.uploadStream(imageStream,
       uploadOptions.bufferSize, uploadOptions.maxBuffers, options);
   }
 }
@@ -337,7 +343,7 @@ function findClosestMovieByYear(movies, movieYearQuery) {
   movies.forEach((movie) => {
     let formattedMovieYear = parseReleaseYear(movie.release_date);
     if (Math.abs(movieYearQuery - formattedMovieYear)
-     < Math.abs(movieYearQuery - closestMovieYear)) {
+      < Math.abs(movieYearQuery - closestMovieYear)) {
       closestMovie = movie;
       closestMovieYear = parseReleaseYear(closestMovie.release_date);
     }
