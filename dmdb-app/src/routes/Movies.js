@@ -120,7 +120,6 @@ export default function Movies() {
          Mitigated through calling one function that will run all the async functions instead*/
         updateMovieDetails(movie);
       }
-      let movieUpdated = fetchMovie(movie);
       return (
         <Grid.Col key={movie._id} span={3}>
           <Card onClick={() => {
@@ -151,10 +150,6 @@ export default function Movies() {
      */
   async function updateMovieDetails(movie) {
     await fetchMovieDataFromApi(movie);
-  }
-
-  async function fetchMovie(movie) {
-
   }
 
   /**
