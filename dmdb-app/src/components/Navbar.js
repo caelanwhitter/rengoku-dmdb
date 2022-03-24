@@ -13,9 +13,7 @@ export default class Navbar extends React.Component {
         <Link className="tabLink" to="/">Home</Link>
         <Link className="tabLink" to="/movies">Movies</Link>
         <Link className="tabLink" to="/hiddenGems">Hidden Gems</Link>{" | "}
-        <Link className="tabLink" to="/register">Register</Link>
-        <Link className="tabLink" to="/login">Login</Link>
-        <Link className="tabLink" to="/logout">Logout</Link>
+        <Link className="tabLink" to="/profile">Profile</Link>
       </nav>
     )
   }
