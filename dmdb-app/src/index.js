@@ -1,6 +1,6 @@
 import { render } from "react-dom";
 import {
-  BrowserRouter,
+  HashRouter,
   Routes,
   Route
 } from "react-router-dom";
@@ -16,7 +16,7 @@ import Reviews from "./routes/Reviews";
 
 const rootElement = document.getElementById("root");
 render(
-  <BrowserRouter>
+  <HashRouter>
     {<Navbar/>}
     <Routes>
       <Route path="/" element={<Home/>}/>
@@ -95,6 +95,6 @@ render(
     </Routes>
     {<Footer/>}
     {<BttAffix/>}
-  </BrowserRouter>,
+  </HashRouter>,
   rootElement
 );
