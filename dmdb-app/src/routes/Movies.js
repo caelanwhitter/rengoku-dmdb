@@ -37,7 +37,7 @@ export default function Movies() {
      */
   useEffect(() => {
     displayMoviesPerPage(activePage);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function getDetails(movieId) {
@@ -45,7 +45,7 @@ export default function Movies() {
       response => response.json()).
       then(
         data => {
-          setOneMovieData(data[0]) 
+          setOneMovieData(data[0])
         }
       )
   }
@@ -56,9 +56,9 @@ export default function Movies() {
      * @param {String} pageNumber 
      */
   async function displayMoviesPerPage(pageNumber) {
-    let response = await fetch('/api/getSearch/page/' + pageNumber + '?title=' 
-    + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre
-    + '&releaseYear=' + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
+    let response = await fetch('/api/getSearch/page/' + pageNumber + '?title='
+      + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre
+      + '&releaseYear=' + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
     let moviesPaginationJson = await response.json();
     setCards(getCards(moviesPaginationJson));
 
@@ -74,9 +74,9 @@ export default function Movies() {
      * @param {JSON} moviesPaginationJson 
      */
   async function calculateTotalPagination(moviesPaginationJson) {
-    let response = await fetch('/api/getSearch?title=' + valueTitle + '&director=' 
-    + valueDirector + '&genre=' + valueGenre +   '&releaseYear=' 
-    + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
+    let response = await fetch('/api/getSearch?title=' + valueTitle + '&director='
+      + valueDirector + '&genre=' + valueGenre + '&releaseYear='
+      + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
     let allMoviesJson = await response.json();
     const totalMoviePages = Math.ceil(allMoviesJson.length / moviesPaginationJson.length);
 
@@ -123,14 +123,14 @@ export default function Movies() {
       return (
         <Grid.Col key={movie._id} span={3}>
           <Card onClick={() => {
-            getDetails(movie._id); setOpened(true) 
+            getDetails(movie._id); setOpened(true)
           }} style={{ cursor: "pointer" }} shadow="md" withBorder={true}>
             <Card.Section>
-              <Image src={movie.poster} height={movie.poster ? "100%" : 375} 
+              <Image src={movie.poster} height={movie.poster ? "100%" : 375}
                 width={movie.poster ? "100%" : 324} alt={movie.title + " Poster"} withPlaceholder />
             </Card.Section>
 
-            <Space h="sm"/>
+            <Space h="sm" />
             <Text weight={600}>{movie.title}</Text>
             <Group position="apart">
               <Text size="sm">{movie.director}</Text>
@@ -159,8 +159,8 @@ export default function Movies() {
      */
   async function fetchMovieDataFromApi(movie) {
     try {
-      let movieUrl = '/api/oneMovie/fetchMovieDataFromApi?title=' 
-      + movie.title + '&year=' + movie.releaseYear;
+      // eslint-disable-next-line max-len
+      let movieUrl = '/api/oneMovie/fetchMovieDataFromApi?title=' + movie.title + '&year=' + movie.releaseYear;
       let response = await fetch(movieUrl);
       if (response.ok) {
         let movieApiData = await response.json();
@@ -225,7 +225,7 @@ export default function Movies() {
   return (
     <>
       <nav id="searchNav">
-        <Link className="tabLink" 
+        <Link className="tabLink"
           onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
       </nav>
 
@@ -266,7 +266,7 @@ export default function Movies() {
           radius="md"
           required
         />
-                
+
         <TextInput
           label="Release Year "
           value={valueReleaseYear}
@@ -300,10 +300,10 @@ export default function Movies() {
           onClick={clickOnGo}
           color="dark"
           type="submit">
-                    Go!
+          Go!
         </Button>
       </Modal>
-            
+
       <Modal
         opened={opened}
         onClose={() => setOpened(false)}
@@ -313,14 +313,14 @@ export default function Movies() {
         centered
       >
         <div id="movieDetails">
-          <Image src={oneMovieData.poster} height={320} width={250} 
+          <Image src={oneMovieData.poster} height={320} width={250}
             alt={oneMovieData.title + " Poster"} withPlaceholder />
 
           <div id="movieText">
             <Title order={4}>Director: {oneMovieData.director}</Title>
             <Group position="left">
               <Badge color="dark">{oneMovieData.genre}</Badge>
-              <Badge color="dark" 
+              <Badge color="dark"
                 variant="outline">{parseInt(oneMovieData.duration)} minutes</Badge>
               <Badge color="gray" variant="outline">Rated {oneMovieData.rating}</Badge>
               <Badge color="yellow" variant="dot">{oneMovieData.score} ⭐</Badge>
@@ -341,7 +341,7 @@ export default function Movies() {
       </Grid>
 
       <div id="pagination">
-        <Pagination page={activePage} onChange={changePage} 
+        <Pagination page={activePage} onChange={changePage}
           total={totalPagination} color="dark" sibilings={1} withEdges />
       </div>
     </>

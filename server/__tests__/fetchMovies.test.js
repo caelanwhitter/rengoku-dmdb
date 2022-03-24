@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /**
  * fetchMovies.test.js tests many edge cases when fetching data 
  * from the API and matching it with the dataset.
@@ -28,16 +29,14 @@ describe("GET/ Request test at endpoint '/oneMovie/fetchMovieDataFromApi/'", () 
      */
   test("Tests endpoint with 'The Shining - 1980'", async () => {
     const response = await request(app).get("/api/oneMovie/fetchMovieDataFromApi").
-      query({ title: "The Shining", year: 1980}).
+      query({ title: "The Shining", year: 1980 }).
       expect("Content-Type", /json/).
       expect(200);
 
     const expectedMovie = {
       title: "The Shining",
-      description: `Jack Torrance accepts a caretaker job at the Overlook Hotel, where he, 
-      along with his wife Wendy and their son Danny, 
-      must live isolated from the rest of the world for the winter. 
-      But they aren't prepared for the madness that lurks within.`,
+      // eslint-disable-next-line max-len
+      description: "Jack Torrance accepts a caretaker job at the Overlook Hotel, where he, along with his wife Wendy and their son Danny, must live isolated from the rest of the world for the winter. But they aren't prepared for the madness that lurks within.",
       poster: "/b6ko0IKC8MdYBBPkkA1aBPLe2yz.jpg",
       year: 1980
     }
@@ -51,16 +50,14 @@ describe("GET/ Request test at endpoint '/oneMovie/fetchMovieDataFromApi/'", () 
      */
   test("Tests endpoint with 'Cattle Annie And Little Britches - 1980'", async () => {
     const response = await request(app).get("/api/oneMovie/fetchMovieDataFromApi").
-      query({ title: "Cattle Annie And Little Britches", year: 1980}).
+      query({ title: "Cattle Annie And Little Britches", year: 1980 }).
       expect("Content-Type", /json/).
       expect(200);
 
     const expectedMovie = {
       title: "Cattle Annie and Little Britches",
-      description: `In nineteenth century Oklahoma, two teen girls, fans of stories about outlaws, 
-      are on a quest to meet and join up with them. 
-      They find a shadow of a former gang and although disappointed, 
-      still try to help them escape from a vigorous Marshal.`,
+      // eslint-disable-next-line max-len
+      description: "In nineteenth century Oklahoma, two teen girls, fans of stories about outlaws, are on a quest to meet and join up with them. They find a shadow of a former gang and although disappointed, still try to help them escape from a vigorous Marshal.",
       poster: "/vbY56Vl2hoW5N5CuPDuaE8sDwpy.jpg",
       year: 1980
     }
@@ -75,21 +72,14 @@ describe("GET/ Request test at endpoint '/oneMovie/fetchMovieDataFromApi/'", () 
      */
   test("Tests endpoint with 'Mantis Fist Fighter - 1980'", async () => {
     const response = await request(app).get("/api/oneMovie/fetchMovieDataFromApi").
-      query({ title: "Mantis Fist Fighter", year: 1980}).
+      query({ title: "Mantis Fist Fighter", year: 1980 }).
       expect("Content-Type", /json/).
       expect(200);
 
     const expectedMovie = {
       title: "The Thundering Mantis",
-      description: `Ah Chi (Ka-Yan Leung) is obsessed with the martial arts and, 
-      more often than not, his kung-fu clowning gets him into trouble. 
-      Ending up facing Hsia (Eddie Ko) of the notorious Jade Brotherhood is inevitable. 
-      As a result, Hsia forces Chi's martial arts master to expel him. 
-      Masterless and working for a fish vendor,
-      Chi meets a crafty kid (Yat Lung Wong), whose uncle Chow Tung (Chin Yuet Sang) 
-      is a master of the Insane Mantis style. 
-      The Jade Brotherhood aims for control of the small town
-      but Chi is training with a new Master and will not accept bullies in the neighbourhood.`,
+      // eslint-disable-next-line max-len
+      description: "Ah Chi (Ka-Yan Leung) is obsessed with the martial arts and, more often than not, his kung-fu clowning gets him into trouble. Ending up facing Hsia (Eddie Ko) of the notorious Jade Brotherhood is inevitable. As a result, Hsia forces Chi's martial arts master to expel him. Masterless and working for a fish vendor, Chi meets a crafty kid (Yat Lung Wong), whose uncle Chow Tung (Chin Yuet Sang) is a master of the Insane Mantis style. The Jade Brotherhood aims for control of the small town but Chi is training with a new Master and will not accept bullies in the neighbourhood.",
       poster: "/efRflUMFeql2vqy1Y1EnBc0kDDc.jpg",
       year: 1980
     }
@@ -104,16 +94,14 @@ describe("GET/ Request test at endpoint '/oneMovie/fetchMovieDataFromApi/'", () 
      */
   test("Tests endpoint with 'Venom - 1981'", async () => {
     const response = await request(app).get("/api/oneMovie/fetchMovieDataFromApi").
-      query({ title: "Venom", year: 1981}).
+      query({ title: "Venom", year: 1981 }).
       expect("Content-Type", /json/).
       expect(200);
 
     const expectedMovie = {
       title: "Venom",
-      description: `International terrorists attempt to kidnap a wealthy couple's child. 
-      Their plan comes unstuck when a deadly Black Mamba, 
-      sent by mistake instead of a harmless snake, 
-      escapes and the terrorists and several hostages are trapped in the boy's London home.`,
+      // eslint-disable-next-line max-len
+      description: "International terrorists attempt to kidnap a wealthy couple's child. Their plan comes unstuck when a deadly Black Mamba, sent by mistake instead of a harmless snake, escapes and the terrorists and several hostages are trapped in the boy's London home.",
       poster: "/oGspQXUm4BtFioE6dHLwQGJqaGu.jpg",
       year: 1981
     }
@@ -129,7 +117,7 @@ describe("GET/ Request test at endpoint '/oneMovie/fetchMovieDataFromApi/'", () 
      */
   test("Tests endpoint with 'Inchon - 1981'", async () => {
     const response = await request(app).get("/api/oneMovie/fetchMovieDataFromApi").
-      query({ title: "Inchon", year: 1981}).
+      query({ title: "Inchon", year: 1981 }).
       expect("Content-Type", /json/).
       expect(200);
 
@@ -159,16 +147,13 @@ describe("GET/ Request test at endpoint '/oneMovie/fetchMovieDataFromApi/'", () 
      */
   test("Tests endpoint with 'The Entity - 1982'", async () => {
     const response = await request(app).get("/api/oneMovie/fetchMovieDataFromApi").
-      query({ title: "The Entity", year: 1982}).
+      query({ title: "The Entity", year: 1982 }).
       expect("Content-Type", /json/).
       expect(200);
 
     const expectedMovie = {
       title: "The Entity",
-      description: `Carla Moran, a hard-working single mother,  is raped in her bedroom by someone 
-      - or something - that she cannot see. 
-      Despite skeptical psychiatrists, she is repeatedly attacked in her car 
-      by this invisible force. Could this be a case of hysteria or something more horrific?`,
+      description: "Carla Moran, a hard-working single mother,  is raped in her bedroom by someone - or something - that she cannot see. Despite skeptical psychiatrists, she is repeatedly attacked in her car by this invisible force. Could this be a case of hysteria or something more horrific?",
       poster: "/3gk2ZuC4OcyE9JYnv6f4FQAbH20.jpg",
       year: 1982
     }
