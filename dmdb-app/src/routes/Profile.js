@@ -9,7 +9,7 @@ export default function Profile() {
       <Card shadow="md" withBorder>
         <Avatar color="dark" radius="xl" size="xl">DZ</Avatar> <Space h="sm"/>
         <Text size="lg" weight="bold">Danilo Zhu</Text>
-        <Space h="sm"/><Text>Lorem ipsum dolor sit amet</Text>
+        <Space h="sm"/><Text><em>Lorem ipsum dolor sit amet</em></Text>
       </Card>
       <Space h="md"/>
     </Container>
