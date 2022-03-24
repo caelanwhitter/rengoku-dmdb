@@ -62,15 +62,7 @@ render(
       </Route>
 
       <Route path="login" element={<Login />} >
-        <Route
-          index
-          element={
-            <main style={{ padding: "1rem" }}>
-              <p>Enter your username: </p>
-              <p>Enter your password: </p>
-            </main>
-          }
-        />
+        
       </Route>
 
       <Route path="logout" element={<Register />} >
