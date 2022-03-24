@@ -1,5 +1,6 @@
 package utils;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.mongodb.ConnectionString;
@@ -18,7 +19,7 @@ import org.bson.codecs.pojo.PojoCodecProvider;
  * @author Caelan Whitter & Daniel Lam
  */
 public class MongoDB {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         Dotenv dotenv = Dotenv.load();
         final String ATLAS_URI = dotenv.get("ATLAS_URI");
