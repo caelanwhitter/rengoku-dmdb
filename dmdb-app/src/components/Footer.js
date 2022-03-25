@@ -20,7 +20,7 @@ export default function Footer() {
           <List.Item>Caelan Whitter</List.Item>
           <List.Item>Danilo Zhu (1943382)</List.Item>
         </List>
-        <Text align="center" underline><a rel="noreferrer" target="_blank"
+        <Text align="center" className="underHover"><a rel="noreferrer" target="_blank"
           href="https://gitlab.com/zhuxiaoj1/rengoku-dmdb/-/graphs/deploy">
             [View Contributors]</a></Text>
       </Modal>
@@ -43,10 +43,14 @@ export default function Footer() {
 
         <div className="footSection">
           <Title order={4}>About the project</Title>
-          <Text onClick={() => setAboutOpened(true)} color="gray">About Us</Text>
+          <Text className="underHover" onClick={() => setAboutOpened(true)} 
+            style={{ cursor:"pointer" }} color="gray">About Us</Text>
           <Space h="xl"/>
           <Title order={4}>Feedback</Title>
-          <Text color="gray">Report a bug</Text>
+          <a rel="noreferrer" target="_blank" href="https://stats.uptimerobot.com/v7xxocEMVD">
+            <Text color="gray">Site status</Text></a>
+          <a href="mailto:daniel.lam@dawsoncollege.qc.ca">
+            <Text color="gray">Report a bug</Text></a>
         </div>
 
         <div className="footSection">

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
-  Grid, Text, Badge, Title, Modal, Group, Card,
-  Image, Pagination, TextInput, Button, NativeSelect, Space
+  Grid, Text, Badge, Title, Modal, Group, Card, LoadingOverlay,
+  Image, Pagination, TextInput, Button, NativeSelect, Space, Container
 } from '@mantine/core';
 import { NavLink, Link } from "react-router-dom";
 import '../App.css';
@@ -30,6 +30,7 @@ export default function Movies() {
   const [valueScore, setValueScore] = useState('');
   const [valueRating, setValueRating] = useState('');
   const [, scrollTo] = useWindowScroll();
+  const [loading, setLoading] = useState(false);
 
 
   /**
@@ -56,11 +57,13 @@ export default function Movies() {
      * @param {String} pageNumber 
      */
   async function displayMoviesPerPage(pageNumber) {
+    setLoading((v) => !v);
     let response = await fetch('/api/getSearch/page/' + pageNumber + '?title='
       + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre
       + '&releaseYear=' + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
     let moviesPaginationJson = await response.json();
     setCards(getCards(moviesPaginationJson));
+    setLoading((v) => !v);
 
     // Calls calculateTotalPagination() if totalPagination not initialized yet yet
     if (totalPagination === undefined) {
@@ -94,7 +97,7 @@ export default function Movies() {
      * @param {*} event 
      */
   const changePage = (event) => {
-
+    // setLoading((v) => !v);
     // Re-fetches the list of movies with proper page number
     displayMoviesPerPage(event);
 
@@ -102,6 +105,7 @@ export default function Movies() {
     setPage(event);
 
     scrollTo({ y: 0 });
+    // setLoading((v) => !v);
   }
 
   /**
@@ -224,6 +228,9 @@ export default function Movies() {
 
   return (
     <>
+      {/* {console.log("1. " + visible)} 
+      <LoadingOverlay visible={visible}/>
+      {console.log("2. " + visible)} */}
       <nav id="searchNav">
         <Link className="tabLink"
           onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
@@ -336,6 +343,8 @@ export default function Movies() {
         </div>
       </Modal>
 
+      <LoadingOverlay loaderProps={{ color: 'dark', variant: 'dots' }}
+        visible={loading}/>
       <Grid className="movieGrid" gutter={80}>
         {cards}
       </Grid>
