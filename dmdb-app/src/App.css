@@ -1,9 +1,11 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica,
-    Arial,sans-serif, Apple Color Emoji, Segoe UI Emoji;
+    Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
 }
 
-a, .tabLink, #gitLabLink {
+a,
+.tabLink,
+#gitLabLink {
   text-decoration: none;
   color: black;
 }
@@ -47,7 +49,8 @@ a, .tabLink, #gitLabLink {
   border-radius: 15px;
 }
 
-.tabs, #searchNav {
+.tabs,
+#searchNav {
   font-size: 150%;
   padding: 5px;
   border-bottom: solid 1px;
@@ -82,15 +85,17 @@ a, .tabLink, #gitLabLink {
   border-radius: 5px;
   color: white;
 }
-.trashLink:hover{
-color: red;
+
+.trashLink:hover {
+  color: red;
 }
 
-.intro { 
+.intro {
   font-size: 60px;
 }
 
-.underHover:hover, .footSection > a:hover {
+.underHover:hover,
+.footSection>a:hover {
   text-decoration: underline;
 }
 

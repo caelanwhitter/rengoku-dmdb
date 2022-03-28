@@ -6,7 +6,7 @@ export default function Register() {
     <div style={{ display: "flex" }}>
       <nav >
       </nav>
-      <Outlet/>
+      <Outlet />
     </div>
   );
 }

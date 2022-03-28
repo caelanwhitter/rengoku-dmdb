@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
 import {
-  Grid, Text, Badge, Title, Modal, Group, Card, LoadingOverlay,
-  Image, Pagination, TextInput, Button, NativeSelect, Space
+  Badge, Button, Card, Grid, Group, Image, LoadingOverlay,
+  Modal, NativeSelect, Pagination, Space, Text, TextInput, Title
 } from '@mantine/core';
-import { NavLink, Link } from "react-router-dom";
-import '../App.css';
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { useWindowScroll } from '@mantine/hooks';
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { useEffect, useState } from 'react';
+import { Link, NavLink } from "react-router-dom";
+import '../App.css';
 
 /**
  * Movies() is a component that fetches the list of Movies from the DB 
@@ -99,7 +99,6 @@ export default function Movies() {
      * @param {*} event 
      */
   const changePage = (event) => {
-    // setLoading((v) => !v);
     // Re-fetches the list of movies with proper page number
     displayMoviesPerPage(event);
 
@@ -107,7 +106,6 @@ export default function Movies() {
     setPage(event);
 
     scrollTo({ y: 0 });
-    // setLoading((v) => !v);
   }
 
   /**
@@ -129,7 +127,7 @@ export default function Movies() {
       return (
         <Grid.Col key={movie._id} span={3}>
           <Card onClick={() => {
-            getDetails(movie._id); setModalLoading(v => !v); setOpened(true); 
+            getDetails(movie._id); setModalLoading(v => !v); setOpened(true);
           }} style={{ cursor: "pointer" }} shadow="md" withBorder={true}>
             <Card.Section>
               <Image src={movie.poster} height={movie.poster ? "100%" : 375}
@@ -319,7 +317,7 @@ export default function Movies() {
         centered
       >
         <LoadingOverlay loaderProps={{ color: 'dark', variant: 'dots' }}
-          visible={modalLoading}/>
+          visible={modalLoading} />
         <div id="movieDetails">
           <Image src={oneMovieData.poster} height={320} width={250}
             alt={oneMovieData.title + " Poster"} withPlaceholder />
@@ -345,7 +343,7 @@ export default function Movies() {
       </Modal>
 
       <LoadingOverlay loaderProps={{ color: 'dark', variant: 'dots' }}
-        visible={loading}/>
+        visible={loading} />
       <Grid className="movieGrid" gutter={80}>
         {cards}
       </Grid>

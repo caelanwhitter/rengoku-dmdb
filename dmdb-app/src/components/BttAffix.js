@@ -1,6 +1,6 @@
-import { Button, Affix, Transition } from "@mantine/core";
-import { ArrowUpIcon } from "@radix-ui/react-icons";
+import { Affix, Button, Transition } from "@mantine/core";
 import { useWindowScroll } from '@mantine/hooks';
+import { ArrowUpIcon } from "@radix-ui/react-icons";
 
 export default function BttAffix() {
   const [scroll, scrollTo] = useWindowScroll();
@@ -8,7 +8,7 @@ export default function BttAffix() {
   return (
     <Affix position={{ bottom: 20, right: 20 }}>
       <Transition transition="slide-up" mounted={scroll.y > 10}>
-        {(transitionStyles) => 
+        {(transitionStyles) =>
           <Button
             leftIcon={<ArrowUpIcon />}
             style={transitionStyles}
@@ -16,7 +16,7 @@ export default function BttAffix() {
             color="dark"
             uppercase
           >
-                    Back to top
+            Back to top
           </Button>
         }
       </Transition>

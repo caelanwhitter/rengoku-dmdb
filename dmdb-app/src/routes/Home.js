@@ -1,4 +1,4 @@
-import { Container, Text, Group, Space, Image, ThemeIcon, Button, Modal } from "@mantine/core";
+import { Button, Container, Group, Image, Space, Text, ThemeIcon } from "@mantine/core";
 import { Link } from "react-router-dom";
 
 //This function is used to render the featured movies of our movie database
@@ -7,29 +7,31 @@ export default function Home() {
     <Container id="mainPageContainer">
       <Group spacing={-100}>
         <Text className="intro" weight={1000} variant="gradient" gradient={{
-          from: 'dark', to: 'gray', deg: 90}}>Fully Fledged</Text> 
+          from: 'dark', to: 'gray', deg: 90
+        }}>Fully Fledged</Text>
         <Text className="intro">Dawson College Movie Database</Text>
       </Group>
 
-      <Text size="xl">The best movie database available to Dawson College - Browse <Space/> 
-          our database of more than 7000 of the most popular movies, rate them, <Space/>
-          or submit your own Hidden Gem
+      <Text size="xl">The best movie database available to Dawson College - Browse <Space />
+        our database of more than 7000 of the most popular movies, rate them, <Space />
+        or submit your own Hidden Gem
       </Text>
-      <Space h="md"/>
+      <Space h="md" />
 
-      <Button gradient={{ from: 'dark', to: 'gray', deg: 45}} component={Link} 
+      <Button gradient={{ from: 'dark', to: 'gray', deg: 45 }} component={Link}
         to={"/movies"} variant="gradient" size="xl">Start Browsing</Button>
-      <Space h="md"/>
+      <Space h="md" />
 
       <Group>
         <ThemeIcon size="xl"
-          variant="gradient" gradient={{ from: 'orange', to: 'yellow', deg: 90}}>
-          <Image 
+          variant="gradient" gradient={{ from: 'orange', to: 'yellow', deg: 90 }}>
+          <Image
             height={50}
             width={50}
-            src="https://about.gitlab.com/images/press/logo/png/gitlab-icon-1-color-white-rgb.png"/>
+            // eslint-disable-next-line max-len
+            src="https://about.gitlab.com/images/press/logo/png/gitlab-icon-1-color-white-rgb.png" />
         </ThemeIcon>
-        <a id="gitLabLink" target="_blank" rel="noreferrer" 
+        <a id="gitLabLink" target="_blank" rel="noreferrer"
           href="https://gitlab.com/zhuxiaoj1/rengoku-dmdb">
           <Text>Check us out on GitLab!</Text></a>
       </Group>

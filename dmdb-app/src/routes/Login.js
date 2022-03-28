@@ -5,9 +5,9 @@ export default function Login() {
   return (
     <div style={{ display: "flex" }}>
       <nav >
-              
+
       </nav>
-      <Outlet/>
+      <Outlet />
     </div>
   );
 }

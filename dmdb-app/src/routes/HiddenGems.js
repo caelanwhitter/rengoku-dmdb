@@ -1,11 +1,11 @@
-import { useState } from 'react';
 import {
-  Grid, Text, Badge, Title, Modal, Group, Card,
-  TextInput, Button, NativeSelect
+  Badge, Button, Card, Grid, Group,
+  Modal, NativeSelect, Text, TextInput, Title
 } from '@mantine/core';
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { useState } from 'react';
 import { Link } from "react-router-dom";
 import '../App.css';
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 
 //This function is used to display the hiddenGems page
 export default function HiddenGems() {
@@ -17,8 +17,8 @@ export default function HiddenGems() {
     return (
       <Grid.Col key={elem} span={3}>
         <Card onClick={() => {
-          setOpened(true) 
-        }} 
+          setOpened(true)
+        }}
         style={{ cursor: "pointer" }} shadow="md" withBorder={true}>
 
           <Text weight={600}>Hidden Gem {elem}</Text>
@@ -34,7 +34,7 @@ export default function HiddenGems() {
   return (
     <>
       <nav id="searchNav">
-        <Link className="tabLink" 
+        <Link className="tabLink"
           onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
       </nav>
 
@@ -69,7 +69,7 @@ export default function HiddenGems() {
           radius="md"
           required
         />
-                
+
         <TextInput
           label="Release Year "
           placeholder="Enter the Release Year"
@@ -96,10 +96,10 @@ export default function HiddenGems() {
         <Button
           color="dark"
           type="submit">
-                    Go!
+          Go!
         </Button>
       </Modal>
-            
+
       <Modal
         opened={opened}
         onClose={() => setOpened(false)}
@@ -113,7 +113,7 @@ export default function HiddenGems() {
             <Title order={4}>Poster: John Doe</Title>
             <Group position="left">
               <Badge color="dark">Genre</Badge>
-              <Badge color="dark" 
+              <Badge color="dark"
                 variant="outline">Duration</Badge>
               <Badge color="gray" variant="outline">Rating?</Badge>
               <Badge color="yellow" variant="dot">Score ⭐</Badge>

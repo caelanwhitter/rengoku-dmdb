@@ -6,7 +6,7 @@ export default function Logout() {
     <div style={{ display: "flex" }}>
       <nav >
       </nav>
-      <Outlet/>
+      <Outlet />
     </div>
   );
 }
