@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   Grid, Text, Badge, Title, Modal, Group, Card, LoadingOverlay,
-  Image, Pagination, TextInput, Button, NativeSelect, Space, Container
+  Image, Pagination, TextInput, Button, NativeSelect, Space
 } from '@mantine/core';
 import { NavLink, Link } from "react-router-dom";
 import '../App.css';
@@ -31,6 +31,7 @@ export default function Movies() {
   const [valueRating, setValueRating] = useState('');
   const [, scrollTo] = useWindowScroll();
   const [loading, setLoading] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
 
 
   /**
@@ -49,6 +50,7 @@ export default function Movies() {
           setOneMovieData(data[0])
         }
       )
+    setModalLoading(v => !v);
   }
 
   /**
@@ -127,7 +129,7 @@ export default function Movies() {
       return (
         <Grid.Col key={movie._id} span={3}>
           <Card onClick={() => {
-            getDetails(movie._id); setOpened(true)
+            getDetails(movie._id); setModalLoading(v => !v); setOpened(true); 
           }} style={{ cursor: "pointer" }} shadow="md" withBorder={true}>
             <Card.Section>
               <Image src={movie.poster} height={movie.poster ? "100%" : 375}
@@ -228,9 +230,6 @@ export default function Movies() {
 
   return (
     <>
-      {/* {console.log("1. " + visible)} 
-      <LoadingOverlay visible={visible}/>
-      {console.log("2. " + visible)} */}
       <nav id="searchNav">
         <Link className="tabLink"
           onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
@@ -319,6 +318,8 @@ export default function Movies() {
         overflow="inside"
         centered
       >
+        <LoadingOverlay loaderProps={{ color: 'dark', variant: 'dots' }}
+          visible={modalLoading}/>
         <div id="movieDetails">
           <Image src={oneMovieData.poster} height={320} width={250}
             alt={oneMovieData.title + " Poster"} withPlaceholder />
