@@ -117,8 +117,7 @@ footer {
 }
 
 .centered {
-  text-align: center;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

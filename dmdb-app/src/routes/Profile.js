@@ -1,4 +1,4 @@
-import { Avatar, Card, Container, Space, Text } from "@mantine/core";
+import { Avatar, Button, Card, Container, Space, Text, Title } from "@mantine/core";
 import { useState } from 'react';
 import GoogleLogin from 'react-google-login';
 import '.././App.css';
@@ -43,51 +43,46 @@ export default function Profile() {
   //   }
   // }
   return (
-    <Container>
-      <div className="login-wrapper">
-        <div>
-          {
-            loginData ?
-              <div>
+    <div className="login-wrapper">
+      <Container>
+        {
+          loginData ?
+            <Container>
+              <Space h="md" />
+              <Title>Welcome to your page, {loginData.name}!</Title>
+              <Text color="gray">Logged in with {loginData.email}</Text>
+              <Space h="md"/>
+              <Card shadow="md" withBorder>
+                <Avatar src={loginData.picture} color="dark" radius="xl" size="xl" /> 
+                <Space h="sm" />
 
-                <h1 className="centered" > Welcome to the Profile Page! {loginData.name} </h1>
-                <h3 className="centered" >You logged in as {loginData.email}</h3>
-                <h3>
-                  <img className="centered"
-                    src={loginData.picture}
-                    alt="NoImage"
-                  />
-                </h3>
-                <button
-                  className="centered"
-                  onClick={handleLogout}>Logout</button>
-              </div>
+                <Text size="lg" weight="bold">{loginData.name}</Text>
+                <Space h="sm" /><Text><em>Lorem ipsum dolor sit amet</em></Text>
 
-              :
-              <div>
-                <h1 className="centered" >Please Log In with your Google account</h1>
+                <Space h="md"/> 
+                <Button color="red"
+                  onClick={handleLogout} uppercase variant="filled">Logout</Button>
+              </Card>
+              <Space h="md" />
+            </Container>
+            :
+            <Container>
+              <Space h="md"/>
+              <Card className="centered" shadow="md" withBorder>
+                <Title order={2}>Please login with your Google account</Title>
+                <Space h="xl"/>
                 <GoogleLogin
-                  className="centered"
                   clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
                   buttonText="Log in with Google"
                   onSuccess={handleLogin}
                   onFailure={handleFailed}
                   cookiePolicy={'single_host_origin'}
                 />
-              </div>
-
-          }
-
-        </div>
-      </div>
-      
-      <Space h="md" />
-      <Card shadow="md" withBorder>
-        <Avatar color="dark" radius="xl" size="xl">DZ</Avatar> <Space h="sm" />
-        <Text size="lg" weight="bold">Danilo Zhu</Text>
-        <Space h="sm" /><Text><em>Lorem ipsum dolor sit amet</em></Text>
-      </Card>
-      <Space h="md" />
-    </Container>
+              </Card>
+              <Space h="md"/>
+            </Container>
+        }
+      </Container>
+    </div>
   )
 }
