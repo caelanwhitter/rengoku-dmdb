@@ -4,11 +4,38 @@ import GoogleLogin from 'react-google-login';
 import '.././App.css';
 
 export default function Profile() {
+  var name = "";
+  var email = "";
+  var picture = "";
   const [loginData, setLoginData] = useState(
     localStorage.getItem('loginData')
       ? JSON.parse(localStorage.getItem('loginData'))
       : null
   );
+  /**
+   * function that refreshes the page
+   */
+  function refreshPage() {
+    window.location.reload();
+  }
+  /**
+   * insertUser() does a POST request to insert a users information into the database
+   */
+  async function insertUser() {
+    await fetch('/api/users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        picture: picture,
+      })
+    }).then(refreshPage())
+
+
+  }
   const handleFailed = (result) => {
     console.log("login failed");
     //alert(result);
@@ -25,23 +52,17 @@ export default function Profile() {
       },
     });
     const data = await res.json();
+    name = data.name;
+    email = data.email;
+    picture = data.picture;
     setLoginData(data);
     localStorage.setItem('loginData', JSON.stringify(data));
+    insertUser();
   };
   const handleLogout = () => {
     localStorage.removeItem('loginData');
     setLoginData(null);
   }
-  // async function fetchPicture(picture)
-  // {
-  //   let response = await fetch(picture);
-  //   if (response.ok)
-  //   {
-  //     let pictureblob = await response.blob(); 
-  //     console.log(pictureblob);
-  //     return pictureblob;
-  //   }
-  // }
   return (
     <Container>
       <div className="login-wrapper">
