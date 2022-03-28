@@ -55,7 +55,7 @@ a,
   padding: 5px;
   border-bottom: solid 1px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   font-variant: small-caps;
 }
@@ -102,8 +102,10 @@ a,
 footer {
   background-color: #f0f3f7;
   padding-top: 20px;
-  position: relative;
+  padding-bottom: 10px;
   width: 100%;
+  position: relative;
+  left: 0;
   bottom: 0;
   display: flex;
   flex-wrap: wrap;
