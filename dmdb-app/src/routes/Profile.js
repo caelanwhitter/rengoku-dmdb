@@ -32,16 +32,16 @@ export default function Profile() {
     localStorage.removeItem('loginData');
     setLoginData(null);
   }
-  async function fetchPicture(picture)
-  {
-    let response = await fetch(picture);
-    if (response.ok)
-    {
-      let pictureblob = await response.blob(); 
-      console.log(pictureblob);
-      return pictureblob;
-    }
-  }
+  // async function fetchPicture(picture)
+  // {
+  //   let response = await fetch(picture);
+  //   if (response.ok)
+  //   {
+  //     let pictureblob = await response.blob(); 
+  //     console.log(pictureblob);
+  //     return pictureblob;
+  //   }
+  // }
   return (
     <div className="login-wrapper">
 
@@ -52,10 +52,9 @@ export default function Profile() {
 
               <h1 className="centered" > Welcome to the Profile Page! {loginData.name} </h1>
               <h3 className="centered" >You logged in as {loginData.email}</h3>
-              <h3 className="centered" >You logged in as {loginData.picture}</h3>
               <h3>
                 <img className="centered" 
-                  src={async () => await fetchPicture(loginData.picture)}
+                  src={loginData.picture}
                   alt="NoImage"
                 />
               </h3>
