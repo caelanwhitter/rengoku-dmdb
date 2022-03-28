@@ -1,6 +1,8 @@
 import { render } from "react-dom";
 import {
-  BrowserRouter, Route, Routes
+  HashRouter,
+  Routes,
+  Route
 } from "react-router-dom";
 import BttAffix from "./components/BttAffix";
 import Footer from "./components/Footer";
@@ -13,8 +15,8 @@ import Reviews from "./routes/Reviews";
 
 const rootElement = document.getElementById("root");
 render(
-  <BrowserRouter>
-    {<Navbar />}
+  <HashRouter>
+    {<Navbar/>}
     <Routes>
       <Route path="/" element={<Home />} />
 
@@ -45,8 +47,8 @@ render(
         }
       />
     </Routes>
-    {<BttAffix />}
-    {<Footer />}
-  </BrowserRouter>,
+    {<Footer/>}
+    {<BttAffix/>}
+  </HashRouter>,
   rootElement
 );

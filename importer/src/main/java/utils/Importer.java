@@ -27,7 +27,7 @@ public class Importer {
         this.movieAttributesPath = path;
     }
 
-    public List<Movie> fetchDataFromDataset() {
+    public List<Movie> fetchDataFromDataset() throws IOException {
 
 
         String line = " ";
@@ -36,9 +36,10 @@ public class Importer {
         /**
          * a try-catch method to extract data from csv file
          */
+        BufferedReader reader = new BufferedReader(new FileReader(movieAttributesPath));
+
         try {
             boolean firstLine = true;
-            BufferedReader reader = new BufferedReader(new FileReader(movieAttributesPath));
             while ((line = reader.readLine()) != null) {
 
                 /**
@@ -115,10 +116,12 @@ public class Importer {
                     movieList.add(movie);
                 }
 
-            }
+            }  
 
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+            reader.close();
         }
 
         /**
