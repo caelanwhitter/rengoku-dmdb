@@ -15,9 +15,9 @@ export default function Footer() {
         <Text>Dawson Movie Solutions is a small team consisting of four<Space />
           Dawson College Computer Science & Technology student developers: </Text>
         <List withPadding>
-          <List.Item>Mikael Baril</List.Item>
-          <List.Item>Daniel Lam</List.Item>
-          <List.Item>Caelan Whitter</List.Item>
+          <List.Item>Mikael Baril (1844064)</List.Item>
+          <List.Item>Daniel Lam (1932789)</List.Item>
+          <List.Item>Caelan Whitter (1841768)</List.Item>
           <List.Item>Danilo Zhu (1943382)</List.Item>
         </List>
 
