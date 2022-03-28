@@ -7,7 +7,7 @@ export default function Admin() {
     <div style={{ display: "flex" }}>
       <nav >
       </nav>
-      <Outlet/>
+      <Outlet />
     </div>
   );
 }

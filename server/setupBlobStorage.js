@@ -33,7 +33,7 @@ async function setupBlobContainer() {
   // Create the container
   const createContainerResponse = await containerClient.create();
   console.log("Container was created successfully. requestId: ", createContainerResponse.requestId);
-  
+
   /* Download blobs */
   // Get blob content from position 0 to the end
   // In Node.js, get downloaded data by accessing downloadBlockBlobResponse.readableStreamBody

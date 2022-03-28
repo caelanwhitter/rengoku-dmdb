@@ -1,7 +1,7 @@
-import React from 'react';
-import '.././App.css';
-import GoogleLogin, { GoogleLogout } from 'react-google-login';
+import { Avatar, Card, Container, Space, Text } from "@mantine/core";
 import { useState } from 'react';
+import GoogleLogin from 'react-google-login';
+import '.././App.css';
 
 export default function Profile() {
   const [loginData, setLoginData] = useState(
@@ -43,27 +43,27 @@ export default function Profile() {
   //   }
   // }
   return (
-    <div className="login-wrapper">
+    <Container>
+      <div className="login-wrapper">
+        <div>
+          {
+            loginData ?
+              <div>
 
-      <div>
-        {
-          loginData ? (
-            <div>
+                <h1 className="centered" > Welcome to the Profile Page! {loginData.name} </h1>
+                <h3 className="centered" >You logged in as {loginData.email}</h3>
+                <h3>
+                  <img className="centered"
+                    src={loginData.picture}
+                    alt="NoImage"
+                  />
+                </h3>
+                <button
+                  className="centered"
+                  onClick={handleLogout}>Logout</button>
+              </div>
 
-              <h1 className="centered" > Welcome to the Profile Page! {loginData.name} </h1>
-              <h3 className="centered" >You logged in as {loginData.email}</h3>
-              <h3>
-                <img className="centered" 
-                  src={loginData.picture}
-                  alt="NoImage"
-                />
-              </h3>
-              <button 
-                className="centered" 
-                onClick={handleLogout}>Logout</button>
-            </div>
-          )
-            : (
+              :
               <div>
                 <h1 className="centered" >Please Log In with your Google account</h1>
                 <GoogleLogin
@@ -75,10 +75,19 @@ export default function Profile() {
                   cookiePolicy={'single_host_origin'}
                 />
               </div>
-            )
-        }
 
+          }
+
+        </div>
       </div>
-    </div>
+      
+      <Space h="md" />
+      <Card shadow="md" withBorder>
+        <Avatar color="dark" radius="xl" size="xl">DZ</Avatar> <Space h="sm" />
+        <Text size="lg" weight="bold">Danilo Zhu</Text>
+        <Space h="sm" /><Text><em>Lorem ipsum dolor sit amet</em></Text>
+      </Card>
+      <Space h="md" />
+    </Container>
   )
 }

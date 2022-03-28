@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
 import {
-  Grid, Text, Badge, Title, Modal, Group, Card,
-  Image, Pagination, TextInput, Button, NativeSelect, Space
+  Badge, Button, Card, Grid, Group, Image, LoadingOverlay,
+  Modal, NativeSelect, Pagination, Space, Text, TextInput, Title
 } from '@mantine/core';
-import { NavLink, Link } from "react-router-dom";
-import '../App.css';
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { useWindowScroll } from '@mantine/hooks';
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { useEffect, useState } from 'react';
+import { Link, NavLink } from "react-router-dom";
+import '../App.css';
 
 /**
  * Movies() is a component that fetches the list of Movies from the DB 
@@ -30,6 +30,8 @@ export default function Movies() {
   const [valueScore, setValueScore] = useState('');
   const [valueRating, setValueRating] = useState('');
   const [, scrollTo] = useWindowScroll();
+  const [loading, setLoading] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
 
 
   /**
@@ -48,6 +50,7 @@ export default function Movies() {
           setOneMovieData(data[0])
         }
       )
+    setModalLoading(v => !v);
   }
 
   /**
@@ -56,11 +59,13 @@ export default function Movies() {
      * @param {String} pageNumber 
      */
   async function displayMoviesPerPage(pageNumber) {
+    setLoading((v) => !v);
     let response = await fetch('/api/getSearch/page/' + pageNumber + '?title='
       + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre
       + '&releaseYear=' + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
     let moviesPaginationJson = await response.json();
     setCards(getCards(moviesPaginationJson));
+    setLoading((v) => !v);
 
     // Calls calculateTotalPagination() if totalPagination not initialized yet yet
     if (totalPagination === undefined) {
@@ -94,7 +99,6 @@ export default function Movies() {
      * @param {*} event 
      */
   const changePage = (event) => {
-
     // Re-fetches the list of movies with proper page number
     displayMoviesPerPage(event);
 
@@ -123,7 +127,7 @@ export default function Movies() {
       return (
         <Grid.Col key={movie._id} span={3}>
           <Card onClick={() => {
-            getDetails(movie._id); setOpened(true)
+            getDetails(movie._id); setModalLoading(v => !v); setOpened(true);
           }} style={{ cursor: "pointer" }} shadow="md" withBorder={true}>
             <Card.Section>
               <Image src={movie.poster} height={movie.poster ? "100%" : 375}
@@ -312,8 +316,10 @@ export default function Movies() {
         overflow="inside"
         centered
       >
+        <LoadingOverlay loaderProps={{ color: 'dark', variant: 'dots' }}
+          visible={modalLoading} />
         <div id="movieDetails">
-          <Image src={oneMovieData.poster} height={320} width={250}
+          <Image src={oneMovieData.poster} height={340} width={250}
             alt={oneMovieData.title + " Poster"} withPlaceholder />
 
           <div id="movieText">
@@ -336,6 +342,8 @@ export default function Movies() {
         </div>
       </Modal>
 
+      <LoadingOverlay loaderProps={{ color: 'dark', variant: 'dots' }}
+        visible={loading} />
       <Grid className="movieGrid" gutter={80}>
         {cards}
       </Grid>
