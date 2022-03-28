@@ -17,6 +17,7 @@ build:
     - main
   script:
     - cd server && npm install && cd ../dmdb-app && npm install
+
   cache:
     paths:
       - server/node_modules/

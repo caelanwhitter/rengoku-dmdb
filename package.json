@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server/server.js",
+    "build": "cd dmdb-app && npm install && npm run build && cd ../server && npm install",
     "test": "jest"
   },
   "repository": {
@@ -25,7 +26,7 @@
     "express": "^4.17.3",
     "google-auth-library": "^7.14.1",
     "mongoose": "^6.2.5",
-    "node-fetch": "^2.6.7"
+    "node-fetch": "^2.6.1"
   },
   "devDependencies": {
     "jest": "^27.5.1",

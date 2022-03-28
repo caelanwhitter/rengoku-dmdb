@@ -1,6 +1,8 @@
 package utils;
 
 import static org.junit.Assert.*;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,9 +24,10 @@ public class ImporterTest
 
     /**
      * Initializes the Importer and List before every Test
+     * @throws IOException
      */
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
         this.importer = new Importer(movieAttributesPath);
         this.testMovieList = importer.fetchDataFromDataset();
     }
