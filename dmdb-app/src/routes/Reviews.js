@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
-import { Link } from "react-router-dom";
-
-import { useParams } from "react-router-dom";
-import { Spoiler, Textarea, TextInput, Button, Text, 
-  Box, Avatar, NumberInput, Group, Badge } from '@mantine/core';
+import {
+  Avatar, Badge, Box, Button, Group,
+  NumberInput, Spoiler, Text, Textarea, TextInput
+} from '@mantine/core';
 import { TrashIcon } from "@radix-ui/react-icons";
+import { useEffect, useState } from 'react';
+import { Link, useParams } from "react-router-dom";
+
 
 
 
@@ -24,8 +25,8 @@ export default function Reviews() {
   * useEffect() runs following methods once. Similar to ComponentDidMount()
   */
   useEffect(() => {
-    getTitle(); fetchReviews(); 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    getTitle(); fetchReviews();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
@@ -101,7 +102,7 @@ export default function Reviews() {
   /**
    * reach review is put into a box and styled accordingly
    */
-  const reviews = backendData.map((element) => 
+  const reviews = backendData.map((element) =>
 
     <>
 
@@ -113,9 +114,10 @@ export default function Reviews() {
         border: 'solid 1px #000',
       })}>
         <Text underline size="lg" weight={500}>{element.subtitle}</Text>
-        <Badge sx={(theme) => ({margin:"10px"})} size="xl" color="dark" >{element.rating}⭐</Badge>
+        <Badge sx={(theme) => ({ margin: "10px" })} 
+          size="xl" color="dark" >{element.rating}⭐</Badge>
 
-        <Spoiler maxHeight={100} showLabel="Show more" 
+        <Spoiler maxHeight={100} showLabel="Show more"
           hideLabel="Hide"> {element.content} </Spoiler>
 
         <Group position="center" >
@@ -125,11 +127,9 @@ export default function Reviews() {
           <Text>{element.datePosted}</Text>
         </Group>
         <Link className="trashLink" id={element._id} onClick={(event) => {
-          deleteReview(event.target.id); 
+          deleteReview(event.target.id);
         }} to={{}}> <TrashIcon size="xl" id={element._id} /></Link>
-
-
-
+        
       </Box></>
   );
 
@@ -137,7 +137,7 @@ export default function Reviews() {
   return (
 
     <>
-      <Text sx={(theme) => ({ paddingTop: "10px", fontSize: "300%" })} 
+      <Text sx={(theme) => ({ paddingTop: "10px", fontSize: "300%" })}
         weight={700} underline align="center">{movieTitle}</Text>
       <div style={{ display: "flex" }}>
         <div style={{ width: "50%" }}>{reviews}</div>
@@ -152,39 +152,39 @@ export default function Reviews() {
           height: "50%",
         })}>
           <Text weight={500} underline align="center" size="xl">Your Rating and Review</Text>
-          <TextInput value={headline} 
-            onChange={(event) => setHeadline(event.currentTarget.value)} 
+          <TextInput value={headline}
+            onChange={(event) => setHeadline(event.currentTarget.value)}
             sx={(theme) => ({
               textAlign: 'center',
               paddingLeft: theme.spacing.xl,
               paddingRight: theme.spacing.xl,
 
               marginTop: theme.radius.md,
-            })} size="sm" radius="lg" placeholder="Headline for your review" 
+            })} size="sm" radius="lg" placeholder="Headline for your review"
             label="Subtitle" required />
 
-          <Textarea id="headline" value={content} 
-            onChange={(event) => setContent(event.currentTarget.value)} 
+          <Textarea id="headline" value={content}
+            onChange={(event) => setContent(event.currentTarget.value)}
             sx={(theme) => ({
-              paddingTop:"10px",
+              paddingTop: "10px",
               textAlign: 'center',
               paddingLeft: theme.spacing.xl,
               paddingRight: theme.spacing.xl,
 
               marginTop: theme.radius.md,
-            })} textAlign="center" autosize radius="lg" placeholder="Write your review here" 
+            })} textAlign="center" autosize radius="lg" placeholder="Write your review here"
             label="Your Review" required />
 
 
           <NumberInput sx={(theme) => ({
-            width: "25%", margin: "auto", padding:"10px"
+            width: "25%", margin: "auto", padding: "10px"
           })} value={rating} onChange={(val) => setRating(val)}
           label="Star Rating"
           placeholder="3"
           max={5}
           min={0}
           />
-          <Button  onClick={() => {
+          <Button onClick={() => {
             if (content === "" || headline === "") {
               document.getElementById("visible").style.visibility = "visible";
             } else {
@@ -197,10 +197,10 @@ export default function Reviews() {
             padding: theme.spacing.sm,
             marginTop: theme.radius.md,
             border: 'solid 1px #000'
-          })} variant="gradient" 
+          })} variant="gradient"
           gradient={{ from: 'orange', to: 'red', deg: 105 }}>Submit Review</Button>
 
-          <h4 id="visible" 
+          <h4 id="visible"
             style={{ color: "red", visibility: "hidden" }}>Please Fill Out Every Field</h4>
         </Box>
       </div>
