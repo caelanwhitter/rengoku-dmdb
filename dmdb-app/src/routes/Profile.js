@@ -44,14 +44,6 @@ export default function Profile() {
   // }
   return (
     <Container>
-      <Space h="md" />
-      <Card shadow="md" withBorder>
-        <Avatar color="dark" radius="xl" size="xl">DZ</Avatar> <Space h="sm" />
-        <Text size="lg" weight="bold">Danilo Zhu</Text>
-        <Space h="sm" /><Text><em>Lorem ipsum dolor sit amet</em></Text>
-      </Card>
-      <Space h="md" />
-
       <div className="login-wrapper">
         <div>
           {
@@ -88,6 +80,14 @@ export default function Profile() {
 
         </div>
       </div>
+      
+      <Space h="md" />
+      <Card shadow="md" withBorder>
+        <Avatar color="dark" radius="xl" size="xl">DZ</Avatar> <Space h="sm" />
+        <Text size="lg" weight="bold">Danilo Zhu</Text>
+        <Space h="sm" /><Text><em>Lorem ipsum dolor sit amet</em></Text>
+      </Card>
+      <Space h="md" />
     </Container>
   )
 }
