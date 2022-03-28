@@ -8,6 +8,7 @@ const router = express.Router();
 const Mongoose = require("../database/mongoose");
 const Movies = Mongoose.Movie;
 const Reviews = Mongoose.Review;
+const Users = Mongoose.User;
 const ObjectId = require("mongodb").ObjectId;
 const fetch = require("node-fetch");
 const { BlobServiceClient } = require("@azure/storage-blob");
@@ -119,6 +120,18 @@ router.post("/reviews", async (req, res) => {
     rating: body.rating,
     datePosted: body.datePosted,
     subtitle: body.subtitle
+  });
+  await doc.save();
+  res.status(201).json({
+    message: "Post worked!"
+  });
+})
+router.post("/users", async (req, res) => {
+  const body = await req.body;
+  const doc = new Users({
+    name: body.name,
+    email: body.email,
+    picture: body.picture
   });
   await doc.save();
   res.status(201).json({
