@@ -6,10 +6,6 @@ import { TrashIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
 
-
-
-
-
 export default function Reviews() {
   //Initializes variables and sets up "settters to variables"
   let params = useParams();
@@ -29,6 +25,13 @@ export default function Reviews() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const submitReview = () => {
+    if (content === "" || headline === "") {
+      document.getElementById("visible").style.visibility = "visible";
+    } else {
+      insertReview();
+    }
+  }
 
   /**
  * fetchReviews() fetches list of reviews for specific movie
@@ -47,7 +50,6 @@ export default function Reviews() {
     let response = await fetch('/api/oneMovie?id=' + params.movieId);
     let movieTitle = await response.json();
     setMovieTitle(movieTitle[0].title);
-
   }
 
   /**
@@ -63,7 +65,6 @@ export default function Reviews() {
    * @param {String} id 
    */
   async function deleteReview(id) {
-
     await fetch('/api/review/delete', {
       method: 'DELETE',
       headers: {
@@ -73,9 +74,8 @@ export default function Reviews() {
         id: id,
       })
     }).then(refreshPage())
-
-
   }
+
   /**
    * insertReview() does a POST request to insert a review into the database
    */
@@ -94,18 +94,13 @@ export default function Reviews() {
         subtitle: headline
       })
     }).then(refreshPage())
-
-
   }
-
 
   /**
    * reach review is put into a box and styled accordingly
    */
   const reviews = backendData.map((element) =>
-
     <>
-
       <Box sx={(theme) => ({
         backgroundColor: "#f6f6f5",
         textAlign: 'center',
@@ -114,7 +109,7 @@ export default function Reviews() {
         border: 'solid 1px #000',
       })}>
         <Text underline size="lg" weight={500}>{element.subtitle}</Text>
-        <Badge sx={(theme) => ({ margin: "10px" })} 
+        <Badge sx={(theme) => ({ margin: "10px" })}
           size="xl" color="dark" >{element.rating}⭐</Badge>
 
         <Spoiler maxHeight={100} showLabel="Show more"
@@ -126,16 +121,15 @@ export default function Reviews() {
           <Text>|</Text>
           <Text>{element.datePosted}</Text>
         </Group>
+
         <Link className="trashLink" id={element._id} onClick={(event) => {
           deleteReview(event.target.id);
         }} to={{}}> <TrashIcon size="xl" id={element._id} /></Link>
-        
-      </Box></>
+      </Box>
+    </>
   );
 
-
   return (
-
     <>
       <Text sx={(theme) => ({ paddingTop: "10px", fontSize: "300%" })}
         weight={700} underline align="center">{movieTitle}</Text>
@@ -184,15 +178,7 @@ export default function Reviews() {
           max={5}
           min={0}
           />
-          <Button onClick={() => {
-            if (content === "" || headline === "") {
-              document.getElementById("visible").style.visibility = "visible";
-            } else {
-
-              insertReview();
-
-            }
-          }} sx={(theme) => ({
+          <Button onClick={submitReview} sx={(theme) => ({
             textAlign: 'center',
             padding: theme.spacing.sm,
             marginTop: theme.radius.md,

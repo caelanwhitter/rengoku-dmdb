@@ -1,8 +1,6 @@
 import { render } from "react-dom";
 import {
-  HashRouter,
-  Routes,
-  Route
+  HashRouter, Route, Routes
 } from "react-router-dom";
 import BttAffix from "./components/BttAffix";
 import Footer from "./components/Footer";
