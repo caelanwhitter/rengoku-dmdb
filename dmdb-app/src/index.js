@@ -91,8 +91,8 @@ render(
         }
       />
     </Routes>
-    {<Footer />}
     {<BttAffix />}
+    {<Footer />}
   </BrowserRouter>,
   rootElement
 );

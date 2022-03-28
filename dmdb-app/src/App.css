@@ -102,10 +102,8 @@ a,
 footer {
   background-color: #f0f3f7;
   padding-top: 20px;
-  padding-bottom: 10px;
   position: relative;
   width: 100%;
-  left: 0;
   bottom: 0;
   display: flex;
   flex-wrap: wrap;
