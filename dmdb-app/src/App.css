@@ -11,7 +11,6 @@ a,
 }
 
 footer {
-  margin-top: 10%;
   border-radius: 15px;
   position: relative;
   left: 0;
@@ -34,6 +33,16 @@ footer {
 
 #gitLabLink:hover {
   color: orange;
+}
+
+#mainContent {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+Footer {
+  margin-top: auto;
 }
 
 #mainPageContainer {

@@ -14,39 +14,41 @@ import Reviews from "./routes/Reviews";
 const rootElement = document.getElementById("root");
 render(
   <HashRouter>
-    {<Navbar/>}
-    <Routes>
-      <Route path="/" element={<Home />} />
+    <Navbar/>
+    <div id="mainContent">
+      <Routes>
+        <Route path="/" element={<Home />} />
 
-      <Route path="movies" element={<Movies />} />
+        <Route path="movies" element={<Movies />} />
 
-      <Route path="hiddengems" element={<HiddenGems />} >
+        <Route path="hiddengems" element={<HiddenGems />} >
+          <Route
+            index
+            element={
+              <main style={{ padding: "1rem" }}>
+                <p>View the Hidden Gems</p>
+              </main>
+            }
+          />
+        </Route>
+
+        <Route path="movies/:movieId/reviews" element={<Reviews />} />
+
+        <Route path="profile" element={<Profile />} />
+
         <Route
-          index
+          path="*"
           element={
             <main style={{ padding: "1rem" }}>
-              <p>View the Hidden Gems</p>
+              { /* eslint-disable-next-line react/no-unescaped-entities */}
+              <p>There's nothing here!</p>
             </main>
           }
         />
-      </Route>
-
-      <Route path="movies/:movieId/reviews" element={<Reviews />} />
-
-      <Route path="profile" element={<Profile />} />
-
-      <Route
-        path="*"
-        element={
-          <main style={{ padding: "1rem" }}>
-            { /* eslint-disable-next-line react/no-unescaped-entities */}
-            <p>There's nothing here!</p>
-          </main>
-        }
-      />
-    </Routes>
-    {<Footer/>}
-    {<BttAffix/>}
+      </Routes>
+      <Footer/>
+    </div>
+    <BttAffix/>
   </HashRouter>,
   rootElement
 );

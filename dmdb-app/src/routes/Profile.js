@@ -1,4 +1,7 @@
-import { Avatar, Button, Card, Container, LoadingOverlay, Space, Text, Title } from "@mantine/core";
+import {
+  Avatar, Button, Card, Container,
+  LoadingOverlay, Space, Text, Title
+} from "@mantine/core";
 import { useState } from 'react';
 import GoogleLogin from 'react-google-login';
 import '../App.css';
