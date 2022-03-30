@@ -11,17 +11,14 @@ a,
 }
 
 footer {
-  border-radius: 15px;
-  position: relative;
-  left: 0;
-  bottom: 0;
-  background-color: #f0f3f7;
-  padding-top: 20px;
-  padding-bottom: 10px;
-  width: 100%;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+  margin-top: auto;
+  border-radius: 15px;
+  background-color: #f0f3f7;
+  padding-top: 20px;
+  padding-bottom: 10px;
 }
 
 #brandIcon {
@@ -29,6 +26,11 @@ footer {
   text-align: center;
   font-variant: small-caps;
   width: 200px;
+}
+
+#contributorButton, #movieContainer {
+  display: flex;
+  justify-content: space-around;
 }
 
 #gitLabLink:hover {
@@ -41,18 +43,9 @@ footer {
   flex-direction: column;
 }
 
-Footer {
-  margin-top: auto;
-}
-
 #mainPageContainer {
   padding-top: 50px;
   padding-bottom: 50px;
-}
-
-#movieContainer {
-  display: flex;
-  justify-content: space-around;
 }
 
 #movieDetails {
@@ -124,7 +117,6 @@ Footer {
   color: red;
 }
 
-.underHover:hover,
 .footSection>a:hover {
   text-decoration: underline;
 }

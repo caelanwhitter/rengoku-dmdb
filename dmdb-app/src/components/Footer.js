@@ -1,4 +1,4 @@
-import { Divider, Image, List, Modal, Space, Text, Title } from "@mantine/core";
+import { Button, Divider, Image, List, Modal, Space, Text, Title } from "@mantine/core";
 import { useState } from 'react';
 
 export default function Footer() {
@@ -21,10 +21,12 @@ export default function Footer() {
           <List.Item>Danilo Zhu (1943382)</List.Item>
         </List>
 
-        <Space h="sm" />
-        <Text align="center" className="underHover"><a rel="noreferrer" target="_blank"
-          href="https://gitlab.com/zhuxiaoj1/rengoku-dmdb/-/graphs/deploy">
-          [View Contributors]</a></Text>
+        <Space h="md" />
+        <div id="contributorButton">
+          <Button component="a" href="https://gitlab.com/zhuxiaoj1/rengoku-dmdb/-/graphs/deploy"
+            rel="noreferrer" target="_blank" variant="filled" 
+            color="dark" uppercase compact>View Contributors</Button>
+        </div>
       </Modal>
 
       <footer>
