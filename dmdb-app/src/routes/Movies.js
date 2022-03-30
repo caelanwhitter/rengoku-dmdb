@@ -329,7 +329,7 @@ export default function Movies() {
         <LoadingOverlay loaderProps={{ color: 'dark', variant: 'dots' }}
           visible={modalLoading} />
         <div id="movieDetails">
-          <Image src={oneMovieData.poster} height={340} width={250}
+          <Image src={oneMovieData.poster} height={380} width={250}
             alt={oneMovieData.title + " Poster"} withPlaceholder />
 
           <div id="movieText">

@@ -28,7 +28,8 @@ footer {
   width: 200px;
 }
 
-#contributorButton, #movieContainer {
+#contributorButton,
+#movieContainer {
   display: flex;
   justify-content: space-around;
 }
