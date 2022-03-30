@@ -17,7 +17,7 @@ export default function Reviews() {
   const [headline, setHeadline] = useState("");
   const [content, setContent] = useState("");
   const [movieTitle, setMovieTitle] = useState("");
-  const [rating, setRating] = useState(3);
+  const [rating, setRating] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [source, setSource] = useState("");
@@ -106,7 +106,7 @@ export default function Reviews() {
 
   async function getUser() {
 
-    const tokenString = sessionStorage.getItem('token');
+    const tokenString = localStorage.getItem('token');
     const userToken = JSON.parse(tokenString);
     let response = await fetch('/api/user?email=' + userToken);
     let user = await response.json();
@@ -125,7 +125,7 @@ export default function Reviews() {
   const reviews = backendData.map((element) =>
 
     <>
-      <Box sx={(theme) => ({
+      <Box className={element.email} sx={(theme) => ({
         backgroundColor: "#f6f6f5",
         textAlign: 'center',
         padding: theme.spacing.sm,
@@ -182,7 +182,7 @@ export default function Reviews() {
             })} size="sm" radius="lg" placeholder="Headline for your review"
             label="Subtitle" required />
 
-          <Textarea id="headline" value={content}
+          <Textarea value={content}
             onChange={(event) => setContent(event.currentTarget.value)}
             sx={(theme) => ({
               paddingTop: "10px",
@@ -199,12 +199,12 @@ export default function Reviews() {
             width: "25%", margin: "auto", padding: "10px"
           })} value={rating} onChange={(val) => setRating(val)}
           label="Star Rating"
-          placeholder="3"
+          
           max={5}
           min={0}
           />
           <Button onClick={() => {
-            if (content === "" || headline === "") {
+            if (content === "" || headline === "" || rating === "") {
               document.getElementById("visible").style.visibility = "visible";
             } else {
 

@@ -7,8 +7,8 @@ export default function Profile() {
 
   const [logoutMessage, setLogoutMessage] = useState()
   const [loginData, setLoginData] = useState(
-    localStorage.getItem('loginData')
-      ? JSON.parse(localStorage.getItem('loginData'))
+    localStorage.getItem('token')
+      ? JSON.parse(localStorage.getItem('token'))
       : null
   );
  
@@ -29,9 +29,8 @@ export default function Profile() {
       }
     });
     const data = await res.json();
-    sessionStorage.setItem('token', JSON.stringify(data.email));
     setLoginData(data);
-    localStorage.setItem('loginData', JSON.stringify(data));
+    localStorage.setItem('token', JSON.stringify(data));
   };
   
 
@@ -45,7 +44,6 @@ export default function Profile() {
     setLogoutMessage(data.message);
 
     localStorage.clear();
-    sessionStorage.clear()
     setLoginData(null);
   }
 
