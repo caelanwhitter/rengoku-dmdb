@@ -223,17 +223,20 @@ router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
 });
 
 
-router.get("/user", async (req, res) => {
-  const email = req.query.email;
-  const findUser = await User.find({ "email": email });
-  try {
-    res.json(findUser);
-    res.end();
-  } catch (error) {
-    console.error(error.message);
-    res.sendStatus(404).end();
-  }
-})
+// router.get("/user", async (req, res) => {
+//   const email = req.query.email;
+//   console.log("here");
+//   console.log(email);
+//   const findUser = await User.find({ "email": email });
+//   console.log(findUser);
+//   try {
+//     res.json(findUser);
+//     res.end();
+//   } catch (error) {
+//     console.error(error.message);
+//     res.sendStatus(404).end();
+//   }
+// })
 
 
 

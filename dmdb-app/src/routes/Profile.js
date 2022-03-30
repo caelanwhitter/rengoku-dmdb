@@ -31,6 +31,7 @@ export default function Profile() {
     const data = await res.json();
     setLoginData(data);
     localStorage.setItem('token', JSON.stringify(data));
+    
   };
   
 
