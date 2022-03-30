@@ -52,7 +52,7 @@ export default function Profile() {
   //   }
   // }
   return (
-    <div className="login-wrapper">
+    <div className="centered">
       <Container>
         <LoadingOverlay loaderProps={{ color: 'dark', variant: 'dots' }}
           visible={loading} />

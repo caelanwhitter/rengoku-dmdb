@@ -10,8 +10,19 @@ a,
   color: black;
 }
 
-#gitLabLink:hover {
-  color: orange;
+footer {
+  margin-top: 10%;
+  border-radius: 15px;
+  position: relative;
+  left: 0;
+  bottom: 0;
+  background-color: #f0f3f7;
+  padding-top: 20px;
+  padding-bottom: 10px;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 
 #brandIcon {
@@ -21,12 +32,8 @@ a,
   width: 200px;
 }
 
-.title {
-  background-color: black;
-  color: white;
-  letter-spacing: 3px;
-  text-align: center;
-  font-size: 50px;
+#gitLabLink:hover {
+  color: orange;
 }
 
 #mainPageContainer {
@@ -39,8 +46,38 @@ a,
   justify-content: space-around;
 }
 
+#movieDetails {
+  display: flex;
+  padding: 10px;
+}
+
 #movieList {
   max-width: 50%;
+}
+
+#movieText {
+  padding: 10px;
+  margin: 5px;
+}
+
+#pagination {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 50px;
+}
+
+#searchNav {
+  justify-content: center;
+}
+
+.centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.intro {
+  font-size: 60px;
 }
 
 .movieGrid {
@@ -60,61 +97,25 @@ a,
   font-variant: small-caps;
 }
 
-#searchNav {
-  justify-content: center;
-}
-
-#movieDetails {
-  display: flex;
-  padding: 10px;
-}
-
-#movieText {
-  padding: 10px;
-  margin: 5px;
-}
-
-#pagination {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 50px;
-}
-
 .tabLink:hover {
   background-color: black;
   border-radius: 5px;
   color: white;
 }
 
-.trashLink:hover {
-  color: red;
+.title {
+  background-color: black;
+  color: white;
+  letter-spacing: 3px;
+  text-align: center;
+  font-size: 50px;
 }
 
-.intro {
-  font-size: 60px;
+.trashLink:hover {
+  color: red;
 }
 
 .underHover:hover,
 .footSection>a:hover {
   text-decoration: underline;
-}
-
-footer {
-  border-radius: 15px;
-  position: relative;
-  left: 0;
-  bottom: 0;
-  background-color: #f0f3f7;
-  padding-top: 20px;
-  padding-bottom: 10px;
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-}
-
-.login-wrapper, .centered {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
