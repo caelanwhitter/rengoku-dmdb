@@ -11,10 +11,11 @@ import Movies from "./routes/Movies";
 import Profile from "./routes/Profile";
 import Reviews from "./routes/Reviews";
 
-const rootElement = document.getElementById("root");
+const rootElement = document.querySelector("#root");
 render(
   <HashRouter>
     <Navbar/>
+
     <div id="mainContent">
       <Routes>
         <Route path="/" element={<Home />} />
@@ -48,6 +49,7 @@ render(
       </Routes>
       <Footer/>
     </div>
+    
     <BttAffix/>
   </HashRouter>,
   rootElement

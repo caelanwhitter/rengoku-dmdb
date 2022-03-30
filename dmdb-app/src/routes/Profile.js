@@ -44,6 +44,7 @@ export default function Profile() {
     setLoginData(null);
     setLoading(v => !v);
   }
+  
   // async function fetchPicture(picture)
   // {
   //   let response = await fetch(picture);
@@ -54,6 +55,7 @@ export default function Profile() {
   //     return pictureblob;
   //   }
   // }
+
   return (
     <div className="centered">
       <Container>
