@@ -5,15 +5,12 @@
 const dotenv = require("dotenv");
 const { OAuth2Client } = require("google-auth-library");
 
-
 dotenv.config();
 const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
 
 const app = require("./app");
 
 const users = [];
-
-
 
 function upsert(array, item) {
   const i = array.findIndex((_item) => _item.email === item.email);

@@ -31,7 +31,69 @@ console.log("Connected to container " + CONTAINER_NAME + "!\n");
 router.use(bp.json());
 router.use(bp.urlencoded({ extended: true }));
 
-
+/**
+ * @swagger
+ * /getSearch?title={title}&director={director}&genre={genre}&releaseYear={releaseYear}&score={score}&rating={rating}:
+ *  get:
+ *    summary: Retrieve every movie.
+ *    description: Used when loading the Movies page with no search parameters.
+ *                 Retrieves a list of movies matching the parameters specified, 
+ *                 if no parameters are specified, retrieves every movie.
+ *                 If a certain parameter is not needed, it must absolutely be empty, 
+ *                 thus no double-quotes, single-quotes or anything the like.
+ *    parameters:
+ *      - name: title
+ *        in: path
+ *        required: false
+ *        description: Movie title.
+ *        allowEmptyValue: true 
+ *        schema:
+ *          type: string
+ *      - name: director
+ *        in: path
+ *        require: false
+ *        description: Director of the movie.
+ *        allowEmptyValue: true 
+ *        schema:
+ *          type: string
+ *      - name: genre
+ *        in: path
+ *        required: false
+ *        description: Movie genre.
+ *        allowEmptyValue: true 
+ *        schema:
+ *          type: string
+ *      - name: releaseYear
+ *        in: path
+ *        require: false
+ *        description: Year of release of the movie.
+ *        allowEmptyValue: true 
+ *        schema:
+ *          type: integer
+ *          minimum: 1980
+ *          maximum: 2020
+ *      - name: score
+ *        in: path
+ *        require: false
+ *        description: Overall score given by reviewers to the movie.
+ *        allowEmptyValue: true 
+ *        schema:
+ *          type: number
+ *          minimum: 0.0
+ *          maximum: 10.0
+ *      - name: rating
+ *        in: path
+ *        require: false
+ *        description: Rating of the movie (Adults, teens or everyone).
+ *        allowEmptyValue: true
+ *        schema:
+ *          type: string
+ * 
+ *    responses:
+ *      200:
+ *        description: A list of movies that match the parameters specified, 
+ *                    if no parameters, every movie.
+ */
 router.get("/getSearch", async (req, res) => {
   const keywordTitle = req.query.title;
   const keywordDirector = req.query.director;
