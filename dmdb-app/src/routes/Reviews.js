@@ -4,7 +4,7 @@ import {
 } from '@mantine/core';
 import { TrashIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from 'react';
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 
 
@@ -21,7 +21,7 @@ export default function Reviews() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [source, setSource] = useState("");
-  const [boxClass, setBoxClass] = useState("");
+  
 
   const date = new Date().
     toLocaleDateString('en-us', { year: "numeric", month: "short", day: "numeric" })
@@ -77,7 +77,7 @@ export default function Reviews() {
       body: JSON.stringify({
         id: id,
       })
-    }).then(refreshPage())
+    })
 
 
   }
@@ -85,7 +85,6 @@ export default function Reviews() {
    * insertReview() does a POST request to insert a review into the database
    */
   async function insertReview() {
-    console.log(rating);
     await fetch('/api/reviews', {
       method: 'POST',
       headers: {
@@ -110,12 +109,11 @@ export default function Reviews() {
     
     const tokenString = localStorage.getItem("token");
     const userToken = JSON.parse(tokenString);
- 
-    setBoxClass(userToken._id)
+    
+
     setUsername(userToken.name);
     setEmail(userToken.email);
     setSource(userToken.picture);
-    console.log(userToken.picture);
 
   }
 
@@ -124,10 +122,11 @@ export default function Reviews() {
   /**
    * each review is put into a box and styled accordingly
    */
+  
   const reviews = backendData.map((element) =>
 
     <>
-      <Box className={boxClass} sx={(theme) => ({
+      <Box sx={(theme) => ({
         backgroundColor: "#f6f6f5",
         textAlign: 'center',
         padding: theme.spacing.sm,
@@ -147,9 +146,18 @@ export default function Reviews() {
           <Text>|</Text>
           <Text>{element.datePosted}</Text>
         </Group>
-        <div  id={element._id} > <TrashIcon className="trashLink" onClick={(event) => {
-          deleteReview(event.target.id);
-        }} to={{}}size="xl" id={element._id} /></div>
+        {element.email === email &&
+          <div id={element._id}><TrashIcon className="trashLink" onClick={(event) => {
+            let deleted = document.getElementById(event.target.id);
+            let parent = deleted.parentElement;
+            parent.remove();
+            deleteReview(event.target.id);
+          }} to={{}}size="xl" id={element._id} /></div>
+        }
+
+
+   
+        
         
       </Box></>
   );

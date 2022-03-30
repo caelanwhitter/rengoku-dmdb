@@ -36,7 +36,6 @@ app.post("/api/google-login", async (req, res) => {
 
   const findUser = await User.find({ "email": email });
   if (findUser.length === 0) {
-    console.log(req.session.userId);
 
     user = new User({
       name: name,
@@ -53,7 +52,6 @@ app.post("/api/google-login", async (req, res) => {
     }
     
   } else {
-    console.log(req.session.userId);
     user = await User.updateOne(
       { email: email },
       { $set: { "name": name, "picture": picture } },

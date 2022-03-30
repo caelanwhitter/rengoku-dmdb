@@ -175,7 +175,6 @@ router.get("/oneMovie/fetchMovieDataFromApi/", async (req, res) => {
         poster: closestMovieJson.poster_path,
         year: movieYear,
       }
-      console.log(movieData);
       res.json(movieData);
       res.end();
     } else {
@@ -221,24 +220,6 @@ router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
     message: "POST Updating Movie to Database succeeded!"
   });
 });
-
-
-// router.get("/user", async (req, res) => {
-//   const email = req.query.email;
-//   console.log("here");
-//   console.log(email);
-//   const findUser = await User.find({ "email": email });
-//   console.log(findUser);
-//   try {
-//     res.json(findUser);
-//     res.end();
-//   } catch (error) {
-//     console.error(error.message);
-//     res.sendStatus(404).end();
-//   }
-// })
-
-
 
 
 /**
