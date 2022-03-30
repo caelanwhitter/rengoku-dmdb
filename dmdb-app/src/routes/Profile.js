@@ -4,20 +4,14 @@ import GoogleLogin from 'react-google-login';
 import '.././App.css';
 
 export default function Profile() {
-  var name = "";
-  var email = "";
-  var picture = "";
+
+  const [logoutMessage, setLogoutMessage] = useState()
   const [loginData, setLoginData] = useState(
     localStorage.getItem('loginData')
       ? JSON.parse(localStorage.getItem('loginData'))
       : null
   );
-  /**
-   * function that refreshes the page
-   */
-  function refreshPage() {
-    window.location.reload();
-  }
+ 
  
   const handleFailed = (result) => {
     console.log("login failed");
@@ -35,18 +29,30 @@ export default function Profile() {
       }
     });
     const data = await res.json();
-    console.log(data);
-    console.log(data.name);
-    name = data.name;
-    email = data.email;
-    picture = data.picture;
+    sessionStorage.setItem('token', JSON.stringify(data.email));
     setLoginData(data);
     localStorage.setItem('loginData', JSON.stringify(data));
   };
-  const handleLogout = () => {
-    localStorage.removeItem('loginData');
+  
+
+  const handleLogout = async response => {
+
+    const res = await fetch("/api/v1/auth/logout", {
+      method: "DELETE",
+   
+    })
+    const data = await res.json()
+    setLogoutMessage(data.message);
+
+    localStorage.clear();
+    sessionStorage.clear()
     setLoginData(null);
   }
+
+
+
+
+  
   return (
     <Container>
       <div className="login-wrapper">
@@ -79,6 +85,7 @@ export default function Profile() {
                   onFailure={handleFailed}
                   cookiePolicy={'single_host_origin'}
                 />
+                <h1>{logoutMessage}</h1>
               </div>
 
           }

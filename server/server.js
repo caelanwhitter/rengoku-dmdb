@@ -17,6 +17,12 @@ const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
 const app = require("./app");
 
 
+app.use(session({
+  secret: "secret",
+  resave: true,
+  saveUninitialized: true
+
+})); 
 
 app.post("/api/google-login", async (req, res) => {
   const { token } = await req.body;
@@ -25,11 +31,12 @@ app.post("/api/google-login", async (req, res) => {
     audience: process.env.CLIENT_ID,
   });
   const { name, email, picture } = ticket.getPayload();
+  req.session.userId = email;
   let user;
 
   const findUser = await User.find({ "email": email });
   if (findUser.length === 0) {
-    req.session.user = email;
+    console.log(req.session.userId);
 
     user = new User({
       name: name,
@@ -46,7 +53,6 @@ app.post("/api/google-login", async (req, res) => {
     }
     
   } else {
-    req.session.userId = email;
     console.log(req.session.userId);
     user = await User.updateOne(
       { email: email },
@@ -65,18 +71,17 @@ app.post("/api/google-login", async (req, res) => {
 
 })
 
-app.use(session({
-  secret: "siuirpoerer",
-  resave: true,
-  saveUninitialized: true
-
-})); 
-
-app.use(async (req, res, next) => {
-  const user = await User.findFirst({where: { email:  req.session.userId }})
-  req.user = user
-  next()
+app.delete("/api/v1/auth/logout", async (req, res) => {
+  await req.session.destroy()
+  res.status(200)
+  res.json({
+    message: "Logged out successfully"
+  })
 })
+
+
+
+
 
 
 app.listen(process.env.PORT || 3001, () => {

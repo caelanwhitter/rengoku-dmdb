@@ -2,13 +2,12 @@
  * route.js holds all the possible routes of the router and sends back data
  * @author Daniel Lam, Caelan Whitter
  */
-const { OAuth2Client } = require("google-auth-library");
 const express = require("express");
 const router = express.Router();
 const Mongoose = require("../database/mongoose");
 const Movies = Mongoose.Movie;
 const Reviews = Mongoose.Review;
-const Users = Mongoose.User;
+const User = Mongoose.User;
 const ObjectId = require("mongodb").ObjectId;
 const fetch = require("node-fetch");
 const { BlobServiceClient } = require("@azure/storage-blob");
@@ -115,6 +114,8 @@ router.post("/reviews", async (req, res) => {
   const body = await req.body;
   const doc = new Reviews({
     username: body.username,
+    email: body.email,
+    source: body.source,
     movieId: body.movieId,
     content: body.content,
     rating: body.rating,
@@ -220,6 +221,22 @@ router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
     message: "POST Updating Movie to Database succeeded!"
   });
 });
+
+
+router.get("/user", async (req, res) => {
+  const email = req.query.email;
+  const findUser = await User.find({ "email": email });
+  try {
+    res.json(findUser);
+    res.end();
+  } catch (error) {
+    console.error(error.message);
+    res.sendStatus(404).end();
+  }
+})
+
+
+
 
 /**
  * uploadMoviePoster fetches the image from the movie poster API 

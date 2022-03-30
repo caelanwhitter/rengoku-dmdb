@@ -18,6 +18,9 @@ export default function Reviews() {
   const [content, setContent] = useState("");
   const [movieTitle, setMovieTitle] = useState("");
   const [rating, setRating] = useState(3);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [source, setSource] = useState("");
   const date = new Date().
     toLocaleDateString('en-us', { year: "numeric", month: "short", day: "numeric" })
 
@@ -25,7 +28,7 @@ export default function Reviews() {
   * useEffect() runs following methods once. Similar to ComponentDidMount()
   */
   useEffect(() => {
-    getTitle(); fetchReviews();
+    getTitle(); fetchReviews(); getUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -80,13 +83,16 @@ export default function Reviews() {
    * insertReview() does a POST request to insert a review into the database
    */
   async function insertReview() {
+    console.log(rating);
     await fetch('/api/reviews', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        username: "unknown",
+        username: username,
+        email: email,
+        source: source,
         movieId: params.movieId,
         content: content,
         rating: rating,
@@ -98,14 +104,27 @@ export default function Reviews() {
 
   }
 
+  async function getUser() {
+
+    const tokenString = sessionStorage.getItem('token');
+    const userToken = JSON.parse(tokenString);
+    let response = await fetch('/api/user?email=' + userToken);
+    let user = await response.json();
+    setUsername(user[0].name);
+    setEmail(user[0].email);
+    setSource(user[0].picture);
+    console.log(source);
+
+  }
+
+
 
   /**
-   * reach review is put into a box and styled accordingly
+   * each review is put into a box and styled accordingly
    */
   const reviews = backendData.map((element) =>
 
     <>
-
       <Box sx={(theme) => ({
         backgroundColor: "#f6f6f5",
         textAlign: 'center',
@@ -121,7 +140,7 @@ export default function Reviews() {
           hideLabel="Hide"> {element.content} </Spoiler>
 
         <Group position="center" >
-          <Avatar />
+          <Avatar src={element.source}/>
           <Text>{element.username}</Text>
           <Text>|</Text>
           <Text>{element.datePosted}</Text>
