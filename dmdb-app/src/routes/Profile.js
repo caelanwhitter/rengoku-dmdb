@@ -18,24 +18,7 @@ export default function Profile() {
   function refreshPage() {
     window.location.reload();
   }
-  /**
-   * insertUser() does a POST request to insert a users information into the database
-   */
-  async function insertUser() {
-    await fetch('/api/users', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name: name,
-        email: email,
-        picture: picture,
-      })
-    }).then(refreshPage())
-
-
-  }
+ 
   const handleFailed = (result) => {
     console.log("login failed");
     //alert(result);
@@ -49,15 +32,16 @@ export default function Profile() {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
-      },
+      }
     });
     const data = await res.json();
+    console.log(data);
+    console.log(data.name);
     name = data.name;
     email = data.email;
     picture = data.picture;
     setLoginData(data);
     localStorage.setItem('loginData', JSON.stringify(data));
-    insertUser();
   };
   const handleLogout = () => {
     localStorage.removeItem('loginData');

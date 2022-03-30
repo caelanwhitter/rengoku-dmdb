@@ -126,18 +126,7 @@ router.post("/reviews", async (req, res) => {
     message: "Post worked!"
   });
 })
-router.post("/users", async (req, res) => {
-  const body = await req.body;
-  const doc = new Users({
-    name: body.name,
-    email: body.email,
-    picture: body.picture
-  });
-  await doc.save();
-  res.status(201).json({
-    message: "Post worked!"
-  });
-})
+
 
 router.delete("/review/delete", async (req) => {
   const body = await req.body;
