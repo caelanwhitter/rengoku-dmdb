@@ -1,7 +1,10 @@
-import { Avatar, Card, Container, Space, Text } from "@mantine/core";
+import {
+  Avatar, Button, Card, Container,
+  LoadingOverlay, Space, Text, Title
+} from "@mantine/core";
 import { useState } from 'react';
 import GoogleLogin from 'react-google-login';
-import '.././App.css';
+import '../App.css';
 
 export default function Profile() {
 
@@ -11,13 +14,15 @@ export default function Profile() {
       ? JSON.parse(localStorage.getItem('token'))
       : null
   );
- 
- 
+  const [loading, setLoading] = useState(false);
+
   const handleFailed = (result) => {
     console.log("login failed");
     //alert(result);
   };
+  
   const handleLogin = async (googleData) => {
+    setLoading(v => !v);
     const res = await fetch('/api/google-login', {
       method: 'POST',
       body: JSON.stringify({
@@ -28,15 +33,16 @@ export default function Profile() {
         'Content-Type': 'application/json',
       }
     });
+
     const data = await res.json();
     setLoginData(data);
     localStorage.setItem('token', JSON.stringify(data));
-    
+    setLoading(v => !v);
   };
   
 
   const handleLogout = async response => {
-
+    setLoading(v => !v);
     const res = await fetch("/api/v1/auth/logout", {
       method: "DELETE",
    
@@ -46,6 +52,7 @@ export default function Profile() {
 
     localStorage.clear();
     setLoginData(null);
+    setLoading(v => !v);
   }
 
 
@@ -53,52 +60,53 @@ export default function Profile() {
 
   
   return (
-    <Container>
-      <div className="login-wrapper">
-        <div>
-          {
-            loginData ?
-              <div>
+    <div className="centered">
+      <Container>
+        <LoadingOverlay loaderProps={{ color: 'dark', variant: 'dots' }}
+          visible={loading} />
+        {
+          loginData ?
+            <Container>
+              <Space h="md" />
+              <Title>Welcome to your page, {loginData.name}!</Title>
+              <Text color="gray">Logged in with {loginData.email}</Text>
+              <Space h="md" />
 
-                <h1 className="centered" > Welcome to the Profile Page! {loginData.name} </h1>
-                <h3 className="centered" >You logged in as {loginData.email}</h3>
-                <h3>
-                  <img className="centered"
-                    src={loginData.picture}
-                    alt="NoImage"
-                  />
-                </h3>
-                <button
-                  className="centered"
-                  onClick={handleLogout}>Logout</button>
-              </div>
+              <Card shadow="md" withBorder>
+                <Avatar src={loginData.picture} color="dark" radius="xl" size="xl" />
+                <Space h="sm" />
 
-              :
-              <div>
-                <h1 className="centered" >Please Log In with your Google account</h1>
+                <Text size="lg" weight="bold">{loginData.name}</Text>
+                <Text><em>Lorem ipsum dolor sit amet</em></Text>
+                <Space h="xs" />
+                <Button color="dark" size="xs" compact uppercase>Edit bio</Button>
+
+                <Space h="md" />
+                <Container className="centered">
+                  <Button color="red"
+                    onClick={handleLogout} uppercase variant="filled">Logout</Button>
+                </Container>
+              </Card>
+              <Space h="md" />
+            </Container>
+            :
+            <Container>
+              <Space h="md" />
+              <Card className="centered" shadow="md" withBorder>
+                <Title order={2}>Please login with your Google account</Title>
+                <Space h="xl" />
                 <GoogleLogin
-                  className="centered"
                   clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
                   buttonText="Log in with Google"
                   onSuccess={handleLogin}
                   onFailure={handleFailed}
                   cookiePolicy={'single_host_origin'}
                 />
-                <h1>{logoutMessage}</h1>
-              </div>
-
-          }
-
-        </div>
-      </div>
-      
-      <Space h="md" />
-      <Card shadow="md" withBorder>
-        <Avatar color="dark" radius="xl" size="xl">DZ</Avatar> <Space h="sm" />
-        <Text size="lg" weight="bold">Danilo Zhu</Text>
-        <Space h="sm" /><Text><em>Lorem ipsum dolor sit amet</em></Text>
-      </Card>
-      <Space h="md" />
-    </Container>
+              </Card>
+              <Space h="md" />
+            </Container>
+        }
+      </Container>
+    </div>
   )
 }

@@ -10,8 +10,15 @@ a,
   color: black;
 }
 
-#gitLabLink:hover {
-  color: orange;
+footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-top: auto;
+  border-radius: 15px;
+  background-color: #f0f3f7;
+  padding-top: 20px;
+  padding-bottom: 10px;
 }
 
 #brandIcon {
@@ -21,12 +28,20 @@ a,
   width: 200px;
 }
 
-.title {
-  background-color: black;
-  color: white;
-  letter-spacing: 3px;
-  text-align: center;
-  font-size: 50px;
+#contributorButton,
+#movieContainer {
+  display: flex;
+  justify-content: space-around;
+}
+
+#gitLabLink:hover {
+  color: orange;
+}
+
+#mainContent {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 #mainPageContainer {
@@ -34,13 +49,38 @@ a,
   padding-bottom: 50px;
 }
 
-#movieContainer {
+#movieDetails {
   display: flex;
-  justify-content: space-around;
+  padding: 10px;
 }
 
 #movieList {
   max-width: 50%;
+}
+
+#movieText {
+  padding: 10px;
+  margin: 5px;
+}
+
+#pagination {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 50px;
+}
+
+#searchNav {
+  justify-content: center;
+}
+
+.centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.intro {
+  font-size: 60px;
 }
 
 .movieGrid {
@@ -55,29 +95,9 @@ a,
   padding: 5px;
   border-bottom: solid 1px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   font-variant: small-caps;
-}
-
-#searchNav {
-  justify-content: center;
-}
-
-#movieDetails {
-  display: flex;
-  padding: 10px;
-}
-
-#movieText {
-  padding: 10px;
-  margin: 5px;
-}
-
-#pagination {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 50px;
 }
 
 .tabLink:hover {
@@ -86,39 +106,18 @@ a,
   color: white;
 }
 
+.title {
+  background-color: black;
+  color: white;
+  letter-spacing: 3px;
+  text-align: center;
+  font-size: 50px;
+}
+
 .trashLink:hover {
   color: red;
 }
 
-.intro {
-  font-size: 60px;
-}
-
-.underHover:hover,
 .footSection>a:hover {
   text-decoration: underline;
-}
-
-footer {
-  background-color: #f0f3f7;
-  padding-top: 20px;
-  position: relative;
-  width: 100%;
-  bottom: 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-}
-
-.login-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.centered {
-  text-align: center;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
 }

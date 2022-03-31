@@ -6,10 +6,6 @@ import { TrashIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
 
-
-
-
-
 export default function Reviews() {
   //Initializes variables and sets up "settters to variables"
   let params = useParams();
@@ -34,6 +30,13 @@ export default function Reviews() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const submitReview = () => {
+    if (content === "" || headline === "" || rating === "") {
+      document.getElementById("visible").style.visibility = "visible";
+    } else {
+      insertReview();
+    }
+  }
 
   /**
  * fetchReviews() fetches list of reviews for specific movie
@@ -52,7 +55,6 @@ export default function Reviews() {
     let response = await fetch('/api/oneMovie?id=' + params.movieId);
     let movieTitle = await response.json();
     setMovieTitle(movieTitle[0].title);
-
   }
 
   /**
@@ -68,7 +70,6 @@ export default function Reviews() {
    * @param {String} id 
    */
   async function deleteReview(id) {
-
     await fetch('/api/review/delete', {
       method: 'DELETE',
       headers: {
@@ -81,6 +82,7 @@ export default function Reviews() {
 
 
   }
+
   /**
    * insertReview() does a POST request to insert a review into the database
    */
@@ -101,8 +103,6 @@ export default function Reviews() {
         subtitle: headline
       })
     }).then(refreshPage())
-
-
   }
 
   async function getUser() {
@@ -124,7 +124,6 @@ export default function Reviews() {
    */
   
   const reviews = backendData.map((element) =>
-
     <>
       <Box sx={(theme) => ({
         backgroundColor: "#f6f6f5",
@@ -134,7 +133,7 @@ export default function Reviews() {
         border: 'solid 1px #000',
       })}>
         <Text underline size="lg" weight={500}>{element.subtitle}</Text>
-        <Badge sx={(theme) => ({ margin: "10px" })} 
+        <Badge sx={(theme) => ({ margin: "10px" })}
           size="xl" color="dark" >{element.rating}⭐</Badge>
 
         <Spoiler maxHeight={100} showLabel="Show more"
@@ -162,9 +161,7 @@ export default function Reviews() {
       </Box></>
   );
 
-
   return (
-
     <>
       <Text sx={(theme) => ({ paddingTop: "10px", fontSize: "300%" })}
         weight={700} underline align="center">{movieTitle}</Text>
@@ -213,15 +210,7 @@ export default function Reviews() {
           max={5}
           min={0}
           />
-          <Button onClick={() => {
-            if (content === "" || headline === "" || rating === "") {
-              document.getElementById("visible").style.visibility = "visible";
-            } else {
-
-              insertReview();
-
-            }
-          }} sx={(theme) => ({
+          <Button onClick={submitReview} sx={(theme) => ({
             textAlign: 'center',
             padding: theme.spacing.sm,
             marginTop: theme.radius.md,
