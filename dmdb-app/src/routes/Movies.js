@@ -348,7 +348,7 @@ export default function Movies() {
               <Badge variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}>
 
                 <NavLink style={{ textDecoration: 'none', color: 'black' }}
-                  to={`/profile`}>View Reviews</NavLink></Badge>
+                  to={`/profile`}>Login To View Reviews</NavLink></Badge>
             }
               
           </div>
