@@ -385,7 +385,27 @@ router.get("/oneMovie/reviews", async (req, res) => {
  *      required: true
  *      content:
  *        application/json:
- *          
+ *          schema:
+ *            type: object
+ *            properties:
+ *              username:
+ *                type: string
+ *                example: Caelan Whitter
+ *              movieId:
+ *                type: string
+ *                example: 62378512c6d65605e4776dce
+ *              subtitle: 
+ *                type: string
+ *                example: Great movie!
+ *              content: 
+ *                type: string
+ *                example: It was a great movie to relax to.
+ *              rating:
+ *                type: number
+ *                example: 4
+ *              datePosted:
+ *                type: string
+ *                example: Mar 31, 2022
  * 
  *    responses:
  *      '201':
@@ -407,6 +427,17 @@ router.post("/reviews", async (req, res) => {
   });
 })
 
+/**
+ * @swagger
+ * /reviews:
+ *  delete:
+ *    summary: Delete a specific review.
+ *    description: Deletes a review from the database.
+ * 
+ *    responses:
+ *      '204':
+ *        description: No Content, Deleted
+ */
 router.delete("/review/delete", async (req) => {
   const body = await req.body;
   Reviews.findByIdAndDelete(body.id, function (err) {
@@ -418,8 +449,57 @@ router.delete("/review/delete", async (req) => {
 });
 
 /**
- * fetchMovieDataFromApi endpoint takes a Movie Title and Year, 
- * fetches description and movie poster URL from API and returns it as a JSON
+ * @swagger
+ * /oneMovie/fetchMovieDataFromApi?title={title}&year={year}:
+ *  get:
+ *    summary: Retrieve description and poster.
+ *    description: Takes a Movie title and year, then
+ *                 Fetches description and movie poster URL from API and returns it as a JSON.
+ *    parameters:
+ *      - name: title
+ *        in: query
+ *        required: true
+ *        description: Title of the movie.
+ *        schema:
+ *          type: string 
+ *          example: The Conjuring
+ *      - name: year
+ *        in: query
+ *        required: false
+ *        allowEmptyValue: true
+ *        description: Year of release of the movie.
+ *        schema:
+ *          type: integer
+ *          minimum: 1980
+ *          maximum: 2020
+ *          example: 2013
+ * 
+ *    responses:
+ *      '200':
+ *        description: One single movie that matches the title and year specified.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                title:
+ *                  type: string
+ *                  example: The Conjuring
+ *                description:
+ *                  type: string
+ *                  example: Paranormal investigators Ed and Lorraine Warren work to help 
+ *                           a family terrorized by a dark presence in their farmhouse. Forced to 
+ *                           confront a powerful entity, the Warrens find themselves caught in the 
+ *                           most terrifying case of their lives.
+ *                poster:
+ *                  type: string
+ *                  example: /wVYREutTvI2tmxr6ujrHT704wGF.jpg
+ *                year:
+ *                  type: integer
+ *                  nullable: true
+ *                  minimum: 1980
+ *                  maximum: 2020
+ *                  example: 2013
  */
 router.get("/oneMovie/fetchMovieDataFromApi/", async (req, res) => {
   let movieTitle = req.query.title;
