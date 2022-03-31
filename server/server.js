@@ -18,7 +18,7 @@ const app = require("./app");
 
 
 app.use(session({
-  secret: process.env.SECRET_KEY,
+  secret: process.env.SECRET,
   resave: true,
   saveUninitialized: true
 
@@ -30,17 +30,18 @@ app.post("/api/google-login", async (req, res) => {
     idToken: token,
     audience: process.env.CLIENT_ID,
   });
-  const { name, email, source } = ticket.getPayload();
+  const { name, email, picture } = ticket.getPayload();
   req.session.userId = email;
   let user;
 
   const findUser = await User.find({ "email": email });
+  
   if (findUser.length === 0) {
 
     user = new User({
       name: name,
       email: email,
-      source: source
+      source: picture
     });
     await user.save();
     try {

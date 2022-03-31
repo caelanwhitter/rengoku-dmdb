@@ -37,6 +37,8 @@ export default function Profile() {
     const data = await res.json();
     setLoginData(data);
     localStorage.setItem('token', JSON.stringify(data));
+
+    
     setLoading(v => !v);
   };
   
@@ -73,7 +75,7 @@ export default function Profile() {
               <Space h="md" />
 
               <Card shadow="md" withBorder>
-                <Avatar src={loginData.picture} color="dark" radius="xl" size="xl" />
+                <Avatar src={loginData.source} color="dark" radius="xl" size="xl" />
                 <Space h="sm" />
 
                 <Text size="lg" weight="bold">{loginData.name}</Text>
