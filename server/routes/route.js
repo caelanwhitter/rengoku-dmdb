@@ -158,20 +158,29 @@ router.get("/oneMovie/fetchMovieDataFromApi/", async (req, res) => {
       if (moviesApiResults.length !== 0) {
         // Take first movie from results, most similar result
         closestMovieJson = moviesApiResults[0];
-        // If there isn't, find most similar movie based 
-        // on matching original movie title and closest year.
       } else {
+        // If there isn't, find most similar movie based
+        // on matching original movie title and closest year.
         let closestMovieResults = await fetchClosestMovies(movieTitle);
-        closestMovieJson = findClosestMovie(closestMovieResults, movieTitle, movieYear);
+
+        // If algorithm found other closest movies
+        if (closestMovieResults.length !== 0) {
+          closestMovieJson = findClosestMovie(closestMovieResults, movieTitle, movieYear);
+        }
       }
 
-      // Creates movieData object with title, description and poster
-      movieData = {
-        title: closestMovieJson.title,
-        description: closestMovieJson.overview,
-        poster: closestMovieJson.poster_path,
-        year: movieYear,
+      // Check if algorithm found a closest movie. If not, keep movieData empty
+      if (closestMovieJson) {
+
+        // Populate movieData object with title, description and poster
+        movieData = {
+          title: closestMovieJson.title,
+          description: closestMovieJson.overview,
+          poster: closestMovieJson.poster_path,
+          year: movieYear,
+        }
       }
+
       console.log(movieData);
       res.json(movieData);
       res.end();

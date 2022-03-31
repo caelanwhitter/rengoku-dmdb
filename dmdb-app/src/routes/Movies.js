@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {
   Badge, Button, Card, Grid, Group, Image, LoadingOverlay,
   Modal, NativeSelect, Pagination, Space, Text, TextInput, Title
@@ -64,7 +65,7 @@ export default function Movies() {
       + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre
       + '&releaseYear=' + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
     let moviesPaginationJson = await response.json();
-    setCards(getCards(moviesPaginationJson));
+    setCards(await getCards(moviesPaginationJson));
     setLoading((v) => !v);
 
     // Calls calculateTotalPagination() if totalPagination not initialized yet yet
@@ -113,24 +114,60 @@ export default function Movies() {
      * @param {*} moviesJson 
      * @returns cards
      */
-  function getCards(moviesJson) {
+  // function getCards(moviesJson) {
 
-    let cards = moviesJson.map((movie) => {
-      // Checks if movie description and poster are missing 
-      // and checks if movie isn't an empty object
+  //   let cards = moviesJson.map((movie) => {
+  //     // Checks if movie description and poster are missing 
+  //     // and checks if movie isn't an empty object
+  //     if ((!movie.description || movie.poster === "") && Object.keys(movie).length !== 0) {
+  //       /*TO-DO: You cannot add multiple async calls here because map doesn't support
+  //        async functions so anything returning a Promise won't work. 
+  //        Mitigated through calling one function that will run all the async functions instead*/
+  //       updateMovieDetails(movie);
+  //     }
+  //     return (
+  //       <Grid.Col key={movie._id} span={3}>
+  //         <Card onClick={() => {
+  //           getDetails(movie._id); setModalLoading(v => !v); setOpened(true);
+  //         }} style={{ cursor: "pointer" }} shadow="md" withBorder={true}>
+  //           <Card.Section>
+  //             <Image src={movie.poster} height={movie.poster ? "100%" : 375}
+  //               width={movie.poster ? "100%" : 324} alt={movie.title + " Poster"} withPlaceholder />
+  //           </Card.Section>
+
+  //           <Space h="sm" />
+  //           <Text weight={600}>{movie.title}</Text>
+  //           <Group position="apart">
+  //             <Text size="sm">{movie.director}</Text>
+  //             <Badge color="dark">{movie.releaseYear}</Badge>
+  //           </Group>
+  //         </Card>
+  //       </Grid.Col>
+  //     );
+  //   });
+  //   return cards;
+  // }
+
+  async function getCards(moviesJson) {
+    let cards = [];
+    for (let movie of moviesJson) {
+      let moviePosterUrlPlaceHolder = null;
       if ((!movie.description || movie.poster === "") && Object.keys(movie).length !== 0) {
-        /*TO-DO: You cannot add multiple async calls here because map doesn't support
-         async functions so anything returning a Promise won't work. 
-         Mitigated through calling one function that will run all the async functions instead*/
-        updateMovieDetails(movie);
+        let movieApiData = await fetchMovieDataFromApi(movie);
+
+        //TO-DO: Refactor this so that movieApiData already contains a full image poster link
+        if (movieApiData) {
+          moviePosterUrlPlaceHolder = `http://image.tmdb.org/t/p/w500${movieApiData.poster}`;
+          console.log("placeholder url:" + moviePosterUrlPlaceHolder);
+        }
       }
-      return (
+      cards.push(
         <Grid.Col key={movie._id} span={3}>
           <Card onClick={() => {
             getDetails(movie._id); setModalLoading(v => !v); setOpened(true);
           }} style={{ cursor: "pointer" }} shadow="md" withBorder={true}>
             <Card.Section>
-              <Image src={movie.poster} height={movie.poster ? "100%" : 375}
+              <Image src={movie.poster ? movie.poster : moviePosterUrlPlaceHolder} height={movie.poster ? "100%" : 375}
                 width={movie.poster ? "100%" : 324} alt={movie.title + " Poster"} withPlaceholder />
             </Card.Section>
 
@@ -143,7 +180,7 @@ export default function Movies() {
           </Card>
         </Grid.Col>
       );
-    });
+    }
     return cards;
   }
 
