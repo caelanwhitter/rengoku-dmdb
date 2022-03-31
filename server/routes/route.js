@@ -44,28 +44,28 @@ router.use(bp.urlencoded({ extended: true }));
  *                 thus no double-quotes, single-quotes or anything the like.
  *    parameters:
  *      - name: title
- *        in: path
+ *        in: query
  *        required: false
  *        description: Movie title.
  *        allowEmptyValue: true 
  *        schema:
  *          type: string
  *      - name: director
- *        in: path
+ *        in: query
  *        require: false
  *        description: Director of the movie.
  *        allowEmptyValue: true 
  *        schema:
  *          type: string
  *      - name: genre
- *        in: path
+ *        in: query
  *        required: false
  *        description: Movie genre.
  *        allowEmptyValue: true 
  *        schema:
  *          type: string
  *      - name: releaseYear
- *        in: path
+ *        in: query
  *        require: false
  *        description: Year of release of the movie.
  *        allowEmptyValue: true 
@@ -74,14 +74,14 @@ router.use(bp.urlencoded({ extended: true }));
  *          minimum: 1980
  *          maximum: 2020
  *      - name: score
- *        in: path
+ *        in: query
  *        require: false
  *        description: Overall score given by reviewers to the movie.
  *        allowEmptyValue: true 
  *        schema:
  *          type: string
  *      - name: rating
- *        in: path
+ *        in: query
  *        require: false
  *        description: Rating of the movie (Adults, teens or everyone).
  *        allowEmptyValue: true
@@ -234,18 +234,17 @@ router.get("/getSearch/page/:pageNumber", async (req, res) => {
 
 /**
  * @swagger
- * /oneMovie:
+ * /oneMovie?id={id}:
  *  get:
  *    summary: Retrieve movie by ID.
  *    description: Returns the details of the movie with the specified ID.
- *    requestBody:
- *      description: ID of the movie.
- *      required: true
- *      content:
- *        text/plain:
- *          schema:
- *            type: string
- *            example: 62378512c6d65605e4778633
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        required: true
+ *        description: ID of the movie.
+ *        schema:
+ *          type: string
  * 
  *    responses:
  *      '200':
@@ -305,10 +304,67 @@ router.get("/oneMovie", async (req, res) => {
   }
 })
 
+/**
+ * @swagger
+ * /oneMovie/reviews?id={id}:
+ *  get:
+ *    summary: Retrieve reviews from movie by ID.
+ *    description: Returns the reviews of the movie with the specified ID.
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        required: true
+ *        description: ID of the movie.
+ *        schema:
+ *          type: string
+ * 
+ *    responses:
+ *      '200':
+ *        description: The reviews of the movie that matches the ID specified.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *                properties:
+ *                  id:
+ *                    type: string
+ *                    example: 6245df834793b57bfafa5b1f
+ *                  username:
+ *                    type: string
+ *                    example: Caelan Whitter
+ *                  email:
+ *                    type: string
+ *                    example: caelanwhitter@gmail.com
+ *                  source:
+ *                    type: string
+ *                    example: https://lh3.googleusercontent.com/a/AATXAJzqxP70inc0scd2Y4JOwv4QHg4xlXIT1uY6m5sb=s96-c
+ *                  movieid:
+ *                    type: string
+ *                    example: 62378512c6d65605e4776dce
+ *                  subtitle:
+ *                    type: string
+ *                    example: Good movie
+ *                  content:
+ *                    type: string
+ *                    example: I really enjoyed this movie.
+ *                  rating:
+ *                    type: integer
+ *                    minimum: 0
+ *                    maximum: 10
+ *                    example: 0
+ *                  datePosted:
+ *                    type: string
+ *                    example: Mar 31, 2022
+ *                  __v:
+ *                    type: number
+ *                    example: 0
+ */
 router.get("/oneMovie/reviews", async (req, res) => {
   const id = req.query.id;
-
   const reviewForMovie = await Reviews.find({ "movieId": id });
+
   try {
     res.json(reviewForMovie);
     res.end();
@@ -318,7 +374,23 @@ router.get("/oneMovie/reviews", async (req, res) => {
   }
 })
 
-
+/**
+ * @swagger
+ * /reviews:
+ *  post:
+ *    summary: Add a new review.
+ *    description: Adds a new review to the database.
+ *    requestBody:
+ *      description: Model of the review.
+ *      required: true
+ *      content:
+ *        application/json:
+ *          
+ * 
+ *    responses:
+ *      '201':
+ *        description: Created
+ */
 router.post("/reviews", async (req, res) => {
   const body = await req.body;
   const doc = new Reviews({
