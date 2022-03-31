@@ -4,7 +4,7 @@ import {
 } from '@mantine/core';
 import { TrashIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from 'react';
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 export default function Reviews() {
   //Initializes variables and sets up "settters to variables"
@@ -13,7 +13,12 @@ export default function Reviews() {
   const [headline, setHeadline] = useState("");
   const [content, setContent] = useState("");
   const [movieTitle, setMovieTitle] = useState("");
-  const [rating, setRating] = useState(3);
+  const [rating, setRating] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [source, setSource] = useState("");
+  
+
   const date = new Date().
     toLocaleDateString('en-us', { year: "numeric", month: "short", day: "numeric" })
 
@@ -21,12 +26,12 @@ export default function Reviews() {
   * useEffect() runs following methods once. Similar to ComponentDidMount()
   */
   useEffect(() => {
-    getTitle(); fetchReviews();
+    getTitle(); fetchReviews(); getUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const submitReview = () => {
-    if (content === "" || headline === "") {
+    if (content === "" || headline === "" || rating === "") {
       document.getElementById("visible").style.visibility = "visible";
     } else {
       insertReview();
@@ -73,7 +78,9 @@ export default function Reviews() {
       body: JSON.stringify({
         id: id,
       })
-    }).then(refreshPage())
+    })
+
+
   }
 
   /**
@@ -86,7 +93,9 @@ export default function Reviews() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        username: "unknown",
+        username: username,
+        email: email,
+        source: source,
         movieId: params.movieId,
         content: content,
         rating: rating,
@@ -96,9 +105,24 @@ export default function Reviews() {
     }).then(refreshPage())
   }
 
+  async function getUser() {
+    
+    const tokenString = localStorage.getItem("token");
+    const userToken = JSON.parse(tokenString);
+    
+
+    setUsername(userToken.name);
+    setEmail(userToken.email);
+    setSource(userToken.source);
+
+  }
+
+
+
   /**
-   * reach review is put into a box and styled accordingly
+   * each review is put into a box and styled accordingly
    */
+  
   const reviews = backendData.map((element) =>
     <>
       <Box sx={(theme) => ({
@@ -116,17 +140,25 @@ export default function Reviews() {
           hideLabel="Hide"> {element.content} </Spoiler>
 
         <Group position="center" >
-          <Avatar />
+          <Avatar src={element.source}/>
           <Text>{element.username}</Text>
           <Text>|</Text>
           <Text>{element.datePosted}</Text>
         </Group>
+        {element.email === email &&
+          <div id={element._id}><TrashIcon className="trashLink" onClick={(event) => {
+            let deleted = document.getElementById(event.target.id);
+            let parent = deleted.parentElement;
+            parent.remove();
+            deleteReview(event.target.id);
+          }} to={{}}size="xl" id={element._id} /></div>
+        }
 
-        <Link className="trashLink" id={element._id} onClick={(event) => {
-          deleteReview(event.target.id);
-        }} to={{}}> <TrashIcon size="xl" id={element._id} /></Link>
-      </Box>
-    </>
+
+   
+        
+        
+      </Box></>
   );
 
   return (
@@ -157,7 +189,7 @@ export default function Reviews() {
             })} size="sm" radius="lg" placeholder="Headline for your review"
             label="Subtitle" required />
 
-          <Textarea id="headline" value={content}
+          <Textarea value={content}
             onChange={(event) => setContent(event.currentTarget.value)}
             sx={(theme) => ({
               paddingTop: "10px",
@@ -174,7 +206,7 @@ export default function Reviews() {
             width: "25%", margin: "auto", padding: "10px"
           })} value={rating} onChange={(val) => setRating(val)}
           label="Star Rating"
-          placeholder="3"
+          
           max={5}
           min={0}
           />
