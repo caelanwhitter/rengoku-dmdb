@@ -49,7 +49,7 @@ const Review = mongoose.model("Review", reviewSchema)
 const userSchema = new Schema({
   name: String,
   email: String,
-  picture: String,
+  source: String,
 }, { collection:"users"});
 
 const User = mongoose.model("User", userSchema)

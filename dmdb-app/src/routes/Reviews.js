@@ -113,7 +113,7 @@ export default function Reviews() {
 
     setUsername(userToken.name);
     setEmail(userToken.email);
-    setSource(userToken.picture);
+    setSource(userToken.source);
 
   }
 

@@ -18,7 +18,7 @@ const app = require("./app");
 
 
 app.use(session({
-  secret: "secret",
+  secret: process.env.SECRET_KEY,
   resave: true,
   saveUninitialized: true
 
@@ -30,7 +30,7 @@ app.post("/api/google-login", async (req, res) => {
     idToken: token,
     audience: process.env.CLIENT_ID,
   });
-  const { name, email, picture } = ticket.getPayload();
+  const { name, email, source } = ticket.getPayload();
   req.session.userId = email;
   let user;
 
@@ -40,7 +40,7 @@ app.post("/api/google-login", async (req, res) => {
     user = new User({
       name: name,
       email: email,
-      picture: picture
+      source: source
     });
     await user.save();
     try {
@@ -54,7 +54,7 @@ app.post("/api/google-login", async (req, res) => {
   } else {
     user = await User.updateOne(
       { email: email },
-      { $set: { "name": name, "picture": picture } },
+      { $set: { "name": name, "source": source } },
       {upsert: true}
   
     )
