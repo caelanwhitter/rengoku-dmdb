@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /**
  * route.js holds all the possible routes of the router and sends back data
  * @author Daniel Lam, Caelan Whitter
@@ -78,9 +79,7 @@ router.use(bp.urlencoded({ extended: true }));
  *        description: Overall score given by reviewers to the movie.
  *        allowEmptyValue: true 
  *        schema:
- *          type: number
- *          minimum: 0.0
- *          maximum: 10.0
+ *          type: string
  *      - name: rating
  *        in: path
  *        require: false
@@ -90,10 +89,52 @@ router.use(bp.urlencoded({ extended: true }));
  *          type: string
  * 
  *    responses:
- *      200:
- *        description: A list of movies that match the parameters specified, 
- *                    if no parameters, every movie.
- */
+ *      '200':
+ *        description: A list of movies that match the parameters specified, if no parameters, every movie.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *                properties:
+ *                  id:
+ *                    type: string
+ *                    example: 62378512c6d65605e4778633
+ *                  description:
+ *                    type: string
+ *                    example: Paranormal investigators Ed and Lorraine Warren work to help 
+ *                             a family terrorized by a dark presence in their farmhouse. Forced to 
+ *                             confront a powerful entity, the Warrens find themselves caught in the 
+ *                             most terrifying case of their lives.
+ *                  director:
+ *                    type: string
+ *                    example: James Wan
+ *                  duration:
+ *                    type: string
+ *                    example: 112.0
+ *                  genre:
+ *                    type: string
+ *                    example: Horror
+ *                  gross:
+ *                    type: string
+ *                    example: $320,290,989.00
+ *                  poster:
+ *                    type: string
+ *                    example: https://rengokudmdb.blob.core.windows.net/rengokublobs/rengokuBlob-The%20Conjuring-2013.jpg
+ *                  rating:
+ *                    type: string
+ *                    example: R
+ *                  releaseYear:
+ *                    type: string
+ *                    example: 2013
+ *                  score:
+ *                    type: string
+ *                    example: 7.5
+ *                  title:
+ *                    type: string
+ *                    example: The Conjuring
+*/
 router.get("/getSearch", async (req, res) => {
   const keywordTitle = req.query.title;
   const keywordDirector = req.query.director;
@@ -118,6 +159,52 @@ router.get("/getSearch", async (req, res) => {
     res.sendStatus(404).end();
   }
 })
+
+/**
+ * @swagger
+ * /getSearch/page/{pageNumber}:
+ *  get:
+ *    summary: Retrieve movies per page.
+ *    description: Retrieves 52 movies per specified page, minimum page is 1.
+ *                 Returns the 52 movies.
+ *    parameters:
+ *      - name: pageNumber
+ *        in: path
+ *        required: true
+ *        description: Page number.
+ *        schema:
+ *          type: integer
+ *          minimum: 1
+ * 
+ *    responses:
+ *      '200':
+ *        description: A list of movies that match the parameters specified, if no parameters, every movie.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *                properties:
+ *                  title:
+ *                    type: string
+ *                    example: The Conjuring
+ *                  director:
+ *                    type: string
+ *                    example: James Wan
+ *                  genre:
+ *                    type: string
+ *                    example: Horror
+ *                  releaseYear:
+ *                    type: string
+ *                    example: 2013
+ *                  score:
+ *                    type: string
+ *                    example: 7.5
+ *                  rating:
+ *                    type: string
+ *                    example: R
+ */
 router.get("/getSearch/page/:pageNumber", async (req, res) => {
   const pageNumber = req.params.pageNumber;
   const keywordTitle = req.query.title;
