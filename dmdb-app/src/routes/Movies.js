@@ -14,7 +14,6 @@ import '../App.css';
  * @returns Table Of Movies + Pagination
  */
 export default function Movies() {
-
   //Initializes variables and sets up "setters to variables"
   const DEFAULT_ACTIVE_PAGE = 1;
   const [oneMovieData, setOneMovieData] = useState([{}]);
@@ -109,12 +108,22 @@ export default function Movies() {
   }
 
   /**
+   * Handles the event when Enter is pressed
+   * @param {Event} e Key press event
+   */
+  const handleSubmit = e => {
+    // Key Code 13 is the Enter or Return key in most keyboards
+    if (e.keyCode === 13) {
+      clickOnGo(e)
+    }
+  }
+
+  /**
      * getCards() returns an array of cards that displays all the movies of a certain page
-     * @param {*} moviesJson 
+     * @param {JSON} moviesJson 
      * @returns cards
      */
   function getCards(moviesJson) {
-
     let cards = moviesJson.map((movie) => {
       // Checks if movie description and poster are missing 
       // and checks if movie isn't an empty object
@@ -235,6 +244,7 @@ export default function Movies() {
 
       <Modal
         opened={searchopened}
+        onKeyUp={handleSubmit}
         onClose={() => setSearchOpened(false)}
         hideCloseButton
       >
@@ -319,7 +329,7 @@ export default function Movies() {
         <LoadingOverlay loaderProps={{ color: 'dark', variant: 'dots' }}
           visible={modalLoading} />
         <div id="movieDetails">
-          <Image src={oneMovieData.poster} height={340} width={250}
+          <Image src={oneMovieData.poster} height={380} width={250}
             alt={oneMovieData.title + " Poster"} withPlaceholder />
 
           <div id="movieText">
