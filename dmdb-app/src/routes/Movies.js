@@ -206,7 +206,8 @@ export default function Movies() {
       if (response.ok) {
         let movieApiData = await response.json();
         await updateMovieDataToBlobStorage(movieApiData);
-        await updateMovieDataToDB(movie, movieApiData)
+        await updateMovieDataToDB(movie, movieApiData);
+        return movieApiData;
       }
     } catch (e) {
       console.log(e);
