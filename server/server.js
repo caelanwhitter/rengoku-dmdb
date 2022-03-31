@@ -55,7 +55,7 @@ app.post("/api/google-login", async (req, res) => {
   } else {
     user = await User.updateOne(
       { email: email },
-      { $set: { "name": name, "source": source } },
+      { $set: { "name": name, "source": picture } },
       {upsert: true}
   
     )
