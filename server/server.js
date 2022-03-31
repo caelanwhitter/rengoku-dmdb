@@ -20,6 +20,7 @@ function upsert(array, item) {
     array.push(item)
   }
 }
+
 app.post("/api/google-login", async (req, res) => {
   const { token } = req.body;
   const ticket = await client.verifyIdToken({

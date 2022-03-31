@@ -178,7 +178,7 @@ router.get("/getSearch", async (req, res) => {
  * 
  *    responses:
  *      '200':
- *        description: A list of movies that match the parameters specified, if no parameters, every movie.
+ *        description: A list of movies that match the page specified.
  *        content:
  *          application/json:
  *            schema:
@@ -232,6 +232,66 @@ router.get("/getSearch/page/:pageNumber", async (req, res) => {
   }
 })
 
+/**
+ * @swagger
+ * /oneMovie:
+ *  get:
+ *    summary: Retrieve movie by ID.
+ *    description: Returns the details of the movie with the specified ID.
+ *    requestBody:
+ *      description: ID of the movie.
+ *      required: true
+ *      content:
+ *        text/plain:
+ *          schema:
+ *            type: string
+ *            example: 62378512c6d65605e4778633
+ * 
+ *    responses:
+ *      '200':
+ *        description: One single movie that matches the ID specified.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                id:
+ *                  type: string
+ *                  example: 62378512c6d65605e4778633
+ *                description:
+ *                  type: string
+ *                  example: Paranormal investigators Ed and Lorraine Warren work to help 
+ *                           a family terrorized by a dark presence in their farmhouse. Forced to 
+ *                           confront a powerful entity, the Warrens find themselves caught in the 
+ *                           most terrifying case of their lives.
+ *                director:
+ *                  type: string
+ *                  example: James Wan
+ *                duration:
+ *                  type: string
+ *                  example: 112.0
+ *                genre:
+ *                  type: string
+ *                  example: Horror
+ *                gross:
+ *                  type: string
+ *                  example: $320,290,989.00
+ *                poster:
+ *                  type: string
+ *                  example: https://rengokudmdb.blob.core.windows.net/rengokublobs/rengokuBlob-The%20Conjuring-2013.jpg
+ *                rating:
+ *                  type: string
+ *                  example: R
+ *                releaseYear:
+ *                  type: string
+ *                  example: 2013
+ *                score:
+ *                  type: string
+ *                  example: 7.5
+ *                title:
+ *                  type: string
+ *                  example: The Conjuring
+ */
 router.get("/oneMovie", async (req, res) => {
   const id = req.query.id;
   const singleMovie = await Movies.find({ "_id": new ObjectId(id) });
