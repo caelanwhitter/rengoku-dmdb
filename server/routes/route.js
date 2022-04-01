@@ -23,7 +23,6 @@ require("dotenv").config();
 /**
  * Start up connection to Azure Blob Storage
  */
-
 console.log("Connecting to Azure Blob Storage...");
 const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
 const containerClient = blobServiceClient.getContainerClient(CONTAINER_NAME);

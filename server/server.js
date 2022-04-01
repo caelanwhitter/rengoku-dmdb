@@ -21,6 +21,17 @@ function upsert(array, item) {
   }
 }
 
+/**
+ * @swagger
+ * post:
+ *    summary: Google Login
+ *    security:
+ *      - OAuth2: [write]
+ *    
+ *    responses:
+ *      201:
+ *        description: Created
+ */
 app.post("/api/google-login", async (req, res) => {
   const { token } = req.body;
   const ticket = await client.verifyIdToken({
@@ -32,6 +43,7 @@ app.post("/api/google-login", async (req, res) => {
   res.status(201);
   res.json({ name, email, picture });
 })
+
 app.listen(process.env.PORT || 3001, () => {
   console.log(`Server listening on port ${process.env.PORT || 3001}...`);
 }) 
