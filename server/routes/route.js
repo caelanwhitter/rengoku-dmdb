@@ -376,80 +376,6 @@ router.get("/oneMovie/reviews", async (req, res) => {
 
 /**
  * @swagger
- * /reviews:
- *  post:
- *    summary: Add a new review.
- *    description: Adds a new review to the database.
- *    requestBody:
- *      description: Model of the review.
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            type: object
- *            properties:
- *              username:
- *                type: string
- *                example: Caelan Whitter
- *              movieId:
- *                type: string
- *                example: 62378512c6d65605e4776dce
- *              subtitle: 
- *                type: string
- *                example: Great movie!
- *              content: 
- *                type: string
- *                example: It was a great movie to relax to.
- *              rating:
- *                type: number
- *                example: 4
- *              datePosted:
- *                type: string
- *                example: Mar 31, 2022
- * 
- *    responses:
- *      '201':
- *        description: Created
- */
-router.post("/reviews", async (req, res) => {
-  const body = await req.body;
-  const doc = new Reviews({
-    username: body.username,
-    movieId: body.movieId,
-    content: body.content,
-    rating: body.rating,
-    datePosted: body.datePosted,
-    subtitle: body.subtitle
-  });
-  await doc.save();
-  res.status(201).json({
-    message: "Post worked!"
-  });
-})
-
-/**
- * @swagger
- * /reviews:
- *  delete:
- *    summary: Delete a specific review.
- *    description: Deletes a review from the database.
- * 
- *    responses:
- *      '204':
- *        description: No Content, Deleted
- */
-router.delete("/review/delete", async (req) => {
-  const body = await req.body;
-  Reviews.findByIdAndDelete(body.id, function (err) {
-    if (err) {
-      console.error(err);
-    }
-    console.log("Successful deletion");
-  });
-});
-
-/**
- * @swagger
  * /oneMovie/fetchMovieDataFromApi?title={title}&year={year}:
  *  get:
  *    summary: Retrieve description and poster.
@@ -545,8 +471,41 @@ router.get("/oneMovie/fetchMovieDataFromApi/", async (req, res) => {
 });
 
 /**
- * updateMovieDataToAzure endpoint takes the Request Body, 
- * fetches the Blob Name URL and poster and uploads it to Blob Storage
+ * @swagger
+ * /oneMovie/updateMovieDataToAzure:
+ *  post:
+ *    summary: Upload new poster to Azure.
+ *    description: With Request Body, 
+ *                 fetches the Blob Name URL and poster and uploads it to Blob Storage.
+ *    requestBody:
+ *      description: Model of the movie.
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              title:
+ *                type: string
+ *                example: The Conjuring
+ *              description: 
+ *                type: string
+ *                example: Paranormal investigators Ed and Lorraine Warren work to help 
+ *                         a family terrorized by a dark presence in their farmhouse. Forced to 
+ *                         confront a powerful entity, the Warrens find themselves caught in the 
+ *                         most terrifying case of their lives.
+ *              year: 
+ *                type: integer
+ *                minimum: 1980
+ *                maximum: 2020
+ *                example: 2013
+ *              poster:
+ *                type: string
+ *                example: /wVYREutTvI2tmxr6ujrHT704wGF.jpg
+ * 
+ *    responses:
+ *      '201':
+ *        description: Created
  */
 router.post("/oneMovie/updateMovieDataToAzure/", async (req, res) => {
   const requestBody = await req.body;
@@ -560,8 +519,44 @@ router.post("/oneMovie/updateMovieDataToAzure/", async (req, res) => {
 });
 
 /**
- * updateMovieDataToDB endpoint takes request Body, 
- * fetches description and Azure URL and uploads it to database
+ * @swagger
+ * /oneMovie/updateMovieDataToDB:
+ *  post:
+ *    summary: Upload movie details to database.
+ *    description: With Request Body, 
+ *                 fetches description and Azure URL and uploads it to database.
+ *    requestBody:
+ *      description: Model of the movie.
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              id:
+ *                type: string
+ *                example: 62378512c6d65605e4776dce
+ *              title:
+ *                type: string
+ *                example: The Conjuring
+ *              description: 
+ *                type: string
+ *                example: Paranormal investigators Ed and Lorraine Warren work to help 
+ *                         a family terrorized by a dark presence in their farmhouse. Forced to 
+ *                         confront a powerful entity, the Warrens find themselves caught in the 
+ *                         most terrifying case of their lives.
+ *              year: 
+ *                type: integer
+ *                minimum: 1980
+ *                maximum: 2020
+ *                example: 2013
+ *              poster:
+ *                type: string
+ *                example: /wVYREutTvI2tmxr6ujrHT704wGF.jpg
+ * 
+ *    responses:
+ *      '201':
+ *        description: Created
  */
 router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
   const requestBody = await req.body;
@@ -577,6 +572,80 @@ router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
 
   res.status(201).json({
     message: "POST Updating Movie to Database succeeded!"
+  });
+});
+
+/**
+ * @swagger
+ * /reviews:
+ *  post:
+ *    summary: Add a new review.
+ *    description: Adds a new review to the database.
+ *    requestBody:
+ *      description: Model of the review.
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              username:
+ *                type: string
+ *                example: Caelan Whitter
+ *              movieId:
+ *                type: string
+ *                example: 62378512c6d65605e4776dce
+ *              subtitle: 
+ *                type: string
+ *                example: Great movie!
+ *              content: 
+ *                type: string
+ *                example: It was a great movie to relax to.
+ *              rating:
+ *                type: number
+ *                example: 4
+ *              datePosted:
+ *                type: string
+ *                example: Mar 31, 2022
+ * 
+ *    responses:
+ *      '201':
+ *        description: Created
+ */
+router.post("/reviews", async (req, res) => {
+  const body = await req.body;
+  const doc = new Reviews({
+    username: body.username,
+    movieId: body.movieId,
+    content: body.content,
+    rating: body.rating,
+    datePosted: body.datePosted,
+    subtitle: body.subtitle
+  });
+  await doc.save();
+  res.status(201).json({
+    message: "Post worked!"
+  });
+})
+
+/**
+ * @swagger
+ * /reviews:
+ *  delete:
+ *    summary: Delete a specific review.
+ *    description: Deletes a review from the database.
+ * 
+ *    responses:
+ *      '204':
+ *        description: No Content, Deleted
+ */
+router.delete("/review/delete", async (req) => {
+  const body = await req.body;
+  Reviews.findByIdAndDelete(body.id, function (err) {
+    if (err) {
+      console.error(err);
+    }
+    console.log("Successful deletion");
   });
 });
 
