@@ -3,7 +3,6 @@
  * route.js holds all the possible routes of the router and sends back data
  * @author Daniel Lam, Caelan Whitter
  */
-const { OAuth2Client } = require("google-auth-library");
 const express = require("express");
 const router = express.Router();
 const Mongoose = require("../database/mongoose");
@@ -458,7 +457,6 @@ router.get("/oneMovie/fetchMovieDataFromApi/", async (req, res) => {
         poster: closestMovieJson.poster_path,
         year: movieYear,
       }
-      console.log(movieData);
       res.json(movieData);
       res.end();
     } else {
@@ -573,6 +571,7 @@ router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
     message: "POST Updating Movie to Database succeeded!"
   });
 });
+
 
 /**
  * @swagger

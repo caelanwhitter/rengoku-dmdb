@@ -1,25 +1,25 @@
 /**
  * Start server and listen on port 3001 or PORT environment variable
- * @author Danilo Zhu 1943382, Mikael Baril 1844064
+ * @author Danilo Zhu 1943382, Mikael Baril 1844064, Caelan Whitter 1841768
  */
+const Mongoose = require("./database/mongoose");
+const User = Mongoose.User;
+
+
 const dotenv = require("dotenv");
 const { OAuth2Client } = require("google-auth-library");
-
+const session = require("express-session");
 dotenv.config();
-const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
 
+const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
 const app = require("./app");
 
-const users = [];
+app.use(session({
+  secret: process.env.SECRET,
+  resave: true,
+  saveUninitialized: true
 
-function upsert(array, item) {
-  const i = array.findIndex((_item) => _item.email === item.email);
-  if (i > -1) {
-    array[i] = item
-  } else {
-    array.push(item)
-  }
-}
+})); 
 
 /**
  * @swagger
@@ -33,15 +33,57 @@ function upsert(array, item) {
  *        description: Created
  */
 app.post("/api/google-login", async (req, res) => {
-  const { token } = req.body;
+  const { token } = await req.body;
   const ticket = await client.verifyIdToken({
     idToken: token,
     audience: process.env.CLIENT_ID,
   });
   const { name, email, picture } = ticket.getPayload();
-  upsert(users, { name, email, picture });
-  res.status(201);
-  res.json({ name, email, picture });
+  req.session.userId = email;
+  let user;
+
+  const findUser = await User.find({ "email": email });
+  
+  if (findUser.length === 0) {
+
+    user = new User({
+      name: name,
+      email: email,
+      source: picture
+    });
+    await user.save();
+    try {
+      res.json(user);
+      res.end();
+    } catch (error) {
+      console.error(error);
+      res.sendStatus(404).end();
+    }
+    
+  } else {
+    user = await User.updateOne(
+      { email: email },
+      { $set: { "name": name, "source": picture } },
+      {upsert: true}
+  
+    )
+    try {
+      res.json(findUser[0]);
+      res.end();
+    } catch (error) {
+      console.error(error);
+      res.sendStatus(404).end();
+    }
+  }
+
+})
+
+app.delete("/api/v1/auth/logout", async (req, res) => {
+  await req.session.destroy()
+  res.status(200)
+  res.json({
+    message: "Logged out successfully"
+  })
 })
 
 app.listen(process.env.PORT || 3001, () => {

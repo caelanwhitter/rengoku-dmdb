@@ -7,9 +7,11 @@ import GoogleLogin from 'react-google-login';
 import '../App.css';
 
 export default function Profile() {
+
+  const [logoutMessage, setLogoutMessage] = useState()
   const [loginData, setLoginData] = useState(
-    localStorage.getItem('loginData')
-      ? JSON.parse(localStorage.getItem('loginData'))
+    localStorage.getItem('token')
+      ? JSON.parse(localStorage.getItem('token'))
       : null
   );
   const [loading, setLoading] = useState(false);
@@ -29,33 +31,36 @@ export default function Profile() {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
-      },
+      }
     });
 
     const data = await res.json();
     setLoginData(data);
-    localStorage.setItem('loginData', JSON.stringify(data));
+    localStorage.setItem('token', JSON.stringify(data));
+
+    
     setLoading(v => !v);
   };
+  
 
-  const handleLogout = () => {
+  const handleLogout = async response => {
     setLoading(v => !v);
-    localStorage.removeItem('loginData');
+    const res = await fetch("/api/v1/auth/logout", {
+      method: "DELETE",
+   
+    })
+    const data = await res.json()
+    setLogoutMessage(data.message);
+
+    localStorage.clear();
     setLoginData(null);
     setLoading(v => !v);
   }
-  
-  // async function fetchPicture(picture)
-  // {
-  //   let response = await fetch(picture);
-  //   if (response.ok)
-  //   {
-  //     let pictureblob = await response.blob(); 
-  //     console.log(pictureblob);
-  //     return pictureblob;
-  //   }
-  // }
 
+
+
+
+  
   return (
     <div className="centered">
       <Container>
@@ -70,7 +75,7 @@ export default function Profile() {
               <Space h="md" />
 
               <Card shadow="md" withBorder>
-                <Avatar src={loginData.picture} color="dark" radius="xl" size="xl" />
+                <Avatar src={loginData.source} color="dark" radius="xl" size="xl" />
                 <Space h="sm" />
 
                 <Text size="lg" weight="bold">{loginData.name}</Text>
