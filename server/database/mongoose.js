@@ -60,17 +60,7 @@ module.exports = { Movie, Review, User };
 //     director:String,
 //     duration: String,
 //     genre: String,
-//     gross: String,
-//     poster: String,
 //     rating: String,
 //     releaseYear: Number,
-//     score: Number,
 //     title: String,
-// });
-
-
-// const user = new Schema({
-//     username: String,
-//     email: String,
-//     password: String
 // });
