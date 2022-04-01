@@ -1,6 +1,5 @@
 import {
-  Avatar, Badge, Box, Button, Group,
-  NumberInput, Spoiler, Text, Textarea, TextInput
+  Avatar, Badge, Box, Button, Group, NumberInput, Spoiler, Text, Textarea, TextInput
 } from '@mantine/core';
 import { TrashIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from 'react';
@@ -17,7 +16,6 @@ export default function Reviews() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [source, setSource] = useState("");
-  
 
   const date = new Date().
     toLocaleDateString('en-us', { year: "numeric", month: "short", day: "numeric" })
@@ -40,7 +38,6 @@ export default function Reviews() {
 
   /**
  * fetchReviews() fetches list of reviews for specific movie
- * 
  */
   async function fetchReviews() {
     let response = await fetch('/api/oneMovie/reviews?id=' + params.movieId);
@@ -78,9 +75,7 @@ export default function Reviews() {
       body: JSON.stringify({
         id: id,
       })
-    })
-
-
+    });
   }
 
   /**
@@ -106,59 +101,48 @@ export default function Reviews() {
   }
 
   async function getUser() {
-    
     const tokenString = localStorage.getItem("token");
     const userToken = JSON.parse(tokenString);
-    
 
     setUsername(userToken.name);
     setEmail(userToken.email);
     setSource(userToken.source);
-
   }
-
-
 
   /**
    * each review is put into a box and styled accordingly
    */
-  
   const reviews = backendData.map((element) =>
-    <>
-      <Box sx={(theme) => ({
-        backgroundColor: "#f6f6f5",
-        textAlign: 'center',
-        padding: theme.spacing.sm,
-        margin: theme.spacing.xl,
-        border: 'solid 1px #000',
-      })}>
-        <Text underline size="lg" weight={500}>{element.subtitle}</Text>
-        <Badge sx={(theme) => ({ margin: "10px" })}
-          size="xl" color="dark" >{element.rating}⭐</Badge>
+    <Box key={element._id} sx={(theme) => ({
+      backgroundColor: "#f6f6f5",
+      textAlign: 'center',
+      padding: theme.spacing.sm,
+      margin: theme.spacing.xl,
+      border: 'solid 1px #000',
+    })}>
+      <Text underline size="lg" weight={500}>{element.subtitle}</Text>
+      <Badge sx={(theme) => ({ margin: "10px" })}
+        size="xl" color="dark" >{element.rating}⭐</Badge>
 
-        <Spoiler maxHeight={100} showLabel="Show more"
-          hideLabel="Hide"> {element.content} </Spoiler>
+      <Spoiler maxHeight={100} showLabel="Show more"
+        hideLabel="Hide"> {element.content} </Spoiler>
 
-        <Group position="center" >
-          <Avatar src={element.source}/>
-          <Text>{element.username}</Text>
-          <Text>|</Text>
-          <Text>{element.datePosted}</Text>
-        </Group>
-        {element.email === email &&
+      <Group position="center" >
+        <Avatar src={element.source} />
+        <Text>{element.username}</Text>
+        <Text>|</Text>
+        <Text>{element.datePosted}</Text>
+      </Group>
+      {element.email === email &&
           <div id={element._id}><TrashIcon className="trashLink" onClick={(event) => {
             let deleted = document.getElementById(event.target.id);
             let parent = deleted.parentElement;
             parent.remove();
             deleteReview(event.target.id);
-          }} to={{}}size="xl" id={element._id} /></div>
-        }
-
-
-   
-        
-        
-      </Box></>
+          }} to={{}} size="xl" id={element._id} />
+          </div>
+      }
+    </Box>
   );
 
   return (
@@ -198,7 +182,7 @@ export default function Reviews() {
               paddingRight: theme.spacing.xl,
 
               marginTop: theme.radius.md,
-            })} textAlign="center" autosize radius="lg" placeholder="Write your review here"
+            })} autosize radius="lg" placeholder="Write your review here"
             label="Your Review" required />
 
 
@@ -206,7 +190,7 @@ export default function Reviews() {
             width: "25%", margin: "auto", padding: "10px"
           })} value={rating} onChange={(val) => setRating(val)}
           label="Star Rating"
-          
+
           max={5}
           min={0}
           />

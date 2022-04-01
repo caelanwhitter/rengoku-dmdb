@@ -118,6 +118,7 @@ footer {
   color: red;
 }
 
+.underHover:hover,
 .footSection>a:hover {
   text-decoration: underline;
 }
