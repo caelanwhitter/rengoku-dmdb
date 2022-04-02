@@ -17,6 +17,7 @@ const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const CONTAINER_NAME = "rengokublobs";
 const ONE_MEGABYTE = 1024 * 1024;
 const uploadOptions = { bufferSize: 4 * ONE_MEGABYTE, maxBuffers: 20 };
+const ELEMS_PER_PAGE = 52;
 require("dotenv").config();
 
 /**
@@ -56,6 +57,7 @@ router.get("/getSearch", async (req, res) => {
     res.sendStatus(404).end();
   }
 })
+
 router.get("/getSearch/page/:pageNumber", async (req, res) => {
   const pageNumber = req.params.pageNumber;
   const keywordTitle = req.query.title;
@@ -64,7 +66,6 @@ router.get("/getSearch/page/:pageNumber", async (req, res) => {
   const keywordReleaseYear = req.query.releaseYear;
   const keywordScore = req.query.score;
   const keywordRating = req.query.rating;
-  const elemsPerPage = 52;
   const moviesPerPage = await Movies.find({
     title: { $regex: `${keywordTitle}`, $options: "i" },
     director: { $regex: `${keywordDirector}`, $options: "i" },
@@ -72,7 +73,7 @@ router.get("/getSearch/page/:pageNumber", async (req, res) => {
     releaseYear: { $regex: `${keywordReleaseYear}`, $options: "i" },
     score: { $regex: `${keywordScore}`, $options: "i" },
     rating: { $regex: `${keywordRating}`, $options: "i" },
-  }).skip(elemsPerPage * (pageNumber - 1)).limit(elemsPerPage);
+  }).skip(ELEMS_PER_PAGE * (pageNumber - 1)).limit(ELEMS_PER_PAGE).sort({ "_id": 1});
 
   try {
     res.json(moviesPerPage);
