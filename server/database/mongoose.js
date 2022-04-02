@@ -60,7 +60,8 @@ const submissionSchema = new Schema({
   link: String,
   rating: String,
   releaseDate: String,
-  title: String
+  title: String,
+  genre: String
 }, { collection: "submissions" });
 
 const Submission = mongoose.model("Submission", submissionSchema)
