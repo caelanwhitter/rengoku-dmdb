@@ -56,11 +56,11 @@ const User = mongoose.model("User", userSchema)
 const submissionSchema = new Schema({
   description: String,
   director: String,
-  duration: String,
-  genre: String,
+  duration: Number,
+  link: String,
   rating: String,
-  releaseYear: Number,
-  title: String,
+  releaseDate: String,
+  title: String
 }, { collection: "submissions" });
 
 const Submission = mongoose.model("Submission", submissionSchema)

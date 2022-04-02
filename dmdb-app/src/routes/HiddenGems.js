@@ -16,6 +16,25 @@ export default function HiddenGems() {
   const [addOpened, setAddOpened] = useState(false);
   const [searchopened, setSearchOpened] = useState(false);
 
+  const insertSubmission = async (values) => {
+    await fetch('api/hiddengems', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        title: values.title,
+        director: values.director,
+        description: values.description,
+        duration: values.duration,
+        releaseDate: values.releaseDate.toLocaleString('en-US', 
+          { day: "numeric", month: "short", year: "numeric"}),
+        link: values.link,
+        rating: values.rating
+      })
+    })
+  }
+
   let elems = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   let cards = elems.map((elem) => {
     return (
@@ -161,7 +180,7 @@ export default function HiddenGems() {
         size="40%"
       >
         <Text color="red">All fields with an asterisk (*) are required.</Text>
-        <form onSubmit={form.onSubmit((values) => console.info(values))}>
+        <form onSubmit={form.onSubmit((values) => insertSubmission(values))}>
           <Group
             direction="column"
             grow

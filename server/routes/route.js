@@ -8,6 +8,7 @@ const router = express.Router();
 const Mongoose = require("../database/mongoose");
 const Movies = Mongoose.Movie;
 const Reviews = Mongoose.Review;
+const Submissions = Mongoose.Submission;
 const ObjectId = require("mongodb").ObjectId;
 const fetch = require("node-fetch");
 const { BlobServiceClient } = require("@azure/storage-blob");
@@ -572,6 +573,22 @@ router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
   });
 });
 
+router.post("/hiddengems", async (req, res) => {
+  const body = await req.body;
+  const hg = new Submissions({
+    description: body.description,
+    director: body.director,
+    duration: body.duration,
+    link: body.link,
+    rating: body.rating,
+    releaseDate: body.releaseDate,
+    title: body.title,
+  });
+  await hg.save();
+  res.status(201).json({
+    message: "Inserted Hidden Gem"
+  });
+});
 
 /**
  * @swagger
