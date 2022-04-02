@@ -16,14 +16,6 @@ export default function HiddenGems() {
   const [addOpened, setAddOpened] = useState(false);
   const [searchopened, setSearchOpened] = useState(false);
 
-  // const [hgTitle, setHgTitle] = useState("");
-  // const [hgDirector, setHgDirector] = useState("");
-  // const [hgDescription, setHgDescription] = useState("");
-  // const [hgDuration, setHgDuration] = useState("");
-  // const [hgRating, setHgRating] = useState("");
-  // const [hgDate, setHgDate] = useState("");
-  // const [hgLink, setHgLink] = useState("");
-
   let elems = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   let cards = elems.map((elem) => {
     return (
