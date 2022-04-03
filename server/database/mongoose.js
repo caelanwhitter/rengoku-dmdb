@@ -35,6 +35,8 @@ const Movie = mongoose.model("Movie", movieSchema)
 
 const reviewSchema = new Schema({
   username: String,
+  email: String,
+  source: String,
   movieId: String,
   subtitle: String,
   content: String,
@@ -44,7 +46,15 @@ const reviewSchema = new Schema({
 
 const Review = mongoose.model("Review", reviewSchema)
 
-module.exports = { Movie, Review };
+const userSchema = new Schema({
+  name: String,
+  email: String,
+  source: String,
+}, { collection:"users"});
+
+const User = mongoose.model("User", userSchema)
+
+module.exports = { Movie, Review, User };
 
 // const submission = new Schema({
 //     description: String,

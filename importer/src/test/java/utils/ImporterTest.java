@@ -151,7 +151,7 @@ public class ImporterTest
     public void testDirectorFromDataset()
     {
         List<String> givenMovieDirector = Arrays.asList("Gilbert Cates", "Kevin Greutert", "Robert Luketic",
-                "Marco Bellocchio", "Julie Anne Robinson");
+                "Marco Béllocchio", "Julie Anne Robinson");
         List<String> takenMovieDirector = new ArrayList<String>();
 
         for (Movie movie : testMovieList) {

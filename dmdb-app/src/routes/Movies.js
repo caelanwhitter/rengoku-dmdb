@@ -15,7 +15,6 @@ import '../App.css';
  * @returns Table Of Movies + Pagination
  */
 export default function Movies() {
-
   //Initializes variables and sets up "setters to variables"
   const DEFAULT_ACTIVE_PAGE = 1;
   const [oneMovieData, setOneMovieData] = useState([{}]);
@@ -110,8 +109,19 @@ export default function Movies() {
   }
 
   /**
+   * Handles the event when Enter is pressed
+   * @param {Event} e Key press event
+   */
+  const handleSubmit = e => {
+    // Key Code 13 is the Enter or Return key in most keyboards
+    if (e.keyCode === 13) {
+      clickOnGo(e)
+    }
+  }
+
+  /**
      * getCards() returns an array of cards that displays all the movies of a certain page
-     * @param {*} moviesJson 
+     * @param {JSON} moviesJson 
      * @returns cards
      */
   // function getCards(moviesJson) {
@@ -175,7 +185,6 @@ export default function Movies() {
   // }
 
   function getCards(moviesJson) {
-
     let cards = moviesJson.map((movie) => {
       return (
         <Grid.Col key={movie._id} span={3}>
@@ -277,8 +286,12 @@ export default function Movies() {
       console.log(e);
     }
   }
-
+  let isLoggedIn = false;
+  if (localStorage.getItem("token") !== null) {
+    isLoggedIn = true;
+  }
   return (
+    
     <>
       <nav id="searchNav">
         <Link className="tabLink"
@@ -287,6 +300,7 @@ export default function Movies() {
 
       <Modal
         opened={searchopened}
+        onKeyUp={handleSubmit}
         onClose={() => setSearchOpened(false)}
         hideCloseButton
       >
@@ -371,7 +385,7 @@ export default function Movies() {
         <LoadingOverlay loaderProps={{ color: 'dark', variant: 'dots' }}
           visible={modalLoading} />
         <div id="movieDetails">
-          <Image src={oneMovieData.poster} height={340} width={250}
+          <Image src={oneMovieData.poster} height={380} width={250}
             alt={oneMovieData.title + " Poster"} withPlaceholder />
 
           <div id="movieText">
@@ -387,9 +401,18 @@ export default function Movies() {
             <p>{oneMovieData.description}</p>
 
             <Title order={6}>Gross: {oneMovieData.gross}</Title>
-            <Badge variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}>
-              <NavLink style={{ textDecoration: 'none', color: 'black' }}
-                to={`${oneMovieData._id}/reviews`}>View Reviews</NavLink></Badge>
+            {isLoggedIn ? 
+              <Badge variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}>
+
+                <NavLink style={{ textDecoration: 'none', color: 'black' }}
+                  to={`${oneMovieData._id}/reviews`}>View Reviews</NavLink></Badge>
+              : 
+              <Badge variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}>
+
+                <NavLink style={{ textDecoration: 'none', color: 'black' }}
+                  to={`/profile`}>Login To View Reviews</NavLink></Badge>
+            }
+              
           </div>
         </div>
       </Modal>

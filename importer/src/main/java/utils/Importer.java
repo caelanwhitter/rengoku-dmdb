@@ -1,8 +1,10 @@
 package utils;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.text.NumberFormat;
@@ -36,7 +38,11 @@ public class Importer {
         /**
          * a try-catch method to extract data from csv file
          */
-        BufferedReader reader = new BufferedReader(new FileReader(movieAttributesPath));
+
+        FileInputStream fis = new FileInputStream(movieAttributesPath);
+        InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+        BufferedReader reader = new BufferedReader(isr);
+        //BufferedReader reader = new BufferedReader(new FileReader(movieAttributesPath));
 
         try {
             boolean firstLine = true;
@@ -52,7 +58,6 @@ public class Importer {
 
                 // Create starting Movie object with default values
                 Movie movie = new Movie();
-
                 String[] movieAttributes = line.split(splitby);
                 /**
                  * Lines that start with a " means that there is a comma within the title which
@@ -63,6 +68,8 @@ public class Importer {
                     formatTitleWithComma(line, movie);
 
                 } else {
+
+
                     /**
                      * Set title, rating, genre and releaseYear since they never change even if a
                      * line is missing information
@@ -183,6 +190,7 @@ public class Importer {
      *             comma
      */
     public void formatTitleWithComma(String line, Movie movie) {
+
         /**
          * Split by ", to get the title by itself. Creates two other arrays.
          * One containing everything before and up to the release date, and the other

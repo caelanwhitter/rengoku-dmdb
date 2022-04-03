@@ -2,7 +2,6 @@ package utils;
 
 import java.io.IOException;
 import java.util.List;
-
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
@@ -48,7 +47,7 @@ public class MongoDB {
         //         System.out.println(movie);
         // }
         movies.insertMany(movieList);
-        
+      
         System.out.println("Importing data into: '" + DATABASE_NAME + "' done!");
     }
 }
