@@ -22,16 +22,7 @@ render(
 
         <Route path="movies" element={<Movies />} />
 
-        <Route path="hiddengems" element={<HiddenGems />} >
-          <Route
-            index
-            element={
-              <main style={{ padding: "1rem" }}>
-                <p>View the Hidden Gems</p>
-              </main>
-            }
-          />
-        </Route>
+        <Route path="hiddengems" element={<HiddenGems />} />
 
         <Route path="movies/:movieId/reviews" element={<Reviews />} />
 

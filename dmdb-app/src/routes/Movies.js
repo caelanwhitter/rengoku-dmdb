@@ -188,7 +188,7 @@ export default function Movies() {
   /**
      * updateMovieDataToBlobStorage() takes movieData 
      * and makes a POST request to backend which uploads to Blob Storage
-     * @param {*} movieData 
+     * @param {*} movieApiData 
      */
   async function updateMovieDataToBlobStorage(movieApiData) {
     try {

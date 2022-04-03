@@ -6,8 +6,9 @@
   "dependencies": {
     "@azure/storage-blob": "^12.9.0",
     "@mantine/core": "^3.6.14",
-    "@mantine/dates": "^3.6.8",
+    "@mantine/dates": "^3.6.14",
     "@mantine/dropzone": "^3.6.8",
+    "@mantine/form": "^4.1.1",
     "@mantine/hooks": "^3.6.14",
     "@radix-ui/react-icons": "^1.1.0",
     "@testing-library/jest-dom": "^5.16.2",
