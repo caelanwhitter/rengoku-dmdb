@@ -8,6 +8,7 @@ const router = express.Router();
 const Mongoose = require("../database/mongoose");
 const Movies = Mongoose.Movie;
 const Reviews = Mongoose.Review;
+const Submissions = Mongoose.Submission;
 const ObjectId = require("mongodb").ObjectId;
 const fetch = require("node-fetch");
 const { BlobServiceClient } = require("@azure/storage-blob");
@@ -572,6 +573,49 @@ router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
   });
 });
 
+router.get("/hiddengems", async (req, res) => {
+  const hiddengem = await Submissions.find();
+
+  try {
+    res.json(hiddengem);
+    res.end();
+  } catch (err) {
+    console.error(err.message);
+    res.sendStatus(404).end();
+  }
+});
+
+router.get("/hiddengems", async (req, res) => {
+  const id = req.query.id;
+  const hiddengem = await Submissions.find({ "_id": id });
+
+  try {
+    res.json(hiddengem);
+    res.end();
+  } catch (err) {
+    console.error(err.message);
+    res.sendStatus(404).end();
+  }
+})
+
+router.post("/hiddengems", async (req, res) => {
+  const body = await req.body;
+  const hg = new Submissions({
+    description: body.description,
+    director: body.director,
+    duration: body.duration,
+    link: body.link,
+    rating: body.rating,
+    releaseDate: body.releaseDate,
+    title: body.title,
+    genre: body.genre
+  });
+
+  await hg.save();
+  res.status(201).json({
+    message: "Inserted Hidden Gem"
+  });
+});
 
 /**
  * @swagger
