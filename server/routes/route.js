@@ -59,25 +59,29 @@ router.get("/getSearch", async (req, res) => {
 })
 
 router.get("/getSearch/page/:pageNumber", async (req, res) => {
-  const pageNumber = req.params.pageNumber;
-  const keywordTitle = req.query.title;
-  const keywordDirector = req.query.director;
-  const keywordGenre = req.query.genre;
-  const keywordReleaseYear = req.query.releaseYear;
-  const keywordScore = req.query.score;
-  const keywordRating = req.query.rating;
-  const moviesPerPage = await Movies.find({
-    title: { $regex: `${keywordTitle}`, $options: "i" },
-    director: { $regex: `${keywordDirector}`, $options: "i" },
-    genre: { $regex: `${keywordGenre}`, $options: "i" },
-    releaseYear: { $regex: `${keywordReleaseYear}`, $options: "i" },
-    score: { $regex: `${keywordScore}`, $options: "i" },
-    rating: { $regex: `${keywordRating}`, $options: "i" },
-  }).skip(ELEMS_PER_PAGE * (pageNumber - 1)).limit(ELEMS_PER_PAGE).sort({ "_id": 1});
-
   try {
-    res.json(moviesPerPage);
+    const pageNumber = req.params.pageNumber;
+    const keywordTitle = req.query.title;
+    const keywordDirector = req.query.director;
+    const keywordGenre = req.query.genre;
+    const keywordReleaseYear = req.query.releaseYear;
+    const keywordScore = req.query.score;
+    const keywordRating = req.query.rating;
+    const moviesPerPage = await Movies.find({
+      title: { $regex: `${keywordTitle}`, $options: "i" },
+      director: { $regex: `${keywordDirector}`, $options: "i" },
+      genre: { $regex: `${keywordGenre}`, $options: "i" },
+      releaseYear: { $regex: `${keywordReleaseYear}`, $options: "i" },
+      score: { $regex: `${keywordScore}`, $options: "i" },
+      rating: { $regex: `${keywordRating}`, $options: "i" },
+    }).skip(ELEMS_PER_PAGE * (pageNumber - 1)).limit(ELEMS_PER_PAGE).sort({ "_id": 1 });
+
+    const movies = await fetchMovieInfo(moviesPerPage);
+    console.log(movies);
+
+    res.json(movies);
     res.end();
+
   } catch (error) {
     console.error(error.message);
     res.sendStatus(404).end();
@@ -110,7 +114,6 @@ router.get("/oneMovie/reviews", async (req, res) => {
   }
 })
 
-
 router.post("/reviews", async (req, res) => {
   const body = await req.body;
   const doc = new Reviews({
@@ -137,61 +140,121 @@ router.delete("/review/delete", async (req) => {
   });
 });
 
+const fetchMovieInfo = async (movies) => {
+  const requests = movies.map((movie) => {
+    if ((!movie.description || movie.poster === "") && Object.keys(movie).length !== 0) {
+      const url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${movie.title}&year=${movie.releaseYear}`;
+      return fetchMovieDataFromApi(url, movie).then((response) => {
+        return response;
+      });
+    }
+    return movie;
+  });
+  return Promise.all(requests);
+}
+
+const fetchMovieDataFromApi = async (url, movie) => {
+  const response = await fetch(url);
+  if (response.ok) {
+    let moviesJsonApi = await response.json();
+    let moviesApiResults = moviesJsonApi.results;
+    let closestMovieJson = {};
+    let movieData = {
+      _id: movie._id,
+      title: movie.title,
+      director: movie.director,
+      duration: movie.duration,
+      genre: movie.genre,
+      gross: movie.gross,
+      rating: movie.rating,
+      releaseYear: movie.releaseYear,
+      score: movie.score
+    };
+
+    // Checks if movie results has at least one movie. If there is, update description and poster
+    if (moviesApiResults.length !== 0) {
+      // Take first movie from results, most similar result
+      closestMovieJson = moviesApiResults[0];
+    } else {
+      // If there isn't, find most similar movie based
+      // on matching original movie title and closest year.
+      let closestMovieResults = await fetchClosestMovies(movie.title);
+
+      // If algorithm found other closest movies
+      if (closestMovieResults.length !== 0) {
+        closestMovieJson = findClosestMovie(closestMovieResults, movie.title, movie.releaseYear);
+      }
+    }
+
+    // Check if algorithm found a closest movie. If not, keep movieData empty
+    if (closestMovieJson) {
+
+      // Populate movieData object with title, description and poster
+      movieData = {
+        _id: movie._id,
+        title: movie.title,
+        description: closestMovieJson.overview,
+        director: movie.director,
+        duration: movie.duration,
+        genre: movie.genre,
+        gross: movie.gross,
+        poster: returnPosterURL(movie, closestMovieJson.poster_path, closestMovieJson.overview),
+        rating: movie.rating,
+        releaseYear: movie.releaseYear,
+        score: movie.score
+      }
+    }
+    return movieData;
+  }
+}
+
 /**
  * fetchMovieDataFromApi endpoint takes a Movie Title and Year, 
  * fetches description and movie poster URL from API and returns it as a JSON
  */
-router.get("/oneMovie/fetchMovieDataFromApi/", async (req, res) => {
-  let movieTitle = req.query.title;
-  let movieYear = parseInt(req.query.year);
-  // eslint-disable-next-line max-len
-  let url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${movieTitle}&year=${movieYear}`;
+// async function fetchMovieDataFromApi(movieTitle, movieYear) {
+//   // eslint-disable-next-line max-len
+//   let url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${movieTitle}&year=${movieYear}`;
 
-  let response = await fetch(url);
-  try {
-    if (response.ok) {
-      let moviesJsonApi = await response.json();
-      let moviesApiResults = moviesJsonApi.results;
-      let closestMovieJson = {};
-      let movieData = {};
+//   let response = await fetch(url);
+//   if (response.ok) {
+//     let moviesJsonApi = await response.json();
+//     let moviesApiResults = moviesJsonApi.results;
+//     let closestMovieJson = {};
+//     let movieData = {};
 
-      // Checks if movie results has at least one movie. If there is, update description and poster
-      if (moviesApiResults.length !== 0) {
-        // Take first movie from results, most similar result
-        closestMovieJson = moviesApiResults[0];
-      } else {
-        // If there isn't, find most similar movie based
-        // on matching original movie title and closest year.
-        let closestMovieResults = await fetchClosestMovies(movieTitle);
+//     // Checks if movie results has at least one movie. If there is, update description and poster
+//     if (moviesApiResults.length !== 0) {
+//       // Take first movie from results, most similar result
+//       closestMovieJson = moviesApiResults[0];
+//     } else {
+//       // If there isn't, find most similar movie based
+//       // on matching original movie title and closest year.
+//       let closestMovieResults = await fetchClosestMovies(movieTitle);
 
-        // If algorithm found other closest movies
-        if (closestMovieResults.length !== 0) {
-          closestMovieJson = findClosestMovie(closestMovieResults, movieTitle, movieYear);
-        }
-      }
+//       // If algorithm found other closest movies
+//       if (closestMovieResults.length !== 0) {
+//         closestMovieJson = findClosestMovie(closestMovieResults, movieTitle, movieYear);
+//       }
+//     }
 
-      // Check if algorithm found a closest movie. If not, keep movieData empty
-      if (closestMovieJson) {
+//     // Check if algorithm found a closest movie. If not, keep movieData empty
+//     if (closestMovieJson) {
 
-        // Populate movieData object with title, description and poster
-        movieData = {
-          title: closestMovieJson.title,
-          description: closestMovieJson.overview,
-          poster: closestMovieJson.poster_path,
-          year: movieYear,
-        }
-      }
+//       // Populate movieData object with title, description and poster
+//       movieData = {
+//         title: closestMovieJson.title,
+//         description: closestMovieJson.overview,
+//         poster: returnMoviePoster(closestMovieJson.poster_path),
+//         year: movieYear,
+//       }
+//     }
 
-      console.log(movieData);
-      res.json(movieData);
-      res.end();
-    } else {
-      throw new Error("404: Response not OK");
-    }
-  } catch (e) {
-    res.status(404).send("404: Movie API Fetch Failed!");
-  }
-});
+//     return movieData;
+//   } else {
+//     throw new Error("404: Response not OK");
+//   }
+// }
 
 /**
  * updateMovieDataToAzure endpoint takes the Request Body, 
@@ -229,14 +292,26 @@ router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
   });
 });
 
+async function returnPosterURL(movie, moviePosterPath, movieDescription) {
+  let url = "";
+  let blobStorageData = getMovieBlobNameAndUrl(movie);
+  if (containerClient.getBlockBlobClient(blobStorageData.posterBlobName).Exists()) {
+    url = blobStorageData.url;
+  } else {
+    url = `http://image.tmdb.org/t/p/w500${moviePosterPath}`;
+    await uploadMoviePoster(blobStorageData.posterBlobName, url);
+    await updateMovieDataToDB(movie._id, movieDescription, blobStorageData.posterBlobName);
+  }
+  return url;
+}
+
 /**
  * uploadMoviePoster fetches the image from the movie poster API 
  * with the right path and uploads to Azure Blob Storage
  * @param {*} movieTitle 
  * @param {*} moviePosterPath 
  */
-async function uploadMoviePoster(posterBlobName, moviePosterPath) {
-  let moviePosterUrl = `http://image.tmdb.org/t/p/w500${moviePosterPath}`;
+async function uploadMoviePoster(posterBlobName, moviePosterUrl) {
   let response = await fetch(moviePosterUrl);
   if (response.ok) {
 
