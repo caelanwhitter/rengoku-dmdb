@@ -17,7 +17,7 @@ export default function Profile() {
   const [loading, setLoading] = useState(false);
 
   const handleFailed = (result) => {
-    console.log("login failed");
+    console.log("login failed" + result);
     //alert(result);
   };
   
