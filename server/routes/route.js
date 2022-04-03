@@ -573,6 +573,53 @@ router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
   });
 });
 
+/**
+ * @swagger
+ * /hiddengems:
+ *  get:
+ *    summary: Retrieve all Hidden Gems.
+ *    description: Returns all the Hidden Gems in the database.
+ * 
+ *    responses:
+ *      '200':
+ *        description: List of all Hidden Gems in the database.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *                properties:
+ *                  id:
+ *                    type: string
+ *                    example: 6245df834793b57bfafa5b1f
+ *                  director:
+ *                    type: string
+ *                    example: Caelan Whitter
+ *                  title:
+ *                    type: string
+ *                    example: The Project
+ *                  link:
+ *                    type: string
+ *                    example: www.google.com
+ *                  description:
+ *                    type: string
+ *                    example: The whole process of the project
+ *                  genre:
+ *                    type: string
+ *                    example: Thriller
+ *                  duration:
+ *                    type: number
+ *                    minimum: 10
+ *                    maximum: 500
+ *                    example: 150
+ *                  rating:
+ *                    type: string
+ *                    example: PG
+ *                  releaseDate:
+ *                    type: string
+ *                    example: Mar 31, 2022
+ */
 router.get("/hiddengems", async (req, res) => {
   const hiddengem = await Submissions.find();
 
@@ -585,6 +632,60 @@ router.get("/hiddengems", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /hiddengems?id={id}:
+ *  get:
+ *    summary: Retrieve details from Hidden Gem by ID.
+ *    description: Returns the details of the Hidden Gem with the specified ID.
+ *    parameters:
+ *      - name: id
+ *        in: query
+ *        required: true
+ *        description: ID of the Hidden Gem.
+ *        schema:
+ *          type: string
+ * 
+ *    responses:
+ *      '200':
+ *        description: The details of the Hidden Gem that matches the ID specified.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *                properties:
+ *                  id:
+ *                    type: string
+ *                    example: 6245df834793b57bfafa5b1f
+ *                  director:
+ *                    type: string
+ *                    example: Caelan Whitter
+ *                  title:
+ *                    type: string
+ *                    example: The Project
+ *                  link:
+ *                    type: string
+ *                    example: www.google.com
+ *                  description:
+ *                    type: string
+ *                    example: The whole process of the project
+ *                  genre:
+ *                    type: string
+ *                    example: Thriller
+ *                  duration:
+ *                    type: number
+ *                    minimum: 10
+ *                    maximum: 500
+ *                    example: 150
+ *                  rating:
+ *                    type: string
+ *                    example: PG
+ *                  releaseDate:
+ *                    type: string
+ *                    example: Mar 31, 2022
+ */
 router.get("/hiddengems", async (req, res) => {
   const id = req.query.id;
   const hiddengem = await Submissions.find({ "_id": id });
@@ -598,6 +699,49 @@ router.get("/hiddengems", async (req, res) => {
   }
 })
 
+/**
+ * @swagger
+ * /hiddengems:
+ *  post:
+ *    summary: Add a new Hidden Gem.
+ *    description: Adds a new Hidden Gem to the database.
+ *    requestBody:
+ *      description: Model of the submission.
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              description:
+ *                type: string
+ *                example: I made this movie myself.
+ *              director:
+ *                type: string
+ *                example: Xiaoju Zhu
+ *              duration: 
+ *                type: number
+ *                example: 120
+ *              link: 
+ *                type: string
+ *                example: www.google.com
+ *              rating:
+ *                type: string
+ *                example: PG
+ *              releaseDate:
+ *                type: string
+ *                example: Mar 31, 2022
+ *              title:
+ *                type: string
+ *                example: Web Development
+ *              genre:
+ *                type: string
+ *                example: Horror
+ * 
+ *    responses:
+ *      '201':
+ *        description: Created
+ */
 router.post("/hiddengems", async (req, res) => {
   const body = await req.body;
   const hg = new Submissions({

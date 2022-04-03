@@ -49,7 +49,7 @@ const userSchema = new Schema({
   name: String,
   email: String,
   source: String,
-}, { collection:"users"});
+}, { collection: "users" });
 
 const User = mongoose.model("User", userSchema)
 
