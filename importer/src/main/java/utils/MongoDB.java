@@ -1,11 +1,7 @@
 package utils;
 
 import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
