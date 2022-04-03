@@ -1,10 +1,7 @@
 package utils;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
@@ -42,20 +39,15 @@ public class MongoDB {
         MongoDatabase database = client.getDatabase(DATABASE_NAME);
         MongoCollection<Movie> movies = database.getCollection(COLLECTION_NAME, Movie.class);
 
-        Importer importer = new Importer("importer/src/main/java/utils/resources/testmovies.csv");
+        Importer importer = new Importer("importer/src/main/java/utils/resources/movies.csv");
         List<Movie> movieList = importer.fetchDataFromDataset();
 
         // for (Movie movie : movieList)
         // {
         //         System.out.println(movie);
         // }
-        // movies.insertMany(movieList);
-
-        String encodeTest = "睛睛睛睛睛";
-        ByteBuffer buffer = StandardCharsets.UTF_8.encode(encodeTest);
-        encodeTest = StandardCharsets.UTF_8.decode(buffer).toString();
-        System.out.println(encodeTest);
-        
+        movies.insertMany(movieList);
+      
         System.out.println("Importing data into: '" + DATABASE_NAME + "' done!");
     }
 }
