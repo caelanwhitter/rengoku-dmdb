@@ -76,7 +76,6 @@ router.get("/getSearch/page/:pageNumber", async (req, res) => {
     }).skip(ELEMS_PER_PAGE * (pageNumber - 1)).limit(ELEMS_PER_PAGE).sort({ "_id": 1 });
 
     const movies = await fetchMovieInfo(moviesPerPage);
-    console.log(movies);
 
     res.json(movies);
     res.end();
@@ -161,17 +160,7 @@ const fetchMovieDataFromApi = async (url, movie) => {
     let moviesJsonApi = await response.json();
     let moviesApiResults = moviesJsonApi.results;
     let closestMovieJson = {};
-    let movieData = {
-      _id: movie._id,
-      title: movie.title,
-      director: movie.director,
-      duration: movie.duration,
-      genre: movie.genre,
-      gross: movie.gross,
-      rating: movie.rating,
-      releaseYear: movie.releaseYear,
-      score: movie.score
-    };
+    let movieData = {};
 
     // Checks if movie results has at least one movie. If there is, update description and poster
     if (moviesApiResults.length !== 0) {
@@ -195,17 +184,32 @@ const fetchMovieDataFromApi = async (url, movie) => {
       movieData = {
         _id: movie._id,
         title: movie.title,
-        description: closestMovieJson.overview,
         director: movie.director,
         duration: movie.duration,
         genre: movie.genre,
         gross: movie.gross,
-        poster: returnPosterURL(movie, closestMovieJson.poster_path, closestMovieJson.overview),
         rating: movie.rating,
         releaseYear: movie.releaseYear,
-        score: movie.score
-      }
+        score: movie.score,
+        poster: await returnPosterURL(movie, closestMovieJson.poster_path, closestMovieJson.overview),
+        description: closestMovieJson.overview,
+      };
+    } else {
+      movieData = {
+        _id: movie._id,
+        title: movie.title,
+        director: movie.director,
+        duration: movie.duration,
+        genre: movie.genre,
+        gross: movie.gross,
+        rating: movie.rating,
+        releaseYear: movie.releaseYear,
+        score: movie.score,
+        poster: null,
+        description: "",
+      };
     }
+    console.log(movieData);
     return movieData;
   }
 }
@@ -295,14 +299,19 @@ router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
 });
 
 async function returnPosterURL(movie, moviePosterPath, movieDescription) {
-  let url = "";
+  if (!moviePosterPath) {
+    await updateMovieDataToDB(movie._id, "", null);
+    return null;
+  }
+
   let blobStorageData = getMovieBlobNameAndUrl(movie);
-  if (containerClient.getBlockBlobClient(blobStorageData.posterBlobName).Exists()) {
-    url = blobStorageData.url;
-  } else {
-    url = `http://image.tmdb.org/t/p/w500${moviePosterPath}`;
-    await uploadMoviePoster(blobStorageData.posterBlobName, url);
-    await updateMovieDataToDB(movie._id, movieDescription, blobStorageData.posterBlobName);
+  let url = blobStorageData.url;
+  let doesBlobExist = await containerClient.getBlockBlobClient(blobStorageData.posterBlobName).exists();
+  if (!doesBlobExist) {
+    let apiImageUrl = `http://image.tmdb.org/t/p/w500${moviePosterPath}`;
+    await uploadMoviePoster(blobStorageData.posterBlobName, apiImageUrl);
+    await updateMovieDataToDB(movie._id, movieDescription, url);
+    url = apiImageUrl;
   }
   return url;
 }
@@ -352,7 +361,7 @@ async function updateMovieDataToDB(movieId, movieDescription, movieBlobUrl) {
  * @returns blockBlobClient.url
  */
 function getMovieBlobNameAndUrl(movieData) {
-  const posterBlobName = "rengokuBlob-" + movieData.title + "-" + movieData.year + ".jpg";
+  const posterBlobName = "rengokuBlob-" + movieData.title + "-" + movieData.releaseYear + ".jpg";
   const blockBlobClient = containerClient.getBlockBlobClient(posterBlobName);
 
   let data = {

@@ -64,8 +64,8 @@ export default function Movies() {
       + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre
       + '&releaseYear=' + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
     let moviesPaginationJson = await response.json();
-    setCards(getCards(moviesPaginationJson));
     setLoading((v) => !v);
+    setCards(await getCards(moviesPaginationJson));
 
     // Calls calculateTotalPagination() if totalPagination not initialized yet yet
     if (totalPagination === undefined) {
@@ -158,43 +158,21 @@ export default function Movies() {
   //   return cards;
   // }
 
-  // async function getCards(moviesJson) {
-  //   let cards = [];
-  //   for (let movie of moviesJson) {
-  //     cards.push(
-  //       <Grid.Col key={movie._id} span={3}>
-  //         <Card onClick={() => {
-  //           getDetails(movie._id); setModalLoading(v => !v); setOpened(true);
-  //         }} style={{ cursor: "pointer" }} shadow="md" withBorder={true}>
-  //           <Card.Section>
-  //             <Image src={movie.poster} height={movie.poster ? "100%" : 375}
-  //               width={movie.poster ? "100%" : 324} alt={movie.title + " Poster"} withPlaceholder />
-  //           </Card.Section>
-
-  //           <Space h="sm" />
-  //           <Text weight={600}>{movie.title}</Text>
-  //           <Group position="apart">
-  //             <Text size="sm">{movie.director}</Text>
-  //             <Badge color="dark">{movie.releaseYear}</Badge>
-  //           </Group>
-  //         </Card>
-  //       </Grid.Col>
-  //     );
-  //   }
-  //   return cards;
-  // }
-
-  function getCards(moviesJson) {
-    let cards = moviesJson.map((movie) => {
-      return (
+  async function getCards(moviesJson) {
+    let cards = [];
+    for (let movie of moviesJson) {
+      cards.push(
         <Grid.Col key={movie._id} span={3}>
-          <Card onClick={() => { getDetails(movie._id); setOpened(true) }} style={{ cursor: "pointer" }} shadow="md" withBorder={true}>
+          <Card onClick={() => {
+            getDetails(movie._id); setModalLoading(v => !v); setOpened(true);
+          }} style={{ cursor: "pointer" }} shadow="md" withBorder={true}>
             <Card.Section>
-              <Image src={movie.poster} height={movie.poster ? "100%" : 375} width={movie.poster ? "100%" : 324} alt={movie.title + " Poster"} withPlaceholder />
+              <Image src={movie.poster} height={movie.poster ? "100%" : 375}
+                width={movie.poster ? "100%" : 324} alt={movie.title + " Poster"} withPlaceholder />
             </Card.Section>
 
+            <Space h="sm" />
             <Text weight={600}>{movie.title}</Text>
-
             <Group position="apart">
               <Text size="sm">{movie.director}</Text>
               <Badge color="dark">{movie.releaseYear}</Badge>
@@ -202,10 +180,9 @@ export default function Movies() {
           </Card>
         </Grid.Col>
       );
-    });
+    }
     return cards;
   }
-
 
   /**
      * updateMovieDetails() takes a movie and calls all the async functions 
