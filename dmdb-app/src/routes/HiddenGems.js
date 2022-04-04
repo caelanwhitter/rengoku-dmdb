@@ -28,7 +28,7 @@ export default function HiddenGems() {
   }, []);
 
   const getUser = async () => {
-    if (localStorage.getItem("token") !== null){
+    if (localStorage.getItem("token") !== null) {
       const tokenString = localStorage.getItem("token");
       const userToken = JSON.parse(tokenString);
 
@@ -128,7 +128,7 @@ export default function HiddenGems() {
     },
 
     validate: {
-      link: (value) => /(http:\/\/|https:\/\/)?www\.(\w+?)\.(\w+)/g.test(value)
+      link: (value) => /^((http|https):\/\/)(www.)?(youtube|dailymotion|vimeo).com/g.test(value)
         ? null : 'Invalid link!',
     },
   });
@@ -138,10 +138,10 @@ export default function HiddenGems() {
       <nav id="searchNav">
         <Link className="tabLink"
           onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
-        {localStorage.getItem("token") !== null ? 
+        {localStorage.getItem("token") !== null ?
           <Text className="tabLink" size="xl"
             onClick={() => setAddOpened(true)}>+ Add New Hidden Gem</Text>
-          :        
+          :
           <Text className="tabLink" size="xl" component={Link}
             to="/profile">+ Add New Hidden Gem</Text>}
       </nav>
@@ -154,7 +154,6 @@ export default function HiddenGems() {
         <TextInput
           label="Title"
           placeholder="Enter the title"
-          //variant="unstyled"
           size="md"
           radius="md"
           required
@@ -163,7 +162,6 @@ export default function HiddenGems() {
         <TextInput
           label="Director"
           placeholder="Enter the Director"
-          //variant="unstyled"
           size="md"
           radius="md"
           required
@@ -172,7 +170,6 @@ export default function HiddenGems() {
         <TextInput
           label="Genre"
           placeholder="Enter the Genre"
-          //variant="unstyled"
           size="md"
           radius="md"
           required
@@ -181,7 +178,6 @@ export default function HiddenGems() {
         <TextInput
           label="Release Year "
           placeholder="Enter the Release Year"
-          //variant="unstyled"
           size="md"
           radius="md"
           required
@@ -190,7 +186,6 @@ export default function HiddenGems() {
         <TextInput
           label="Score"
           placeholder="Enter the Score "
-          // variant="unstyled"
           size="md"
           radius="md"
           required
@@ -221,7 +216,7 @@ export default function HiddenGems() {
           visible={modalLoading} />
         <div id="movieDetails">
           <div id="movieText">
-            <Title order={4}>Director: 
+            <Title order={4}>Director:
               {hiddenGemData.director ? hiddenGemData.director : " Unknown"}</Title>
             <Group position="left">
               <Badge color="dark">{hiddenGemData.genre}</Badge>
@@ -236,11 +231,11 @@ export default function HiddenGems() {
               "No description provided."}</Text>
             <Space h="xl" />
             <Group>
-              <Button component="a" rel="noreferrer" target="_blank" 
-                href={"http://" + hiddenGemData.link} color="dark">View Movie</Button>
-              {hiddenGemData.userid === userid && 
-            <Button color="red" id={hiddenGemData._id}
-              onClick={(e) =>  deleteSubmission(e.currentTarget.id)} uppercase>Delete</Button>}
+              <Button component="a" rel="noreferrer" target="_blank"
+                href={hiddenGemData.link} color="dark">View Movie</Button>
+              {hiddenGemData.userid === userid &&
+                <Button color="red" id={hiddenGemData._id}
+                  onClick={(e) => deleteSubmission(e.currentTarget.id)} uppercase>Delete</Button>}
             </Group>
           </div>
         </div>
@@ -326,7 +321,7 @@ export default function HiddenGems() {
               <TextInput
                 placeholder="Link"
                 label="Hidden Gem Link"
-                description="Link to the movie"
+                description="Youtube, Vimeo or Dailymotion link only"
                 required
                 {...form.getInputProps('link')}
               />
