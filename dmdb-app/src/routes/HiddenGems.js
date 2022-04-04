@@ -19,11 +19,28 @@ export default function HiddenGems() {
   const [searchopened, setSearchOpened] = useState(false);
   const [hiddenGemData, setHiddenGemData] = useState({});
   const [submissions, setSubmissions] = useState([{}]);
+  const [userid, setUserid] = useState("");
 
   useEffect(() => {
+    getUser();
     fetchHiddenGems();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const getUser = async () => {
+    const tokenString = localStorage.getItem("token");
+    const userToken = JSON.parse(tokenString);
+
+    setUserid(userToken._id);
+  }
+
+  const fetchHiddenGems = async () => {
+    setLoading(v => !v);
+    let response = await fetch('/api/hiddengems');
+    let hiddenGemsJSON = await response.json();
+    setSubmissions(hiddenGemsJSON);
+    setLoading(v => !v);
+  }
 
   const insertSubmission = async (values) => {
     await fetch('api/hiddengems', {
@@ -40,17 +57,10 @@ export default function HiddenGems() {
           { day: "numeric", month: "short", year: "numeric" }),
         link: values.link,
         rating: values.rating,
-        genre: values.genre
+        genre: values.genre,
+        userid: values.userid
       })
     })
-  }
-
-  const fetchHiddenGems = async () => {
-    setLoading(v => !v);
-    let response = await fetch('/api/hiddengems');
-    let hiddenGemsJSON = await response.json();
-    setSubmissions(hiddenGemsJSON);
-    setLoading(v => !v);
   }
 
   const fetchHiddenGemDetails = async (id) => {
@@ -93,7 +103,8 @@ export default function HiddenGems() {
       rating: '',
       releaseDate: '',
       link: '',
-      genre: ''
+      genre: '',
+      userid: ''
     },
 
     validate: {
@@ -288,7 +299,8 @@ export default function HiddenGems() {
                 {...form.getInputProps('link')}
               />
             </Group>
-            <Button type="submit" color="dark">Submit</Button>
+            <Button type="submit" onClick={() => form.setFieldValue('userid', userid)}
+              color="dark">Submit</Button>
           </Group>
         </form>
       </Drawer>

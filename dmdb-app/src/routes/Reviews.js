@@ -104,6 +104,7 @@ export default function Reviews() {
     const tokenString = localStorage.getItem("token");
     const userToken = JSON.parse(tokenString);
 
+    
     setUsername(userToken.name);
     setEmail(userToken.email);
     setSource(userToken.source);

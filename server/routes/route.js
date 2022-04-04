@@ -608,7 +608,8 @@ router.post("/hiddengems", async (req, res) => {
     rating: body.rating,
     releaseDate: body.releaseDate,
     title: body.title,
-    genre: body.genre
+    genre: body.genre,
+    userid: body.userid
   });
 
   await hg.save();
