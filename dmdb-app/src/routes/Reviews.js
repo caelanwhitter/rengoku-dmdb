@@ -104,7 +104,6 @@ export default function Reviews() {
     const tokenString = localStorage.getItem("token");
     const userToken = JSON.parse(tokenString);
 
-    
     setUsername(userToken.name);
     setEmail(userToken.email);
     setSource(userToken.source);
@@ -186,15 +185,14 @@ export default function Reviews() {
             })} autosize radius="lg" placeholder="Write your review here"
             label="Your Review" required />
 
-
           <NumberInput sx={(theme) => ({
             width: "25%", margin: "auto", padding: "10px"
           })} value={rating} onChange={(val) => setRating(val)}
           label="Star Rating"
-
           max={5}
           min={0}
           />
+
           <Button onClick={submitReview} sx={(theme) => ({
             textAlign: 'center',
             padding: theme.spacing.sm,

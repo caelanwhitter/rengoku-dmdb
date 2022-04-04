@@ -32,6 +32,7 @@ export default function HiddenGems() {
     const userToken = JSON.parse(tokenString);
 
     setUserid(userToken._id);
+    console.log(userid);
   }
 
   const fetchHiddenGems = async () => {
@@ -68,7 +69,11 @@ export default function HiddenGems() {
       response => response.json()).
       then(
         data => {
-          setHiddenGemData(data[0])
+          data.forEach(hg => {
+            if (hg._id === id) {
+              setHiddenGemData(hg);
+            }
+          });
         }
       )
     setModalLoading(v => !v);
@@ -77,7 +82,7 @@ export default function HiddenGems() {
   let cards = submissions.map((elem) => {
     return (
       <Grid.Col key={elem._id} span={3}>
-        <Card onClick={() => {
+        <Card key={elem._id} onClick={() => {
           setModalLoading(v => !v);
           fetchHiddenGemDetails(elem._id);
           setOpened(true);
@@ -203,13 +208,17 @@ export default function HiddenGems() {
               <Badge color="dark"
                 variant="outline">{hiddenGemData.duration} minutes</Badge>
               <Badge color="gray" variant="outline">Rated {hiddenGemData.rating}</Badge>
-
             </Group>
+
             <Space h="md" />
             <Text>{hiddenGemData.description}</Text>
             <Space h="xl" />
-            <Button component="a" href={"http://" + hiddenGemData.link}
-              color="dark">View Movie</Button>
+            <Group>
+              <Button component="a" href={"http://" + hiddenGemData.link}
+                color="dark">View Movie</Button>
+              {hiddenGemData.userid === userid && 
+            <Button color="red" uppercase>Delete</Button>}
+            </Group>
           </div>
         </div>
       </Modal>
@@ -222,6 +231,7 @@ export default function HiddenGems() {
         padding="lg"
         size="40%"
       >
+        {/* form.onSubmit((values) => insertSubmission(values)) */}
         <Text color="red">All fields with an asterisk (*) are required.</Text>
         <form onSubmit={form.onSubmit((values) => insertSubmission(values))}>
           <Group
