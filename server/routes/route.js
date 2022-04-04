@@ -134,7 +134,7 @@ router.delete("/review/delete", async (req) => {
     if (err) {
       console.error(err);
     }
-    console.log("Successful deletion");
+   
   });
 });
 
