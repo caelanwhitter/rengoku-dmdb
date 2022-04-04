@@ -19,7 +19,7 @@ app.use(session({
   resave: true,
   saveUninitialized: true
 
-})); 
+}));
 
 /**
  * @swagger
@@ -43,7 +43,7 @@ app.post("/api/google-login", async (req, res) => {
   let user;
 
   const findUser = await User.find({ "email": email });
-  
+
   if (findUser.length === 0) {
 
     user = new User({
@@ -59,13 +59,12 @@ app.post("/api/google-login", async (req, res) => {
       console.error(error);
       res.sendStatus(404).end();
     }
-    
+
   } else {
     user = await User.updateOne(
       { email: email },
       { $set: { "name": name, "source": picture } },
-      {upsert: true}
-  
+      { upsert: true }
     )
     try {
       res.json(findUser[0]);
@@ -78,6 +77,14 @@ app.post("/api/google-login", async (req, res) => {
 
 })
 
+app.post("/api/biography", async (req, res) => {
+  const body = req.body;
+  const user = await User.updateOne(
+    { email: body.email },
+    { $set: { "biography": body.biography } },
+    { upsert: true }
+  )
+})
 app.delete("/api/v1/auth/logout", async (req, res) => {
   await req.session.destroy()
   res.status(200)

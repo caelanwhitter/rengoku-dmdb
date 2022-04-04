@@ -9,6 +9,7 @@ const Mongoose = require("../database/mongoose");
 const Movies = Mongoose.Movie;
 const Reviews = Mongoose.Review;
 const Submissions = Mongoose.Submission;
+const User = Mongoose.User;
 const ObjectId = require("mongodb").ObjectId;
 const fetch = require("node-fetch");
 const { BlobServiceClient } = require("@azure/storage-blob");

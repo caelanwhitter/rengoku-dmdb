@@ -1,8 +1,8 @@
 import {
-  Avatar, Button, Card, Container,
+  Avatar, Modal, TextInput, Button, Card, Container,
   LoadingOverlay, Space, Text, Title
 } from "@mantine/core";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import GoogleLogin from 'react-google-login';
 import '../App.css';
 
@@ -15,7 +15,19 @@ export default function Profile() {
       : null
   );
   const [loading, setLoading] = useState(false);
+  const [opened, setOpened] = useState(false);
+  const [email, setEmail] = useState("");
+  const [bio, setBio] = useState("Lorem ipsum dolor sit amet");
 
+
+  /**
+  * useEffect() runs following methods once. Similar to ComponentDidMount()
+  */
+  useEffect(() => {
+    getUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  
   const handleFailed = (result) => {
     console.log("login failed" + result);
     //alert(result);
@@ -57,7 +69,29 @@ export default function Profile() {
     setLoading(v => !v);
   }
 
+  async function getUser() {
+    const tokenString = localStorage.getItem("token");
+    const userToken = JSON.parse(tokenString);
+    setEmail(userToken.email);
+  }
 
+  async function editBio(){
+    setOpened(true);
+  }
+  async function submitBio(){
+    setOpened(false)
+    const res = await fetch('/api/biography', {
+      method: 'POST',
+      body: JSON.stringify({
+        email: email,
+        biography: bio
+      }),
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+      }
+    });
+  }
 
 
   
@@ -79,9 +113,31 @@ export default function Profile() {
                 <Space h="sm" />
 
                 <Text size="lg" weight="bold">{loginData.name}</Text>
-                <Text><em>Lorem ipsum dolor sit amet</em></Text>
+                <Text><em>{bio}</em></Text>
                 <Space h="xs" />
-                <Button color="dark" size="xs" compact uppercase>Edit bio</Button>
+                <Button 
+                  onClick={editBio}
+                  color="dark" 
+                  size="xs" 
+                  compact uppercase>
+                    Edit bio
+                </Button>
+                <Modal
+                  opened={opened}
+                  onClose={() => setOpened(false)}
+                  title="Tell us about yourself">
+                  <TextInput
+                    onChange={(event) => setBio(event.currentTarget.value)} 
+                    placeholder="Write your biography here!"
+                    label="Biography"
+                    required
+                  />
+                  <Button
+                    onClick={submitBio}
+                  >
+                    Submit
+                  </Button>
+                </Modal>
 
                 <Space h="md" />
                 <Container className="centered">
