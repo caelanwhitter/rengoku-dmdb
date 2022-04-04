@@ -28,10 +28,12 @@ export default function HiddenGems() {
   }, []);
 
   const getUser = async () => {
-    const tokenString = localStorage.getItem("token");
-    const userToken = JSON.parse(tokenString);
+    if (localStorage.getItem("token") !== null){
+      const tokenString = localStorage.getItem("token");
+      const userToken = JSON.parse(tokenString);
 
-    setUserid(userToken._id);
+      setUserid(userToken._id);
+    }
   }
 
   const fetchHiddenGems = async () => {
@@ -136,8 +138,12 @@ export default function HiddenGems() {
       <nav id="searchNav">
         <Link className="tabLink"
           onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
-        <Text className="tabLink" size="xl"
-          onClick={() => setAddOpened(true)}>+ Add New Hidden Gem</Text>
+        {localStorage.getItem("token") !== null ? 
+          <Text className="tabLink" size="xl"
+            onClick={() => setAddOpened(true)}>+ Add New Hidden Gem</Text>
+          :        
+          <Text className="tabLink" size="xl" component={Link}
+            to="/profile">+ Add New Hidden Gem</Text>}
       </nav>
 
       <Modal
