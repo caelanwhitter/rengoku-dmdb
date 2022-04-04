@@ -64,8 +64,10 @@ export default function Movies() {
       + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre
       + '&releaseYear=' + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
     let moviesPaginationJson = await response.json();
-    setLoading((v) => !v);
     setCards(await getCards(moviesPaginationJson));
+    setLoading((v) => !v);
+
+    await uploadMovies(moviesPaginationJson);
 
     // Calls calculateTotalPagination() if totalPagination not initialized yet yet
     if (totalPagination === undefined) {
@@ -193,6 +195,22 @@ export default function Movies() {
     await fetchMovieDataFromApi(movie);
   }
 
+  async function uploadMovies(movies) {
+    try {
+      await fetch('/api/uploadMovies', {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          movies: movies
+        })
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   /**
      * fetchMovieDataFromApi() calls to backend route 
      * to return json of necessary movie data from API
@@ -268,7 +286,7 @@ export default function Movies() {
     isLoggedIn = true;
   }
   return (
-    
+
     <>
       <nav id="searchNav">
         <Link className="tabLink"
@@ -378,18 +396,18 @@ export default function Movies() {
             <p>{oneMovieData.description}</p>
 
             <Title order={6}>Gross: {oneMovieData.gross}</Title>
-            {isLoggedIn ? 
+            {isLoggedIn ?
               <Badge variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}>
 
                 <NavLink style={{ textDecoration: 'none', color: 'black' }}
                   to={`${oneMovieData._id}/reviews`}>View Reviews</NavLink></Badge>
-              : 
+              :
               <Badge variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}>
 
                 <NavLink style={{ textDecoration: 'none', color: 'black' }}
                   to={`/profile`}>Login To View Reviews</NavLink></Badge>
             }
-              
+
           </div>
         </div>
       </Modal>

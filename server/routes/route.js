@@ -191,7 +191,7 @@ const fetchMovieDataFromApi = async (url, movie) => {
         rating: movie.rating,
         releaseYear: movie.releaseYear,
         score: movie.score,
-        poster: await returnPosterURL(movie, closestMovieJson.poster_path, closestMovieJson.overview),
+        poster: await returnPosterURL(movie, closestMovieJson.poster_path),
         description: closestMovieJson.overview,
       };
     } else {
@@ -276,6 +276,30 @@ router.post("/oneMovie/updateMovieDataToAzure/", async (req, res) => {
   });
 });
 
+router.post("/uploadMovies", async (req, res) => {
+  const body = await req.body;
+  const movies = body.movies;
+
+  for (let movie of movies) {
+
+    if (!movie.poster) {
+      await updateMovieDataToDB(movie._id, "", null);
+      continue;
+    }
+
+    let blobData = getMovieBlobNameAndUrl(movie);
+    let doesBlobExist = await containerClient.getBlockBlobClient(blobData.posterBlobName).exists();
+    if (!doesBlobExist) {
+      await uploadMoviePoster(blobData.posterBlobName, movie.poster);
+      await updateMovieDataToDB(movie._id, movie.description, blobData.url);
+    }
+  }
+
+  res.status(201).json({
+    message: "POST Upload Movies Successful!"
+  });
+});
+
 /**
  * updateMovieDataToDB endpoint takes request Body, 
  * fetches description and Azure URL and uploads it to database
@@ -297,19 +321,18 @@ router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
   });
 });
 
-async function returnPosterURL(movie, moviePosterPath, movieDescription) {
+async function returnPosterURL(movie, moviePosterPath) {
   if (!moviePosterPath) {
-    await updateMovieDataToDB(movie._id, "", null);
     return null;
   }
 
-  let blobStorageData = getMovieBlobNameAndUrl(movie);
-  let url = blobStorageData.url;
-  let doesBlobExist = await containerClient.getBlockBlobClient(blobStorageData.posterBlobName).exists();
+  let blobData = getMovieBlobNameAndUrl(movie);
+  let url = blobData.url;
+  let doesBlobExist = await containerClient.getBlockBlobClient(blobData.posterBlobName).exists();
   if (!doesBlobExist) {
     let apiImageUrl = `http://image.tmdb.org/t/p/w500${moviePosterPath}`;
-    await uploadMoviePoster(blobStorageData.posterBlobName, apiImageUrl);
-    await updateMovieDataToDB(movie._id, movieDescription, url);
+    // await uploadMoviePoster(blobData.posterBlobName, apiImageUrl);
+    // await updateMovieDataToDB(movie._id, movieDescription, url);
     url = apiImageUrl;
   }
   return url;
