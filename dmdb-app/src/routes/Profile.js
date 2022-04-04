@@ -113,7 +113,7 @@ export default function Profile() {
                 <Space h="sm" />
 
                 <Text size="lg" weight="bold">{loginData.name}</Text>
-                <Text><em>{bio}</em></Text>
+                <Text><em>{loginData.biography}</em></Text>
                 <Space h="xs" />
                 <Button 
                   onClick={editBio}
