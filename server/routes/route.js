@@ -432,20 +432,7 @@ const fetchMovieDataFromApi = async (url, movie) => {
     let closestMovieJson = {};
     let movieData = {};
 
-    // Checks if movie results has at least one movie. If there is, update description and poster
-    if (moviesApiResults.length !== 0) {
-      // Take first movie from results, most similar result
-      closestMovieJson = moviesApiResults[0];
-    } else {
-      // If there isn't, find most similar movie based
-      // on matching original movie title and closest year.
-      let closestMovieResults = await fetchClosestMovies(movie.title);
-
-      // If algorithm found other closest movies
-      if (closestMovieResults.length !== 0) {
-        closestMovieJson = findClosestMovie(closestMovieResults, movie.title, movie.releaseYear);
-      }
-    }
+    closestMovieJson = await findClosestMovieJson(moviesApiResults, movie);
 
     // Check if algorithm found a closest movie. If not, keep movieData empty
     if (closestMovieJson) {
@@ -946,6 +933,33 @@ router.delete("/review/delete", async (req) => {
   });
 });
 
+
+async function findClosestMovieJson(moviesApiResults, movie) {
+  try {
+
+    let closestMovieJson = null;
+    // Checks if movie results has at least one movie. If there is, update description and poster
+    if (moviesApiResults.length !== 0) {
+
+      // Take first movie from results, most similar result
+      closestMovieJson = moviesApiResults[0];
+
+    } else {
+
+      // If there isn't, find most similar movie based
+      // on matching original movie title and closest year.
+      let closestMovieResults = await fetchClosestMovies(movie.title);
+
+      // If algorithm found other closest movies
+      if (closestMovieResults.length !== 0) {
+        closestMovieJson = findClosestMovie(closestMovieResults, movie.title, movie.releaseYear);
+      }
+    }
+    return closestMovieJson;
+  } catch (e) {
+    return null;
+  }
+}
 /**
  * uploadMoviePoster fetches the image from the movie poster API 
  * with the right path and uploads to Azure Blob Storage
@@ -1034,6 +1048,10 @@ function findClosestMovie(movies, movieTitle, movieYearQuery) {
       moviesWithExactTitle.push(movie);
     }
   });
+
+  if (moviesWithExactTitle.length === 0) {
+    return null;
+  }
 
   let closestMovie = findClosestMovieByYear(moviesWithExactTitle, movieYearQuery);
 

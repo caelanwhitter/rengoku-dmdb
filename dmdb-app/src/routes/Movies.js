@@ -170,7 +170,7 @@ export default function Movies() {
           }} style={{ cursor: "pointer" }} shadow="md" withBorder={true}>
             <Card.Section>
               <Image src={movie.poster} height={movie.poster ? "100%" : 375}
-                width={movie.poster ? "100%" : 324} alt={movie.title + " Poster"} withPlaceholder />
+                width={movie.poster ? "100%" : 375} alt={movie.title + " Poster"} withPlaceholder />
             </Card.Section>
 
             <Space h="sm" />
