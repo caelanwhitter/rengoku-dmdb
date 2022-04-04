@@ -73,6 +73,10 @@ footer {
   justify-content: center;
 }
 
+#searchNav>div {
+  cursor: pointer;
+}
+
 .centered {
   display: flex;
   flex-direction: column;
@@ -101,9 +105,11 @@ footer {
 }
 
 .tabLink:hover {
-  background-color: black;
-  border-radius: 5px;
   color: white;
+  background-color: black;
+  opacity: 1;
+  border-radius: 5px;
+  transition: 0.3s;
 }
 
 .title {
@@ -118,6 +124,7 @@ footer {
   color: red;
 }
 
+.underHover:hover,
 .footSection>a:hover {
   text-decoration: underline;
 }

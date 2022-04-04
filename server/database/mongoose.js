@@ -1,6 +1,6 @@
 /**
  * Mongoose.js sets up the Mongoose ORM so it can connect the MongoDB database with routes
- * @author Daniel Lam , Mikael Baril & Caelan Whitter
+ * @author Daniel Lam, Mikael Baril, Caelan Whitter & Danilo Zhu
  */
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
@@ -32,7 +32,6 @@ const movieSchema = new Schema({
 
 const Movie = mongoose.model("Movie", movieSchema)
 
-
 const reviewSchema = new Schema({
   username: String,
   email: String,
@@ -50,28 +49,22 @@ const userSchema = new Schema({
   name: String,
   email: String,
   source: String,
-}, { collection:"users"});
+}, { collection: "users" });
 
 const User = mongoose.model("User", userSchema)
 
-module.exports = { Movie, Review, User };
+const submissionSchema = new Schema({
+  description: String,
+  director: String,
+  duration: Number,
+  link: String,
+  rating: String,
+  releaseDate: String,
+  title: String,
+  genre: String
+}, { collection: "submissions" });
 
-// const submission = new Schema({
-//     description: String,
-//     director:String,
-//     duration: String,
-//     genre: String,
-//     gross: String,
-//     poster: String,
-//     rating: String,
-//     releaseYear: Number,
-//     score: Number,
-//     title: String,
-// });
+const Submission = mongoose.model("Submission", submissionSchema)
 
+module.exports = { Movie, Review, User, Submission };
 
-// const user = new Schema({
-//     username: String,
-//     email: String,
-//     password: String
-// });

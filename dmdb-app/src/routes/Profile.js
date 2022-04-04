@@ -8,7 +8,7 @@ import '../App.css';
 
 export default function Profile() {
 
-  const [logoutMessage, setLogoutMessage] = useState()
+  const [, setLogoutMessage] = useState()
   const [loginData, setLoginData] = useState(
     localStorage.getItem('token')
       ? JSON.parse(localStorage.getItem('token'))

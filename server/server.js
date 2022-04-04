@@ -7,15 +7,12 @@ const User = Mongoose.User;
 
 
 const dotenv = require("dotenv");
+const { OAuth2Client } = require("google-auth-library");
 const session = require("express-session");
 dotenv.config();
 
-
-const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
-
 const app = require("./app");
-
 
 app.use(session({
   secret: process.env.SECRET,
@@ -24,6 +21,17 @@ app.use(session({
 
 })); 
 
+/**
+ * @swagger
+ * post:
+ *    summary: Google Login
+ *    security:
+ *      - OAuth2: [write]
+ *    
+ *    responses:
+ *      201:
+ *        description: Created
+ */
 app.post("/api/google-login", async (req, res) => {
   const { token } = await req.body;
   const ticket = await client.verifyIdToken({
@@ -77,11 +85,6 @@ app.delete("/api/v1/auth/logout", async (req, res) => {
     message: "Logged out successfully"
   })
 })
-
-
-
-
-
 
 app.listen(process.env.PORT || 3001, () => {
   console.log(`Server listening on port ${process.env.PORT || 3001}...`);
