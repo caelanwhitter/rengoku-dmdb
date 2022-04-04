@@ -881,6 +881,12 @@ router.post("/hiddengems", async (req, res) => {
  *              username:
  *                type: string
  *                example: Caelan Whitter
+ *              email:
+ *                type: string
+ *                example: caelanbuddy@gmail.com
+ *              source:
+ *                type: string
+ *                example: https://lh3.googleusercontent.com/a-/AOh14GghFrmx6q-6pCnahBumONDnedLl7kAJ66o9Iuxh=s96-c
  *              movieId:
  *                type: string
  *                example: 62378512c6d65605e4776dce
@@ -905,6 +911,8 @@ router.post("/reviews", async (req, res) => {
   const body = await req.body;
   const doc = new Reviews({
     username: body.username,
+    email: body.email,
+    source: body.source,
     movieId: body.movieId,
     content: body.content,
     rating: body.rating,
