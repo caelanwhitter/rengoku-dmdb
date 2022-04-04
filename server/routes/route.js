@@ -209,7 +209,6 @@ const fetchMovieDataFromApi = async (url, movie) => {
         description: "",
       };
     }
-    console.log(movieData);
     return movieData;
   }
 }
