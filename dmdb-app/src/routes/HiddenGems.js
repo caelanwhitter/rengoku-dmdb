@@ -32,7 +32,6 @@ export default function HiddenGems() {
     const userToken = JSON.parse(tokenString);
 
     setUserid(userToken._id);
-    console.log(userid);
   }
 
   const fetchHiddenGems = async () => {
@@ -61,7 +60,21 @@ export default function HiddenGems() {
         genre: values.genre,
         userid: values.userid
       })
-    })
+    });
+    window.location.reload();
+  }
+
+  const deleteSubmission = async (id) => {
+    await fetch('/api/hiddengems', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id: id,
+      })
+    });
+    window.location.reload();
   }
 
   const fetchHiddenGemDetails = async (id) => {
@@ -202,22 +215,26 @@ export default function HiddenGems() {
           visible={modalLoading} />
         <div id="movieDetails">
           <div id="movieText">
-            <Title order={4}>Director: {hiddenGemData.director}</Title>
+            <Title order={4}>Director: 
+              {hiddenGemData.director ? hiddenGemData.director : " Unknown"}</Title>
             <Group position="left">
               <Badge color="dark">{hiddenGemData.genre}</Badge>
               <Badge color="dark"
-                variant="outline">{hiddenGemData.duration} minutes</Badge>
+                variant="outline">
+                {hiddenGemData.duration ? hiddenGemData.duration : "Unknown"} minutes</Badge>
               <Badge color="gray" variant="outline">Rated {hiddenGemData.rating}</Badge>
             </Group>
 
             <Space h="md" />
-            <Text>{hiddenGemData.description}</Text>
+            <Text>{hiddenGemData.description ? hiddenGemData.description :
+              "No description provided."}</Text>
             <Space h="xl" />
             <Group>
-              <Button component="a" href={"http://" + hiddenGemData.link}
-                color="dark">View Movie</Button>
+              <Button component="a" rel="noreferrer" target="_blank" 
+                href={"http://" + hiddenGemData.link} color="dark">View Movie</Button>
               {hiddenGemData.userid === userid && 
-            <Button color="red" uppercase>Delete</Button>}
+            <Button color="red" id={hiddenGemData._id}
+              onClick={(e) =>  deleteSubmission(e.currentTarget.id)} uppercase>Delete</Button>}
             </Group>
           </div>
         </div>
@@ -231,7 +248,6 @@ export default function HiddenGems() {
         padding="lg"
         size="40%"
       >
-        {/* form.onSubmit((values) => insertSubmission(values)) */}
         <Text color="red">All fields with an asterisk (*) are required.</Text>
         <form onSubmit={form.onSubmit((values) => insertSubmission(values))}>
           <Group

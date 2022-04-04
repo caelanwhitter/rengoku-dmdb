@@ -13,6 +13,7 @@ const ObjectId = require("mongodb").ObjectId;
 const fetch = require("node-fetch");
 const { BlobServiceClient } = require("@azure/storage-blob");
 const bp = require("body-parser");
+const res = require("express/lib/response");
 const AZURE_STORAGE_CONNECTION_STRING = process.env.AZURE_STORAGE_CONNECTION_STRING;
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const CONTAINER_NAME = "rengokublobs";
@@ -698,6 +699,18 @@ router.get("/hiddengems", async (req, res) => {
     res.sendStatus(404).end();
   }
 })
+
+router.delete("/hiddengems", async (req, res) => {
+  const body = await req.body;
+  
+  Submissions.findByIdAndDelete(body.id, function (err) {
+    if (err) {
+      console.error(err);
+    }
+    console.log("Successfully deleted!");
+    res.sendStatus(203).end();
+  });
+});
 
 /**
  * @swagger
