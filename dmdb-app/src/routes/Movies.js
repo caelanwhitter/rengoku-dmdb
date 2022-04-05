@@ -248,7 +248,7 @@ export default function Movies() {
 
       <Modal
         opened={searchopened}
-        onKeyUp={handleSubmit}
+        onKeyUp={searchopened ? handleSubmit : null}
         onClose={() => setSearchOpened(false)}
         hideCloseButton
       >
