@@ -405,6 +405,11 @@ router.delete("/review/delete", async (req) => {
   });
 });
 
+/**
+ * fetchMovieInfo() takes in JSON of movies, loops through array, returns Promise of movie API data and waits for all Promises to be fulfilled
+ * @param {*} movies 
+ * @returns 
+ */
 const fetchMovieInfo = async (movies) => {
   const requests = movies.map((movie) => {
     if ((!movie.description || movie.poster === "") && Object.keys(movie).length !== 0) {
@@ -419,7 +424,7 @@ const fetchMovieInfo = async (movies) => {
 }
 
 /**
- * fetchMovieDataFromApi() takes in a url, fetches it and returns movieData of closest movie
+ * fetchMovieDataFromApi() takes in the API Query URL with movie title and year, fetches it and returns movieData of closest movie
  * @param {*} url 
  * @param {*} movie 
  * @returns 
@@ -432,12 +437,13 @@ const fetchMovieDataFromApi = async (url, movie) => {
     let closestMovieJson = {};
     let movieData = {};
 
+    // Calls findClosestMovieJson() algorithm to determine most similar movie from API
     closestMovieJson = await findClosestMovieJson(moviesApiResults, movie);
 
-    // Check if algorithm found a closest movie. If not, keep movieData empty
+    // Check if algorithm found a closest movie.
     if (closestMovieJson) {
 
-      // Populate movieData object with title, description and poster
+      // If there is closestMovieJson, populate movieData object with description and poster
       movieData = {
         _id: movie._id,
         title: movie.title,
@@ -452,6 +458,8 @@ const fetchMovieDataFromApi = async (url, movie) => {
         description: closestMovieJson.overview,
       };
     } else {
+
+      // If there is no Json of Closest Movie, leave poster and description empty
       movieData = {
         _id: movie._id,
         title: movie.title,
@@ -572,6 +580,7 @@ router.post("/uploadMovies", async (req, res) => {
 
   for (let movie of movies) {
 
+    // If movie poster field is empty or null, update DB movie to poster as null and skip to next movie
     if (!movie.poster) {
       await updateMovieDataToDB(movie._id, "", null);
       continue;
@@ -663,6 +672,7 @@ async function returnPosterURL(movie, moviePosterPath) {
   }
   return url;
 }
+
 /**
  * @swagger
  * /hiddengems:

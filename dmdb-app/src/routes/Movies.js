@@ -121,11 +121,6 @@ export default function Movies() {
     }
   }
 
-  /**
-     * getCards() returns an array of cards that displays all the movies of a certain page
-     * @param {JSON} moviesJson 
-     * @returns cards
-     */
   // function getCards(moviesJson) {
 
   //   let cards = moviesJson.map((movie) => {
@@ -160,6 +155,11 @@ export default function Movies() {
   //   return cards;
   // }
 
+  /**
+   * getCards() returns an array of cards that displays all the movies of a certain page
+   * @param {*} moviesJson 
+   * @returns 
+   */
   async function getCards(moviesJson) {
     let cards = [];
     for (let movie of moviesJson) {
@@ -187,14 +187,10 @@ export default function Movies() {
   }
 
   /**
-     * updateMovieDetails() takes a movie and calls all the async functions 
-     * to retrieve movie data API, save to Azure and save to DB
-     * @param {*} movie 
-     */
-  async function updateMovieDetails(movie) {
-    await fetchMovieDataFromApi(movie);
-  }
-
+   * uploadMovies() takes a movie array and makes a POST request to /api/uploadMovies
+   * to save the movies onto the Blob storage and MongoDB database
+   * @param {*} movies 
+   */
   async function uploadMovies(movies) {
     try {
       await fetch('/api/uploadMovies', {
@@ -211,82 +207,12 @@ export default function Movies() {
     }
   }
 
-  /**
-     * fetchMovieDataFromApi() calls to backend route 
-     * to return json of necessary movie data from API
-     * @param {*} movie 
-     */
-  async function fetchMovieDataFromApi(movie) {
-    try {
-      // eslint-disable-next-line max-len
-      let movieUrl = '/api/oneMovie/fetchMovieDataFromApi?title=' + movie.title + '&year=' + movie.releaseYear;
-      let response = await fetch(movieUrl);
-      if (response.ok) {
-        let movieApiData = await response.json();
-        await updateMovieDataToBlobStorage(movieApiData);
-        await updateMovieDataToDB(movie, movieApiData);
-        return movieApiData;
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  /**
-     * updateMovieDataToBlobStorage() takes movieData 
-     * and makes a POST request to backend which uploads to Blob Storage
-     * @param {*} movieApiData 
-     */
-  async function updateMovieDataToBlobStorage(movieApiData) {
-    try {
-      await fetch('/api/oneMovie/updateMovieDataToAzure', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          title: movieApiData.title,
-          year: movieApiData.year,
-          poster: movieApiData.poster,
-          description: movieApiData.description
-        })
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  /**
-     * updateMovieDataToDB() takes movie id and movieApiData 
-     * and makes a POST request to backend which uploads to database
-     * @param {*} movie 
-     * @param {*} movieApiData 
-     */
-  async function updateMovieDataToDB(movie, movieApiData) {
-    try {
-      await fetch('/api/oneMovie/updateMovieDataToDB', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          id: movie._id,
-          title: movieApiData.title,
-          description: movieApiData.description,
-          year: movieApiData.year,
-          poster: movieApiData.poster
-        })
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  }
   let isLoggedIn = false;
   if (localStorage.getItem("token") !== null) {
     isLoggedIn = true;
   }
-  return (
 
+  return (
     <>
       <nav id="searchNav">
         <Link className="tabLink"
