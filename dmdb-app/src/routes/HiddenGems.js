@@ -10,7 +10,10 @@ import { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import '../App.css';
 
-//This function is used to display the hiddenGems page
+/**
+ * Return fully-featured Hidden Gem page.
+ * @returns HiddenGems page
+ */
 export default function HiddenGems() {
   const [opened, setOpened] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -21,12 +24,18 @@ export default function HiddenGems() {
   const [submissions, setSubmissions] = useState([{}]);
   const [userid, setUserid] = useState("");
 
+  /**
+   * React useEffect to get user ID and fetch all HiddenGems.
+   */
   useEffect(() => {
     getUser();
     fetchHiddenGems();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /**
+   * Get user id if logged in.
+   */
   const getUser = async () => {
     if (localStorage.getItem("token") !== null) {
       const tokenString = localStorage.getItem("token");
@@ -36,6 +45,9 @@ export default function HiddenGems() {
     }
   }
 
+  /**
+   * Fetch all Hidden Gems to display on page.
+   */
   const fetchHiddenGems = async () => {
     setLoading(v => !v);
     let response = await fetch('/api/hiddengems');
@@ -44,6 +56,10 @@ export default function HiddenGems() {
     setLoading(v => !v);
   }
 
+  /**
+   * Insert new submission into database from form values and refresh.
+   * @param {Object} values Form values
+   */
   const insertSubmission = async (values) => {
     await fetch('api/hiddengems', {
       method: 'POST',
@@ -66,6 +82,10 @@ export default function HiddenGems() {
     window.location.reload();
   }
 
+  /**
+   * Delete submission from database with ID and refresh page.
+   * @param {String} id Hidden Gem ID
+   */
   const deleteSubmission = async (id) => {
     await fetch('/api/hiddengems', {
       method: 'DELETE',
@@ -79,6 +99,10 @@ export default function HiddenGems() {
     window.location.reload();
   }
 
+  /**
+   * Fetch specific Hidden Gem with ID.
+   * @param {String} id Hidden Gem ID
+   */
   const fetchHiddenGemDetails = async (id) => {
     await fetch("/api/hiddengems?id=" + id).then(
       response => response.json()).
@@ -94,6 +118,9 @@ export default function HiddenGems() {
     setModalLoading(v => !v);
   }
 
+  /**
+   * Assign Card component and Grid Column to each Hidden Gem on page.
+   */
   let cards = submissions.map((elem) => {
     return (
       <Grid.Col key={elem._id} span={3}>
@@ -114,6 +141,9 @@ export default function HiddenGems() {
     );
   });
 
+  /**
+   * Form template
+   */
   const form = useForm({
     initialValues: {
       title: '',
@@ -128,6 +158,7 @@ export default function HiddenGems() {
     },
 
     validate: {
+      // Allow only YouTube, Dailymotion and Vimeo full links.
       link: (value) => /^((http|https):\/\/)(www.)?(youtube|dailymotion|vimeo).com/g.test(value)
         ? null : 'Invalid link!',
     },
@@ -143,9 +174,10 @@ export default function HiddenGems() {
             onClick={() => setAddOpened(true)}>+ Add New Hidden Gem</Text>
           :
           <Text className="tabLink" size="xl" component={Link}
-            to="/profile">+ Add New Hidden Gem</Text>}
+            to="/profile">Login To Add Hidden Gem</Text>}
       </nav>
 
+      {/* Search Modal */}
       <Modal
         opened={searchopened}
         onClose={() => setSearchOpened(false)}
@@ -295,6 +327,7 @@ export default function HiddenGems() {
                 placeholder="Age Rating"
                 label="Hidden Gem Age Rating"
                 description="Age rating of the movie"
+                color="dark"
                 required
                 {...form.getInputProps('rating')}
               />
@@ -304,6 +337,7 @@ export default function HiddenGems() {
                 placeholder="Genre"
                 label="Hidden Gem Genre"
                 description="Genre of the movie"
+                color="dark"
                 required
                 {...form.getInputProps('genre')}
               />
