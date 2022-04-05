@@ -117,6 +117,9 @@ export default function Reviews() {
     }).then(refreshPage())
   }
 
+  /**
+   * Get the username, email and image src from local storage
+   */
   async function getUser() {
     const tokenString = localStorage.getItem("token");
     const userToken = JSON.parse(tokenString);
@@ -173,6 +176,9 @@ export default function Reviews() {
       </Box></>
   );
 
+  /**
+   * schema for the form to follow
+   */
   const schema = z.object({
     // eslint-disable-next-line max-len
     headline: z.string().min(5, { message: 'Name should have at least 2 letters' }).max(50, {message: 'Headline should be less than 50 characters'}),
@@ -181,6 +187,9 @@ export default function Reviews() {
   });
 
 
+  /**
+   * set initial values to the form
+   */
   const form = useForm({
     schema: zodResolver(schema),
     initialValues: {
@@ -190,7 +199,9 @@ export default function Reviews() {
     }
   });
 
-
+  /**
+ * checked if the person is logged in by checking the local storage
+ */
   let isLoggedIn = false;
   if (localStorage.getItem("token") !== null) {
     isLoggedIn = true;
