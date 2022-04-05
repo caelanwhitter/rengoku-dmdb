@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 /**
  * route.js holds all the possible routes of the router and sends back data
- * @author Daniel Lam, Caelan Whitter
+ * @author Daniel Lam, Caelan Whitter, Danilo Zhu
  */
 const express = require("express");
 const router = express.Router();
@@ -721,6 +721,17 @@ router.get("/hiddengems/search", async (req, res) => {
   }
 })
 
+/**
+ * @swagger
+ * /hiddengems:
+ *  delete:
+ *    summary: Delete a specific submission.
+ *    description: Deletes a submission from the database.
+ * 
+ *    responses:
+ *      '204':
+ *        description: No Content, Deleted
+ */
 router.delete("/hiddengems", async (req, res) => {
   const body = await req.body;
 
