@@ -56,12 +56,18 @@ export default function HiddenGems() {
     setLoading(v => !v);
   }
 
+  /**
+   * Set the displayed cards as the Hidden Gems matching the search requirements
+   * @param {Object} values Search Form values
+   */
   const searchHiddenGems = async (values) => {
     setLoading(v => !v);
-    console.log(`api/hiddengems/search?title=${values.title}&director=${values.director}&rating=${values.rating}&genre=${values.genre}`);
     // eslint-disable-next-line max-len
     let response = await fetch(`api/hiddengems/search?title=${values.title}&director=${values.director}&rating=${values.rating}&genre=${values.genre}`);
-    console.log(await response.json());
+    let gems = await response.json();
+
+    setSubmissions(gems);
+    setSearchOpened(false);
     setLoading(v => !v);
   }
 
@@ -233,7 +239,7 @@ export default function HiddenGems() {
               {...searchForm.getInputProps('rating')}
             />
           </Group>
-          <Space h="md"/>
+          <Space h="md" />
           <Button
             color="dark"
             type="submit">

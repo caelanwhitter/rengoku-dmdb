@@ -621,9 +621,7 @@ router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
  *                    example: Mar 31, 2022
  */
 router.get("/hiddengems", async (req, res) => {
-  const hiddengem = await Submissions.find(
-
-  );
+  const hiddengem = await Submissions.find();
 
   try {
     res.json(hiddengem);
@@ -636,21 +634,39 @@ router.get("/hiddengems", async (req, res) => {
 
 /**
  * @swagger
- * /hiddengems/search:
+ * /hiddengems/search?title={title}&director={director}&rating={rating}&genre={genre}:
  *  get:
- *    summary: Retrieve details from Hidden Gem by ID.
- *    description: Returns the details of the Hidden Gem with the specified ID.
+ *    summary: Retrieve Hidden Gems with criteria.
+ *    description: Returns the details of the Hidden Gem with the specified criteria.
  *    parameters:
- *      - name: id
+ *      - name: title
  *        in: query
- *        required: true
- *        description: ID of the Hidden Gem.
+ *        required: false
+ *        description: Title of the Hidden Gem
+ *        schema:
+ *          type: string
+ *      - name: director
+ *        in: query
+ *        required: false
+ *        description: Director of the Hidden Gem
+ *        schema:
+ *          type: string
+ *      - name: rating
+ *        in: query
+ *        required: false
+ *        description: Age rating of the Hidden Gem
+ *        schema:
+ *          type: string
+ *      - name: genre
+ *        in: query
+ *        required: false
+ *        description: Genre of the Hidden Gem
  *        schema:
  *          type: string
  * 
  *    responses:
  *      '200':
- *        description: The details of the Hidden Gem that matches the ID specified.
+ *        description: The collection of the Hidden Gem that match the criteria.
  *        content:
  *          application/json:
  *            schema:
