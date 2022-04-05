@@ -1,6 +1,6 @@
 import {
-  Avatar, Modal, TextInput, Button, Card, Container,
-  LoadingOverlay, Space, Text, Title
+  Avatar, Modal, TextInput, Group, Button, Card, Container,
+  LoadingOverlay, Space, Text, Title, Textarea
 } from "@mantine/core";
 import { useEffect, useState } from 'react';
 import GoogleLogin from 'react-google-login';
@@ -17,7 +17,7 @@ export default function Profile() {
   const [loading, setLoading] = useState(false);
   const [opened, setOpened] = useState(false);
   const [email, setEmail] = useState("");
-  const [bio, setBio] = useState("Lorem ipsum dolor sit amet");
+  const [bio, setBio] = useState("");
 
 
   /**
@@ -78,7 +78,7 @@ export default function Profile() {
   async function editBio(){
     setOpened(true);
   }
-  async function submitBio(){
+  async function submitBio(result){
     setOpened(false)
     const res = await fetch('/api/biography', {
       method: 'POST',
@@ -113,7 +113,11 @@ export default function Profile() {
                 <Space h="sm" />
 
                 <Text size="lg" weight="bold">{loginData.name}</Text>
-                <Text><em>{loginData.biography}</em></Text>
+                <Group
+                  noWrap={true}
+                >
+                  <Text><em>{loginData.biography}</em></Text>
+                </Group>
                 <Space h="xs" />
                 <Button 
                   onClick={editBio}
@@ -124,10 +128,11 @@ export default function Profile() {
                 </Button>
                 <Modal
                   opened={opened}
-                  onClose={() => setOpened(false)}
+                  onClose={loginData.biography = bio}
                   title="Tell us about yourself">
-                  <TextInput
-                    onChange={(event) => setBio(event.currentTarget.value)} 
+                  <Textarea
+                    onChange={(event) => setBio(event.currentTarget.value)}
+                    value={bio} 
                     placeholder="Write your biography here!"
                     label="Biography"
                     required
