@@ -221,7 +221,7 @@ export default function Movies() {
 
       <Modal
         opened={searchopened}
-        onKeyUp={handleSubmit}
+        onKeyUp={searchopened ? handleSubmit : null}
         onClose={() => setSearchOpened(false)}
         hideCloseButton
       >
@@ -322,18 +322,12 @@ export default function Movies() {
             <p>{oneMovieData.description}</p>
 
             <Title order={6}>Gross: {oneMovieData.gross}</Title>
-            {isLoggedIn ?
-              <Badge variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}>
+            <Badge variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}>
 
-                <NavLink style={{ textDecoration: 'none', color: 'black' }}
-                  to={`${oneMovieData._id}/reviews`}>View Reviews</NavLink></Badge>
-              :
-              <Badge variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}>
-
-                <NavLink style={{ textDecoration: 'none', color: 'black' }}
-                  to={`/profile`}>Login To View Reviews</NavLink></Badge>
-            }
-
+              <NavLink style={{ textDecoration: 'none', color: 'black' }}
+                to={`${oneMovieData._id}/reviews`}>View Reviews</NavLink></Badge>
+             
+              
           </div>
         </div>
       </Modal>
