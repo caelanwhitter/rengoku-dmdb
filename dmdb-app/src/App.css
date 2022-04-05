@@ -105,7 +105,7 @@ footer {
 }
 
 .tabLink:hover {
-  color: yellow;
+  color: white;
   background-color: black;
   opacity: 1;
   border-radius: 5px;
