@@ -46,7 +46,6 @@ export default function Reviews() {
 
   /**
  * fetchReviews() fetches list of reviews for specific movie
- * 
  */
   async function fetchReviews() {
     setLoading((v) => !v);
@@ -89,9 +88,7 @@ export default function Reviews() {
       body: JSON.stringify({
         id: deletedData,
       })
-    })
-
-
+    });
   }
 
   /**
@@ -123,20 +120,15 @@ export default function Reviews() {
   async function getUser() {
     const tokenString = localStorage.getItem("token");
     const userToken = JSON.parse(tokenString);
-    
 
     setUsername(userToken.name);
     setEmail(userToken.email);
     setSource(userToken.source);
-
   }
-
-
 
   /**
    * each review is put into a box and styled accordingly
    */
-  
   const reviews = backendData.map((element) =>
     <>
     
