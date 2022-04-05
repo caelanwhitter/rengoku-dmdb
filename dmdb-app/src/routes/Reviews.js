@@ -224,7 +224,7 @@ export default function Reviews() {
         overlayOpacity={0.95}
         opened={openedDel}
         onClose={() => setOpenedDel(false)}
-        title="Are you sure you want to Delete your review?"
+        title="Are you sure you want to DELETE your review?"
       >
         <Group grow>
           <Button color="green" onClick={() => deleteReview()}>Yes</Button>
@@ -240,7 +240,7 @@ export default function Reviews() {
         overlayOpacity={0.95}
         opened={openedSub}
         onClose={() => setOpenedSub(false)}
-        title="Are you sure you want to Submit your review?"
+        title="Are you sure you want to SUBMIT your review?"
       >
         <Group grow>
           <Button color="green" onClick={() => insertReview()}>Yes</Button>
