@@ -201,9 +201,9 @@ export default function Reviews() {
   return (
     <>
       {isLoggedIn ?
-        <Text className="tabLink" size="xl"
+        <Text align="center" className="reviewLink" size="xl"
           onClick={() => setOpenedReview(true)}>+ Add New Review</Text> :
-        <Text className="tabLink" size="xl" component={Link}
+        <Text align="center" className="reviewLink" size="xl" component={Link}
           to="/profile">+ Add New Hidden Gem</Text>}
 
           
