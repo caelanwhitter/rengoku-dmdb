@@ -29,7 +29,7 @@ export default function HiddenGems() {
    */
   useEffect(() => {
     getUser();
-    fetchHiddenGems();
+    fetchAllHiddenGems();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -48,11 +48,20 @@ export default function HiddenGems() {
   /**
    * Fetch all Hidden Gems to display on page.
    */
-  const fetchHiddenGems = async () => {
+  const fetchAllHiddenGems = async () => {
     setLoading(v => !v);
     let response = await fetch('/api/hiddengems');
     let hiddenGemsJSON = await response.json();
     setSubmissions(hiddenGemsJSON);
+    setLoading(v => !v);
+  }
+
+  const searchHiddenGems = async (values) => {
+    setLoading(v => !v);
+    console.log(`api/hiddengems/search?title=${values.title}&director=${values.director}&rating=${values.rating}&genre=${values.genre}`);
+    // eslint-disable-next-line max-len
+    let response = await fetch(`api/hiddengems/search?title=${values.title}&director=${values.director}&rating=${values.rating}&genre=${values.genre}`);
+    console.log(await response.json());
     setLoading(v => !v);
   }
 
@@ -164,6 +173,15 @@ export default function HiddenGems() {
     },
   });
 
+  const searchForm = useForm({
+    initialValues: {
+      title: '',
+      director: '',
+      rating: '',
+      genre: ''
+    }
+  });
+
   return (
     <>
       <nav id="searchNav">
@@ -183,57 +201,45 @@ export default function HiddenGems() {
         onClose={() => setSearchOpened(false)}
         hideCloseButton
       >
-        <TextInput
-          label="Title"
-          placeholder="Enter the title"
-          size="md"
-          radius="md"
-          required
-        />
+        <form onSubmit={searchForm.onSubmit((values) => searchHiddenGems(values))}>
+          <Group grow
+            direction="column">
+            <TextInput
+              label="Title"
+              placeholder="Enter the title"
+              size="md"
+              {...searchForm.getInputProps('title')}
+            />
 
-        <TextInput
-          label="Director"
-          placeholder="Enter the Director"
-          size="md"
-          radius="md"
-          required
-        />
+            <TextInput
+              label="Director"
+              placeholder="Enter the Director"
+              size="md"
+              {...searchForm.getInputProps('director')}
+            />
 
-        <TextInput
-          label="Genre"
-          placeholder="Enter the Genre"
-          size="md"
-          radius="md"
-          required
-        />
+            <TextInput
+              label="Genre"
+              placeholder="Enter the Genre"
+              size="md"
+              {...searchForm.getInputProps('genre')}
+            />
 
-        <TextInput
-          label="Release Year "
-          placeholder="Enter the Release Year"
-          size="md"
-          radius="md"
-          required
-        />
-
-        <TextInput
-          label="Score"
-          placeholder="Enter the Score "
-          size="md"
-          radius="md"
-          required
-        />
-
-        <NativeSelect
-          label="Rating"
-          data={['R', 'PG', 'PG-13']}
-          placeholder="Select a Rating"
-        />
-        <br />
-        <Button
-          color="dark"
-          type="submit">
-          Go!
-        </Button>
+            <NativeSelect
+              label="Rating"
+              data={['', 'R', 'PG', 'PG-13']}
+              size="md"
+              placeholder="Select a Rating"
+              {...searchForm.getInputProps('rating')}
+            />
+          </Group>
+          <Space h="md"/>
+          <Button
+            color="dark"
+            type="submit">
+            Go!
+          </Button>
+        </form>
       </Modal>
 
       <Modal
@@ -371,11 +377,6 @@ export default function HiddenGems() {
       <Grid className="movieGrid" gutter={80}>
         {cards}
       </Grid>
-
-      {/* <div id="pagination">
-        <Pagination page={activePage} onChange={changePage} 
-          total={totalPagination} color="dark" sibilings={1} withEdges />
-      </div> */}
     </>
   );
 }

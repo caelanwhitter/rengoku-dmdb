@@ -621,7 +621,9 @@ router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
  *                    example: Mar 31, 2022
  */
 router.get("/hiddengems", async (req, res) => {
-  const hiddengem = await Submissions.find();
+  const hiddengem = await Submissions.find(
+
+  );
 
   try {
     res.json(hiddengem);
@@ -634,7 +636,7 @@ router.get("/hiddengems", async (req, res) => {
 
 /**
  * @swagger
- * /hiddengems?id={id}:
+ * /hiddengems/search:
  *  get:
  *    summary: Retrieve details from Hidden Gem by ID.
  *    description: Returns the details of the Hidden Gem with the specified ID.
@@ -686,12 +688,16 @@ router.get("/hiddengems", async (req, res) => {
  *                    type: string
  *                    example: Mar 31, 2022
  */
-router.get("/hiddengems", async (req, res) => {
-  const id = req.query.id;
-  const hiddengem = await Submissions.find({ "_id": id });
+router.get("/hiddengems/search", async (req, res) => {
+  const hiddengems = await Submissions.find({
+    title: { $regex: `${req.query.title}`, $options: "i" },
+    director: { $regex: `${req.query.director}`, $options: "i" },
+    genre: { $regex: `${req.query.genre}`, $options: "i" },
+    rating: { $regex: `${req.query.rating}`, $options: "i" }
+  });
 
   try {
-    res.json(hiddengem);
+    res.json(hiddengems);
     res.end();
   } catch (err) {
     console.error(err.message);
