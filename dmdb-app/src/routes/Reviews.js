@@ -204,7 +204,7 @@ export default function Reviews() {
         <Text align="center" className="reviewLink" size="xl"
           onClick={() => setOpenedReview(true)}>+ Add New Review</Text> :
         <Text align="center" className="reviewLink" size="xl" component={Link}
-          to="/profile">+ Add New Hidden Gem</Text>}
+          to="/profile">+Login to Add New Review</Text>}
 
           
 
