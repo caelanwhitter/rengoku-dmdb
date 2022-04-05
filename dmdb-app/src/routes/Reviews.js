@@ -2,6 +2,7 @@ import {
   Avatar, Badge, Box, Button, Drawer, Group,
   NumberInput, Spoiler, Text, Textarea,
   TextInput, Modal, useMantineTheme, Title,
+  LoadingOverlay, Alert
 } from '@mantine/core';
 import { TrashIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from 'react';
@@ -27,8 +28,7 @@ export default function Reviews() {
   const [openedReview, setOpenedReview] = useState(false);
   const [deletedBox, setDeletedBox] = useState("");
   const [deletedData, setDeletedData] = useState("");
-  
-
+  const [loading, setLoading] = useState(false);
   
 
   const date = new Date().
@@ -49,9 +49,12 @@ export default function Reviews() {
  * 
  */
   async function fetchReviews() {
+    setLoading((v) => !v);
     let response = await fetch('/api/oneMovie/reviews?id=' + params.movieId);
     let moviesPaginationJson = await response.json();
     setBackendData(moviesPaginationJson);
+    setLoading((v) => !v);
+
   }
 
   /**
@@ -184,12 +187,7 @@ export default function Reviews() {
       headline: '',
       content: '',
       rating: '',
-    },
-
-    // validate: {
-    //   link: (value) => /^((http|https):\/\/)(www.)?(youtube|dailymotion|vimeo).com/g.test(value)
-    //     ? null : 'Invalid link!',
-    // },
+    }
   });
 
 
@@ -241,9 +239,18 @@ export default function Reviews() {
       </Modal>
       <Text sx={(theme) => ({ paddingTop: "10px", fontSize: "300%" })}
         weight={700} underline align="center">{movieTitle}</Text>
-      <div style={{ display: "flex" }}>
-        <div style={{ margin: "auto", width:"70%"}}>{reviews}</div>
-      </div>
+      {reviews.length === 0 ?
+        <div style={{ display: "flex" }}>
+          <Alert sx={(theme) => ({ textAlign:"center", margin: "auto", width:"70%"})}
+            title="No Reviews!" color="gray">
+           This is Terrible! Add some of your own to fill up the page!
+          </Alert>
+        </div> 
+        :
+        <div style={{ display: "flex" }}>
+          <div style={{ margin: "auto", width:"70%"}}>{reviews}</div>
+        </div> 
+      }
     
       <Drawer
         opened={openedReview}
@@ -291,79 +298,8 @@ export default function Reviews() {
           </Group>
         </form>
       </Drawer>
+      <LoadingOverlay loaderProps={{ color: 'dark', variant: 'dots' }}
+        visible={loading} />
     </>
   );
 }
-
-
-
-
-
-
-// {isLoggedIn ?
-//   <Box sx={(theme) => ({
-//     backgroundColor: "#f6f6f5",
-//     textAlign: 'center',
-//     padding: theme.spacing.sm,
-//     margin: theme.spacing.xl,
-//     width: "50%",
-//     border: 'solid 1px #000',
-//     height: "50%",
-//   })}>
-//     <Text weight={500} underline align="center" size="xl">Your Rating and Review</Text>
-//     <TextInput value={headline}
-//       onChange={(event) => setHeadline(event.currentTarget.value)}
-//       sx={(theme) => ({
-//         textAlign: 'center',
-//         paddingLeft: theme.spacing.xl,
-//         paddingRight: theme.spacing.xl,
-
-//         marginTop: theme.radius.md,
-//       })} size="sm" radius="lg" placeholder="Headline for your review"
-//       label="Subtitle" required />
-
-//     <Textarea value={content}
-//       onChange={(event) => setContent(event.currentTarget.value)}
-//       sx={(theme) => ({
-//         paddingTop: "10px",
-//         textAlign: 'center',
-//         paddingLeft: theme.spacing.xl,
-//         paddingRight: theme.spacing.xl,
-
-//         marginTop: theme.radius.md,
-//       })} textAlign="center" autosize radius="lg" placeholder="Write your review here"
-//       label="Your Review" required />
-
-
-//     <NumberInput sx={(theme) => ({
-//       width: "25%", margin: "auto", padding: "10px"
-//     })} value={rating} onChange={(val) => setRating(val)}
-//     label="Star Rating"
-  
-//     max={5}
-//     min={0}
-//     />
-//     <Button onClick={submitReview} sx={(theme) => ({
-//       textAlign: 'center',
-//       padding: theme.spacing.sm,
-//       marginTop: theme.radius.md,
-//       border: 'solid 1px #000'
-//     })} variant="gradient"
-//     gradient={{ from: 'orange', to: 'red', deg: 105 }}>Submit Review</Button>
-
-//     <h4 id="visible"
-//       style={{ color: "red", visibility: "hidden" }}>Please Fill Out Every Field</h4>
-//   </Box> :
-//   <Box sx={(theme) => ({
-//     backgroundColor: "#f6f6f5",
-//     textAlign: 'center',
-//     padding: theme.spacing.sm,
-//     margin: theme.spacing.xl,
-//     width: "50%",
-//     border: 'solid 1px #000',
-//     height: "50%",
-//   })}><Text sx={(theme) => ({ paddingTop: "10px", fontSize: "300%" })}
-//       weight={300} align="center">
-//       Please <NavLink style={{ textDecoration: 'none', color: 'blue' }} to={`/profile`}>
-//         Login</NavLink> to make a review!!</Text>
-//   </Box>}
