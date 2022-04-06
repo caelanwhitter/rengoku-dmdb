@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {
   Badge, Button, Card, Grid, Group, Image, LoadingOverlay,
   Modal, NativeSelect, Pagination, Space, Text, TextInput, Title
@@ -19,7 +20,7 @@ export default function Movies() {
   const [oneMovieData, setOneMovieData] = useState([{}]);
   const [cards, setCards] = useState([]);
   const [activePage, setPage] = useState(DEFAULT_ACTIVE_PAGE);
-  const [totalPagination, setTotalPagination] = useState();
+  const [totalPagination, setTotalPagination] = useState(null);
   const [opened, setOpened] = useState(false);
   const [searchopened, setSearchOpened] = useState(false);
   const [valueTitle, setValueTitle] = useState('');
@@ -31,13 +32,13 @@ export default function Movies() {
   const [, scrollTo] = useWindowScroll();
   const [loading, setLoading] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
-
+  let moviesPaginationJson = [];
 
   /**
      * useEffect() runs following methods once. Similar to ComponentDidMount()
      */
   useEffect(() => {
-    displayMoviesPerPage(activePage);
+    displayAndReturnMoviesPerPage(activePage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -53,23 +54,32 @@ export default function Movies() {
   }
 
   /**
-     * displayMoviesPerPage() fetches list of movies following pagination endpoints \
-     * and calculates totalPagination on first render
-     * @param {String} pageNumber 
-     */
-  async function displayMoviesPerPage(pageNumber) {
+   * displayAndReturnMoviesPerPage() fetches list of movies following pagination endpoints
+   * and calculates totalPagination on first render.
+   * Returns the JSON of movies if needed
+   * @param {*} pageNumber 
+   * @returns 
+   */
+  async function displayAndReturnMoviesPerPage(pageNumber) {
+
+    // Loads movies from specific page number from backend and sets the cards for them
     setLoading((v) => !v);
     let response = await fetch('/api/getSearch/page/' + pageNumber + '?title='
       + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre
       + '&releaseYear=' + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
-    let moviesPaginationJson = await response.json();
-    setCards(getCards(moviesPaginationJson));
+    moviesPaginationJson = await response.json();
+    setCards(await getCards(moviesPaginationJson));
     setLoading((v) => !v);
 
     // Calls calculateTotalPagination() if totalPagination not initialized yet yet
-    if (totalPagination === undefined) {
+    if (!totalPagination) {
       await calculateTotalPagination(moviesPaginationJson);
     }
+
+    // Once movies are loaded, loop through movies and upload any movies who are missing poster and description to DB and Azure
+    await uploadMovies(moviesPaginationJson);
+
+    return moviesPaginationJson;
   }
 
   /**
@@ -78,19 +88,27 @@ export default function Movies() {
      * @param {JSON} moviesPaginationJson 
      */
   async function calculateTotalPagination(moviesPaginationJson) {
-    let response = await fetch('/api/getSearch?title=' + valueTitle + '&director='
-      + valueDirector + '&genre=' + valueGenre + '&releaseYear='
-      + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
-    let allMoviesJson = await response.json();
-    const totalMoviePages = Math.ceil(allMoviesJson.length / moviesPaginationJson.length);
+    let currentMoviesLength = moviesPaginationJson.length;
 
-    setTotalPagination(totalMoviePages);
+    // Check if currentMoviesLength is 0, meaning that there are no movies in search and pagination should be set to 1.
+    if (currentMoviesLength !== 0) {
+      let response = await fetch('/api/getSearch?title=' + valueTitle + '&director='
+        + valueDirector + '&genre=' + valueGenre + '&releaseYear='
+        + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
+      let allMoviesJson = await response.json();
+      const totalMoviePages = Math.ceil(allMoviesJson.length / currentMoviesLength);
+
+      setTotalPagination(totalMoviePages);
+    } else {
+      setTotalPagination(1);
+    }
   }
 
   async function clickOnGo(event) {
-    setTotalPagination(undefined);
-    displayMoviesPerPage(event);
     setSearchOpened(false);
+    let newMoviesPaginationJson = await displayAndReturnMoviesPerPage(event);
+    calculateTotalPagination(newMoviesPaginationJson);
+    setPage(DEFAULT_ACTIVE_PAGE);
   }
 
   /**
@@ -99,7 +117,7 @@ export default function Movies() {
      */
   const changePage = (event) => {
     // Re-fetches the list of movies with proper page number
-    displayMoviesPerPage(event);
+    displayAndReturnMoviesPerPage(event);
 
     // Sets activePage to update styles of Pagination
     setPage(event);
@@ -119,20 +137,12 @@ export default function Movies() {
   }
 
   /**
-     * getCards() returns an array of cards that displays all the movies of a certain page
-     * @param {JSON} moviesJson 
-     * @returns cards
-     */
-  function getCards(moviesJson) {
+   * getCards() returns an array of cards that displays all the movies of a certain page
+   * @param {*} moviesJson 
+   * @returns 
+   */
+  async function getCards(moviesJson) {
     let cards = moviesJson.map((movie) => {
-      // Checks if movie description and poster are missing 
-      // and checks if movie isn't an empty object
-      if ((!movie.description || movie.poster === "") && Object.keys(movie).length !== 0) {
-        /*TO-DO: You cannot add multiple async calls here because map doesn't support
-         async functions so anything returning a Promise won't work. 
-         Mitigated through calling one function that will run all the async functions instead*/
-        updateMovieDetails(movie);
-      }
       return (
         <Grid.Col key={movie._id} span={3}>
           <Card onClick={() => {
@@ -140,7 +150,7 @@ export default function Movies() {
           }} style={{ cursor: "pointer" }} shadow="md" withBorder={true}>
             <Card.Section>
               <Image src={movie.poster} height={movie.poster ? "100%" : 375}
-                width={movie.poster ? "100%" : 324} alt={movie.title + " Poster"} withPlaceholder />
+                width={movie.poster ? "100%" : 375} alt={movie.title + " Poster"} withPlaceholder />
             </Card.Section>
 
             <Space h="sm" />
@@ -157,86 +167,27 @@ export default function Movies() {
   }
 
   /**
-     * updateMovieDetails() takes a movie and calls all the async functions 
-     * to retrieve movie data API, save to Azure and save to DB
-     * @param {*} movie 
-     */
-  async function updateMovieDetails(movie) {
-    await fetchMovieDataFromApi(movie);
-  }
-
-  /**
-     * fetchMovieDataFromApi() calls to backend route 
-     * to return json of necessary movie data from API
-     * @param {*} movie 
-     */
-  async function fetchMovieDataFromApi(movie) {
+   * uploadMovies() takes a movie array and makes a POST request to /api/uploadMovies
+   * to save the movies onto the Blob storage and MongoDB database
+   * @param {*} movies 
+   */
+  async function uploadMovies(movies) {
     try {
-      // eslint-disable-next-line max-len
-      let movieUrl = '/api/oneMovie/fetchMovieDataFromApi?title=' + movie.title + '&year=' + movie.releaseYear;
-      let response = await fetch(movieUrl);
-      if (response.ok) {
-        let movieApiData = await response.json();
-        await updateMovieDataToBlobStorage(movieApiData);
-        await updateMovieDataToDB(movie, movieApiData)
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  /**
-     * updateMovieDataToBlobStorage() takes movieData 
-     * and makes a POST request to backend which uploads to Blob Storage
-     * @param {*} movieApiData 
-     */
-  async function updateMovieDataToBlobStorage(movieApiData) {
-    try {
-      await fetch('/api/oneMovie/updateMovieDataToAzure', {
-        method: 'POST',
+      await fetch('/api/uploadMovies', {
+        method: "POST",
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          title: movieApiData.title,
-          year: movieApiData.year,
-          poster: movieApiData.poster,
-          description: movieApiData.description
+          movies: movies
         })
       });
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 
-  /**
-     * updateMovieDataToDB() takes movie id and movieApiData 
-     * and makes a POST request to backend which uploads to database
-     * @param {*} movie 
-     * @param {*} movieApiData 
-     */
-  async function updateMovieDataToDB(movie, movieApiData) {
-    try {
-      await fetch('/api/oneMovie/updateMovieDataToDB', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          id: movie._id,
-          title: movieApiData.title,
-          description: movieApiData.description,
-          year: movieApiData.year,
-          poster: movieApiData.poster
-        })
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  }
- 
   return (
-
     <>
       <nav id="searchNav">
         <Link className="tabLink"
@@ -358,14 +309,24 @@ export default function Movies() {
 
       <LoadingOverlay loaderProps={{ color: 'dark', variant: 'dots' }}
         visible={loading} />
-      <Grid className="movieGrid" gutter={80}>
-        {cards}
-      </Grid>
 
-      <div id="pagination">
-        <Pagination page={activePage} onChange={changePage}
-          total={totalPagination} color="dark" sibilings={1} withEdges />
-      </div>
+      {!loading && cards.length === 0 ? 
+        <div>
+          <Text sx={(theme) => ({ paddingTop: "20px", fontSize: "200%" })}
+            weight={700} align="center">No movies found for this search!</Text>
+        </div>
+        :
+        <div>
+          <Grid className="movieGrid" gutter={80}>
+            {cards}
+          </Grid>
+        
+          <div id="pagination">
+            <Pagination page={activePage} onChange={changePage}
+              total={totalPagination} color="dark" siblings={2} withEdges />
+          </div>
+        </div>
+      }
     </>
   );
 }
