@@ -342,14 +342,24 @@ export default function Movies() {
 
       <LoadingOverlay loaderProps={{ color: 'dark', variant: 'dots' }}
         visible={loading} />
-      <Grid className="movieGrid" gutter={80}>
-        {cards}
-      </Grid>
 
-      <div id="pagination">
-        <Pagination page={activePage} onChange={changePage}
-          total={totalPagination} color="dark" sibilings={1} withEdges />
-      </div>
+      {!loading && cards.length === 0 ? 
+        <div>
+          <Text sx={(theme) => ({ paddingTop: "20px", fontSize: "200%" })}
+            weight={700} align="center">No movies found for this search!</Text>
+        </div>
+        :
+        <div>
+          <Grid className="movieGrid" gutter={80}>
+            {cards}
+          </Grid>
+        
+          <div id="pagination">
+            <Pagination page={activePage} onChange={changePage}
+              total={totalPagination} color="dark" sibilings={1} withEdges />
+          </div>
+        </div>
+      }
     </>
   );
 }
