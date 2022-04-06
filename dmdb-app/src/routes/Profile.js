@@ -1,8 +1,8 @@
 import {
-  Avatar, Button, Card, Container,
-  LoadingOverlay, Space, Text, Title
+  Avatar, Modal, Group, Button, Card, Container,
+  LoadingOverlay, Space, Text, Title, Textarea
 } from "@mantine/core";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import GoogleLogin from 'react-google-login';
 import '../App.css';
 
@@ -15,9 +15,28 @@ export default function Profile() {
       : null
   );
   const [loading, setLoading] = useState(false);
+  const [opened, setOpened] = useState(false);
+  const [email, setEmail] = useState("");
+  const [bio, setBio] = useState("");
+
+
+  /**
+  * useEffect() runs following methods once. Similar to ComponentDidMount()
+  */
+  useEffect(() => {
+    getUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  
+  /**
+   * function that refreshes the page
+   */
+  function refreshPage() {
+    window.location.reload();
+  }
 
   const handleFailed = (result) => {
-    console.log("login failed" + result);
+    console.log("Login failed" + result);
     //alert(result);
   };
   
@@ -40,6 +59,7 @@ export default function Profile() {
 
     
     setLoading(v => !v);
+    refreshPage()
   };
   
 
@@ -57,10 +77,32 @@ export default function Profile() {
     setLoading(v => !v);
   }
 
+  async function getUser() {
+    const tokenString = localStorage.getItem("token");
+    const userToken = JSON.parse(tokenString);
+    setEmail(userToken.email);
+  }
 
+  async function submitBio(){
+    setOpened(false)
+    await getUser();
+    const res = await fetch('/api/biography', {
+      method: 'POST',
+      body: JSON.stringify({
+        email: email,
+        biography: bio
+      }),
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+      }
+    });
 
+    const data = await res.json();
+    setLoginData(data[0]);
+    localStorage.setItem("token", JSON.stringify(data[0]));
+  }
 
-  
   return (
     <div className="centered">
       <Container>
@@ -79,9 +121,36 @@ export default function Profile() {
                 <Space h="sm" />
 
                 <Text size="lg" weight="bold">{loginData.name}</Text>
-                <Text><em>Lorem ipsum dolor sit amet</em></Text>
+                <Group
+                  noWrap={true}
+                >
+                  <Text><em>{loginData.biography}</em></Text>
+                </Group>
                 <Space h="xs" />
-                <Button color="dark" size="xs" compact uppercase>Edit bio</Button>
+
+                <Button 
+                  onClick={() => setOpened(true)}
+                  color="dark" 
+                  size="xs" 
+                  compact uppercase>
+                    Edit bio
+                </Button>
+                <Modal
+                  opened={opened}
+                  onClose={()=>setOpened(false)}
+                  title="Tell us about yourself!">
+                  <Textarea
+                    onChange={(event) => setBio(event.currentTarget.value)}
+                    value={bio} 
+                    placeholder="Write your biography here!"
+                    label="Biography"
+                    required
+                  />
+                  <Button color="dark" sx={(theme) => ({ marginTop: "15px"})} onClick={submitBio}
+                  >
+                    Submit
+                  </Button>
+                </Modal>
 
                 <Space h="md" />
                 <Container className="centered">
