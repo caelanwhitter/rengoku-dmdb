@@ -119,11 +119,13 @@ export default function Reviews() {
    */
   async function getUser() {
     const tokenString = localStorage.getItem("token");
-    const userToken = JSON.parse(tokenString);
+    if (tokenString !== null) {
+      const userToken = JSON.parse(tokenString);
 
-    setUsername(userToken.name);
-    setEmail(userToken.email);
-    setSource(userToken.source);
+      setUsername(userToken.name);
+      setEmail(userToken.email);
+      setSource(userToken.source);
+    }
   }
 
   /**
@@ -204,7 +206,7 @@ export default function Reviews() {
         <Text align="center" className="reviewLink" size="xl"
           onClick={() => setOpenedReview(true)}>+ Add New Review</Text> :
         <Text align="center" className="reviewLink" size="xl" component={Link}
-          to="/profile">+Login to Add New Review</Text>}
+          to="/profile">+ Login to Add New Review</Text>}
 
           
 
@@ -244,7 +246,7 @@ export default function Reviews() {
         weight={700} underline align="center">{movieTitle}</Text>
       {reviews.length === 0 ?
         <div style={{ display: "flex" }}>
-          <Alert sx={(theme) => ({ textAlign:"center", margin: "auto", width:"70%"})}
+          <Alert sx={(theme) => ({  margin: "auto", width:"70%"})}
             title="No Reviews!" color="gray">
            This is Terrible! Add some of your own to fill up the page!
           </Alert>
