@@ -71,7 +71,6 @@ export default function Profile() {
     setLoading(v => !v);
     const res = await fetch("/api/v1/auth/logout", {
       method: "DELETE",
-
     })
     const data = await res.json()
     setLogoutMessage(data.message);

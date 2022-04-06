@@ -394,6 +394,8 @@ router.get("/oneMovie/reviews", async (req, res) => {
  *    description: Adds a new review to the database.
  *    tags:
  *      - Reviews
+ *    security:
+ *      - GoogleOAuth: [review_post]
  *    requestBody:
  *      description: Model of the review.
  *      required: true
@@ -457,6 +459,8 @@ router.post("/reviews", async (req, res) => {
  *    description: Deletes a review from the database.
  *    tags:
  *      - Reviews
+ *    security:
+ *      - GoogleOAuth: [review_delete]
  *    requestBody:
  *      description: Delete request.
  *      required: true
@@ -823,6 +827,19 @@ router.get("/hiddengems/search", async (req, res) => {
  *    description: Deletes a submission from the database.
  *    tags:
  *      - Hidden Gems
+ *    security:
+ *      - GoogleOAuth: [hiddengem_delete]
+ *    requestBody:
+ *      description: Delete request.
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              id:
+ *                type: string
+ *                example: 142ac939501ef9348c
  * 
  *    responses:
  *      '204':
@@ -848,6 +865,8 @@ router.delete("/hiddengems", async (req, res) => {
  *    description: Adds a new Hidden Gem to the database.
  *    tags:
  *      - Hidden Gems
+ *    security:
+ *      - GoogleOAuth: [hiddengem_post]
  * 
  *    requestBody:
  *      description: Model of the submission.
@@ -1136,6 +1155,12 @@ function equalsIgnoreCase(firstString, secondString) {
   return firstString.localeCompare(secondString, undefined, { sensitivity: "base" }) === 0;
 }
 
+/**
+ * 
+ * @param {*} movies 
+ * @param {*} movieYearQuery 
+ * @returns 
+ */
 function findClosestMovieByYear(movies, movieYearQuery) {
   let closestMovie = movies[0];
   let closestMovieYear = parseReleaseYear(closestMovie.release_date);
