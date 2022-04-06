@@ -1,13 +1,15 @@
 import {
-  Avatar, Modal, Group, Button, Card, Container,
-  LoadingOverlay, Space, Text, Title, Textarea
+  Avatar, Button, Card, Container, Group, LoadingOverlay, Modal, Space, Text, Textarea, Title
 } from "@mantine/core";
 import { useEffect, useState } from 'react';
 import GoogleLogin from 'react-google-login';
 import '../App.css';
 
+/**
+ * Return fully-featured Profile page with user details
+ * @returns Profile functional component
+ */
 export default function Profile() {
-
   const [, setLogoutMessage] = useState()
   const [loginData, setLoginData] = useState(
     localStorage.getItem('token')
@@ -21,7 +23,7 @@ export default function Profile() {
 
 
   /**
-  * useEffect() runs following methods once. Similar to ComponentDidMount()
+  * useEffect() runs function once. Similar to ComponentDidMount()
   */
   useEffect(() => {
     getUser();
@@ -29,17 +31,17 @@ export default function Profile() {
   }, []);
 
   /**
-   * function that refreshes the page
+   * Handle if login failed
+   * @param {String} result Failed string
    */
-  function refreshPage() {
-    window.location.reload();
-  }
-
   const handleFailed = (result) => {
     console.log("Login failed" + result);
-    //alert(result);
   };
 
+  /**
+   * Handle if login succeeds
+   * @param {Object} googleData 
+   */
   const handleLogin = async (googleData) => {
     setLoading(v => !v);
     const res = await fetch('/api/google-login', {
@@ -57,12 +59,14 @@ export default function Profile() {
     setLoginData(data);
     localStorage.setItem('token', JSON.stringify(data));
 
-
     setLoading(v => !v);
-    refreshPage()
+    window.location.reload();
   };
 
-
+  /**
+   * Handle when user logs out, clear data
+   * @param {*} response 
+   */
   const handleLogout = async response => {
     setLoading(v => !v);
     const res = await fetch("/api/v1/auth/logout", {
@@ -77,12 +81,18 @@ export default function Profile() {
     setLoading(v => !v);
   }
 
+  /**
+   * Get user from localStorage with token
+   */
   async function getUser() {
     const tokenString = localStorage.getItem("token");
     const userToken = JSON.parse(tokenString);
     setEmail(userToken.email);
   }
 
+  /**
+   * Update biography field for user in database
+   */
   async function submitBio() {
     setOpened(false)
     await getUser();

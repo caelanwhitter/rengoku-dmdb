@@ -9,6 +9,10 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
 import { z } from 'zod';
 
+/**
+ * Return fully-featured Reviews component
+ * @returns Reviews functional component
+ */
 export default function Reviews() {
   //Initializes variables and sets up "settters to variables"
   let params = useParams();
@@ -25,11 +29,12 @@ export default function Reviews() {
   const [deletedData, setDeletedData] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Date formatting
   const date = new Date().
-    toLocaleDateString('en-us', { year: "numeric", month: "short", day: "numeric" })
+    toLocaleDateString('en-us', { year: "numeric", month: "short", day: "numeric" });
 
   /**
-  * useEffect() runs following methods once. Similar to ComponentDidMount()
+  * useEffect() runs functions once. Similar to ComponentDidMount()
   */
   useEffect(() => {
     getTitle(); fetchReviews(); getUser();
@@ -37,8 +42,8 @@ export default function Reviews() {
   }, []);
 
   /**
- * fetchReviews() fetches list of reviews for specific movie
- */
+   * fetchReviews() fetches list of reviews for specific movie
+   */
   async function fetchReviews() {
     setLoading((v) => !v);
     let response = await fetch('/api/oneMovie/reviews?id=' + params.movieId);

@@ -10,9 +10,8 @@ import { Link, NavLink } from "react-router-dom";
 import '../App.css';
 
 /**
- * Movies() is a component that fetches the list of Movies from the DB 
- * and displays it properly using pagination
- * @returns Table Of Movies + Pagination
+ * Fetch the list of Movies from the database and display it properly using pagination
+ * @returns Movies functional component
  */
 export default function Movies() {
   //Initializes variables and sets up "setters to variables"
@@ -35,13 +34,17 @@ export default function Movies() {
   let moviesPaginationJson = [];
 
   /**
-     * useEffect() runs following methods once. Similar to ComponentDidMount()
-     */
+   * useEffect() runs functions once at render. Similar to ComponentDidMount()
+   */
   useEffect(() => {
     displayAndReturnMoviesPerPage(activePage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /**
+   * Fetch specified movie details from backend with ID
+   * @param {String} movieId ID of the movie
+   */
   async function getDetails(movieId) {
     await fetch("/api/oneMovie?id=" + movieId).then(
       response => response.json()).
@@ -56,9 +59,8 @@ export default function Movies() {
   /**
    * displayAndReturnMoviesPerPage() fetches list of movies following pagination endpoints
    * and calculates totalPagination on first render.
-   * Returns the JSON of movies if needed
-   * @param {*} pageNumber 
-   * @returns 
+   * @param {String} pageNumber Page Number
+   * @returns Movies JSON, if needed
    */
   async function displayAndReturnMoviesPerPage(pageNumber) {
 
@@ -83,10 +85,10 @@ export default function Movies() {
   }
 
   /**
-     * calculateTotalPagination() calculates in how many pages should 
-     * the entire list of movies be separated for pagination
-     * @param {JSON} moviesPaginationJson 
-     */
+   * calculateTotalPagination() calculates in how many pages should 
+   * the entire list of movies be separated for pagination
+   * @param {JSON} moviesPaginationJson 
+   */
   async function calculateTotalPagination(moviesPaginationJson) {
     let currentMoviesLength = moviesPaginationJson.length;
 
@@ -104,6 +106,10 @@ export default function Movies() {
     }
   }
 
+  /**
+   * 
+   * @param {Event} event 
+   */
   async function clickOnGo(event) {
     setSearchOpened(false);
     let newMoviesPaginationJson = await displayAndReturnMoviesPerPage(event);

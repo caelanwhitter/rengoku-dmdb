@@ -12,7 +12,7 @@ import '../App.css';
 
 /**
  * Return fully-featured Hidden Gem page.
- * @returns HiddenGems page
+ * @returns HiddenGems functional component
  */
 export default function HiddenGems() {
   const [opened, setOpened] = useState(false);
