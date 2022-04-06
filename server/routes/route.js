@@ -422,7 +422,7 @@ router.get("/oneMovie/reviews", async (req, res) => {
  *      '201':
  *        description: Created
  */
- router.post("/reviews", async (req, res) => {
+router.post("/reviews", async (req, res) => {
   const body = await req.body;
   const doc = new Reviews({
     username: body.username,
@@ -451,7 +451,7 @@ router.get("/oneMovie/reviews", async (req, res) => {
  *      '204':
  *        description: No Content, Deleted
  */
- router.delete("/review/delete", async (req) => {
+router.delete("/review/delete", async (req) => {
   const body = await req.body;
   Reviews.findByIdAndDelete(body.id, function (err) {
     if (err) {
@@ -851,7 +851,7 @@ router.post("/hiddengems", async (req, res) => {
  * @param {*} movie 
  * @returns 
  */
- const fetchMovieDataFromApi = async (url, movie) => {
+const fetchMovieDataFromApi = async (url, movie) => {
   const response = await fetch(url);
   if (response.ok) {
     let moviesJsonApi = await response.json();

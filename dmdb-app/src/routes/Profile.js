@@ -86,7 +86,8 @@ export default function Profile() {
   async function editBio(){
     setOpened(true);
   }
-  async function submitBio(result){
+
+  async function submitBio(){
     setOpened(false)
     await getUser();
     console.log(email);
@@ -101,8 +102,12 @@ export default function Profile() {
         'Content-Type': 'application/json',
       }
     });
+
+    // TO-DO: Fix this, User bugs out and returns null and as such, doesn't log in0
     const data = await res.json();
-    console.log(data)
+    console.log(data);
+    setLoginData(data);
+    localStorage.setItem("token", JSON.stringify(data));
   }
 
 
@@ -141,7 +146,7 @@ export default function Profile() {
                 <Modal
                   opened={opened}
                   onClose={()=>setOpened(false)}
-                  title="Tell us about yourself">
+                  title="Tell us about yourself!">
                   <Textarea
                     onChange={(event) => setBio(event.currentTarget.value)}
                     value={bio} 
@@ -149,8 +154,7 @@ export default function Profile() {
                     label="Biography"
                     required
                   />
-                  <Button
-                    onClick={submitBio}
+                  <Button sx={(theme) => ({ marginTop: "15px"})} onClick={submitBio}
                   >
                     Submit
                   </Button>
