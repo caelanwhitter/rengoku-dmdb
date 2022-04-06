@@ -86,7 +86,6 @@ app.post("/api/biography", async (req, res) => {
   );
   
   const user = await getUser(body.email);
-  console.log(user);
   try {
     res.json(user);
     res.end();

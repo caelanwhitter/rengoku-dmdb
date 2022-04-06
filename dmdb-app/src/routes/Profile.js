@@ -1,5 +1,5 @@
 import {
-  Avatar, Modal, TextInput, Group, Button, Card, Container,
+  Avatar, Modal, Group, Button, Card, Container,
   LoadingOverlay, Space, Text, Title, Textarea
 } from "@mantine/core";
 import { useEffect, useState } from 'react';
@@ -36,7 +36,7 @@ export default function Profile() {
   }
 
   const handleFailed = (result) => {
-    console.log("login failed" + result);
+    console.log("Login failed" + result);
     //alert(result);
   };
   
@@ -83,14 +83,9 @@ export default function Profile() {
     setEmail(userToken.email);
   }
 
-  async function editBio(){
-    setOpened(true);
-  }
-
   async function submitBio(){
     setOpened(false)
     await getUser();
-    console.log(email);
     const res = await fetch('/api/biography', {
       method: 'POST',
       body: JSON.stringify({
@@ -103,15 +98,11 @@ export default function Profile() {
       }
     });
 
-    // TO-DO: Fix this, User bugs out and returns null and as such, doesn't log in0
     const data = await res.json();
-    console.log(data);
-    setLoginData(data);
-    localStorage.setItem("token", JSON.stringify(data));
+    setLoginData(data[0]);
+    localStorage.setItem("token", JSON.stringify(data[0]));
   }
 
-
-  
   return (
     <div className="centered">
       <Container>
@@ -136,8 +127,9 @@ export default function Profile() {
                   <Text><em>{loginData.biography}</em></Text>
                 </Group>
                 <Space h="xs" />
+
                 <Button 
-                  onClick={editBio}
+                  onClick={() => setOpened(true)}
                   color="dark" 
                   size="xs" 
                   compact uppercase>
@@ -154,7 +146,7 @@ export default function Profile() {
                     label="Biography"
                     required
                   />
-                  <Button sx={(theme) => ({ marginTop: "15px"})} onClick={submitBio}
+                  <Button color="dark" sx={(theme) => ({ marginTop: "15px"})} onClick={submitBio}
                   >
                     Submit
                   </Button>
