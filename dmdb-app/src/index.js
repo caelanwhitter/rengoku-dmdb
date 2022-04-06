@@ -14,8 +14,7 @@ import Reviews from "./routes/Reviews";
 const rootElement = document.querySelector("#root");
 render(
   <HashRouter>
-    <Navbar/>
-
+    <Navbar />
     <div id="mainContent">
       <Routes>
         <Route path="/" element={<Home />} />
@@ -38,10 +37,9 @@ render(
           }
         />
       </Routes>
-      <Footer/>
+      <Footer />
     </div>
-    
-    <BttAffix/>
+    <BttAffix />
   </HashRouter>,
   rootElement
 );

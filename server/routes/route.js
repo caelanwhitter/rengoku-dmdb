@@ -462,7 +462,7 @@ router.delete("/review/delete", async (req) => {
 
 /**
  * fetchMovieInfo() takes in JSON of movies, loops through array, returns Promise of movie API data and waits for all Promises to be fulfilled
- * @param {*} movies 
+ * @param {Object} movies 
  * @returns 
  */
 const fetchMovieInfo = async (movies) => {
@@ -846,8 +846,8 @@ router.post("/hiddengems", async (req, res) => {
 
 /**
  * fetchMovieDataFromApi() takes in the API Query URL with movie title and year, fetches it and returns movieData of closest movie
- * @param {*} url 
- * @param {*} movie 
+ * @param {URL} url 
+ * @param {Object} movie 
  * @returns 
  */
 const fetchMovieDataFromApi = async (url, movie) => {
@@ -914,6 +914,12 @@ async function returnPosterURL(movie, moviePosterPath) {
   return url;
 }
 
+/**
+ * 
+ * @param {Array} moviesApiResults 
+ * @param {Object} movie 
+ * @returns 
+ */
 async function findClosestMovieJson(moviesApiResults, movie) {
   try {
 
@@ -940,11 +946,12 @@ async function findClosestMovieJson(moviesApiResults, movie) {
     return null;
   }
 }
+
 /**
  * uploadMoviePoster fetches the image from the movie poster API 
  * with the right path and uploads to Azure Blob Storage
- * @param {*} movieTitle 
- * @param {*} moviePosterPath 
+ * @param {*} posterBlobName 
+ * @param {*} moviePosterUrl 
  */
 async function uploadMoviePoster(posterBlobName, moviePosterUrl) {
   let response = await fetch(moviePosterUrl);
@@ -968,9 +975,9 @@ async function uploadMoviePoster(posterBlobName, moviePosterUrl) {
 
 /**
  * updateMovieDataToDB() find a movie by its ID, updates its description and poster
- * @param {*} movieId 
- * @param {*} movieDescription 
- * @param {*} movieBlobUrl 
+ * @param {String} movieId 
+ * @param {String} movieDescription 
+ * @param {String} movieBlobUrl 
  */
 async function updateMovieDataToDB(movieId, movieDescription, movieBlobUrl) {
   console.log("Uploading movieBlobUrl to DB: " + movieBlobUrl);
@@ -981,7 +988,7 @@ async function updateMovieDataToDB(movieId, movieDescription, movieBlobUrl) {
 
 /**
  * getMovieBlobUrl() searches for the blob and returns the Azure URL for it
- * @param {*} movieTitle 
+ * @param {Object} movieData 
  * @returns blockBlobClient.url
  */
 function getMovieBlobNameAndUrl(movieData) {
@@ -998,7 +1005,7 @@ function getMovieBlobNameAndUrl(movieData) {
 /**
  * fetchClosestMovies() takes a title and fetches a generalized query to the API querying 
  * by title and returning the results array
- * @param {*} movieTitle 
+ * @param {String} movieTitle 
  * @returns results
  */
 async function fetchClosestMovies(movieTitle) {
@@ -1016,8 +1023,8 @@ async function fetchClosestMovies(movieTitle) {
 /**
  * findClosestMovie() loops through movies array, filters only the ones 
  * with exact title and valid year and returns movie with closest matching year
- * @param {*} movies 
- * @param {*} movieTitle 
+ * @param {Array} movies 
+ * @param {String} movieTitle 
  * @param {*} movieYearQuery 
  * @returns movie
  */
@@ -1050,8 +1057,8 @@ function parseReleaseYear(releaseDate) {
 
 /**
  * equalsIgnoreCase is a helper method that returns true if both string matches (case insensitive)
- * @param {*} firstString 
- * @param {*} secondString 
+ * @param {String} firstString 
+ * @param {String} secondString 
  * @returns boolean
  */
 function equalsIgnoreCase(firstString, secondString) {

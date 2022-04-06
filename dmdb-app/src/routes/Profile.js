@@ -27,7 +27,7 @@ export default function Profile() {
     getUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   /**
    * function that refreshes the page
    */
@@ -39,7 +39,7 @@ export default function Profile() {
     console.log("Login failed" + result);
     //alert(result);
   };
-  
+
   const handleLogin = async (googleData) => {
     setLoading(v => !v);
     const res = await fetch('/api/google-login', {
@@ -57,17 +57,17 @@ export default function Profile() {
     setLoginData(data);
     localStorage.setItem('token', JSON.stringify(data));
 
-    
+
     setLoading(v => !v);
     refreshPage()
   };
-  
+
 
   const handleLogout = async response => {
     setLoading(v => !v);
     const res = await fetch("/api/v1/auth/logout", {
       method: "DELETE",
-   
+
     })
     const data = await res.json()
     setLogoutMessage(data.message);
@@ -83,7 +83,7 @@ export default function Profile() {
     setEmail(userToken.email);
   }
 
-  async function submitBio(){
+  async function submitBio() {
     setOpened(false)
     await getUser();
     const res = await fetch('/api/biography', {
@@ -128,25 +128,25 @@ export default function Profile() {
                 </Group>
                 <Space h="xs" />
 
-                <Button 
+                <Button
                   onClick={() => setOpened(true)}
-                  color="dark" 
-                  size="xs" 
+                  color="dark"
+                  size="xs"
                   compact uppercase>
-                    Edit bio
+                  Edit bio
                 </Button>
                 <Modal
                   opened={opened}
-                  onClose={()=>setOpened(false)}
+                  onClose={() => setOpened(false)}
                   title="Tell us about yourself!">
                   <Textarea
                     onChange={(event) => setBio(event.currentTarget.value)}
-                    value={bio} 
+                    value={bio}
                     placeholder="Write your biography here!"
                     label="Biography"
                     required
                   />
-                  <Button color="dark" sx={(theme) => ({ marginTop: "15px"})} onClick={submitBio}
+                  <Button color="dark" sx={(theme) => ({ marginTop: "15px" })} onClick={submitBio}
                   >
                     Submit
                   </Button>

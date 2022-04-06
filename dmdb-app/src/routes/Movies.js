@@ -298,11 +298,9 @@ export default function Movies() {
 
             <Title order={6}>Gross: {oneMovieData.gross}</Title>
             <Badge variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}>
-
               <NavLink style={{ textDecoration: 'none', color: 'black' }}
-                to={`${oneMovieData._id}/reviews`}>View Reviews</NavLink></Badge>
-             
-              
+                to={`${oneMovieData._id}/reviews`}>View Reviews</NavLink>
+            </Badge>
           </div>
         </div>
       </Modal>
@@ -310,7 +308,7 @@ export default function Movies() {
       <LoadingOverlay loaderProps={{ color: 'dark', variant: 'dots' }}
         visible={loading} />
 
-      {!loading && cards.length === 0 ? 
+      {!loading && cards.length === 0 ?
         <div>
           <Text sx={(theme) => ({ paddingTop: "20px", fontSize: "200%" })}
             weight={700} align="center">No movies found for this search!</Text>
@@ -320,7 +318,7 @@ export default function Movies() {
           <Grid className="movieGrid" gutter={80}>
             {cards}
           </Grid>
-        
+
           <div id="pagination">
             <Pagination page={activePage} onChange={changePage}
               total={totalPagination} color="dark" siblings={2} withEdges />

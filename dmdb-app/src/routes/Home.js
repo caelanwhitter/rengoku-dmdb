@@ -1,4 +1,7 @@
-import { Button, Container, Group, Image, Space, Text, ThemeIcon } from "@mantine/core";
+import {
+  Button, Container, Group,
+  Image, Space, Text, ThemeIcon
+} from "@mantine/core";
 import { Link } from "react-router-dom";
 
 //This function is used to render the featured movies of our movie database

@@ -275,7 +275,6 @@ export default function Reviews() {
             required
             max={5}
             min={0}
-
             {...form.getInputProps('rating')}
             />
 
