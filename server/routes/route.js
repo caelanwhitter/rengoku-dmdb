@@ -18,6 +18,7 @@ const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const CONTAINER_NAME = "rengokublobs";
 const ONE_MEGABYTE = 1024 * 1024;
 const uploadOptions = { bufferSize: 4 * ONE_MEGABYTE, maxBuffers: 20 };
+const ELEMS_PER_PAGE = 52;
 require("dotenv").config();
 
 /**
@@ -30,6 +31,8 @@ console.log("Connected to container " + CONTAINER_NAME + "!\n");
 
 router.use(bp.json());
 router.use(bp.urlencoded({ extended: true }));
+
+/* ROUTES */
 
 /**
  * @swagger
@@ -157,7 +160,7 @@ router.get("/getSearch", async (req, res) => {
     console.error(error.message);
     res.sendStatus(404).end();
   }
-})
+});
 
 /**
  * @swagger
@@ -205,26 +208,28 @@ router.get("/getSearch", async (req, res) => {
  *                    example: R
  */
 router.get("/getSearch/page/:pageNumber", async (req, res) => {
-  const pageNumber = req.params.pageNumber;
-  const keywordTitle = req.query.title;
-  const keywordDirector = req.query.director;
-  const keywordGenre = req.query.genre;
-  const keywordReleaseYear = req.query.releaseYear;
-  const keywordScore = req.query.score;
-  const keywordRating = req.query.rating;
-  const elemsPerPage = 52;
-  const moviesPerPage = await Movies.find({
-    title: { $regex: `${keywordTitle}`, $options: "i" },
-    director: { $regex: `${keywordDirector}`, $options: "i" },
-    genre: { $regex: `${keywordGenre}`, $options: "i" },
-    releaseYear: { $regex: `${keywordReleaseYear}`, $options: "i" },
-    score: { $regex: `${keywordScore}`, $options: "i" },
-    rating: { $regex: `${keywordRating}`, $options: "i" },
-  }).skip(elemsPerPage * (pageNumber - 1)).limit(elemsPerPage);
-
   try {
-    res.json(moviesPerPage);
+    const pageNumber = req.params.pageNumber;
+    const keywordTitle = req.query.title;
+    const keywordDirector = req.query.director;
+    const keywordGenre = req.query.genre;
+    const keywordReleaseYear = req.query.releaseYear;
+    const keywordScore = req.query.score;
+    const keywordRating = req.query.rating;
+    const moviesPerPage = await Movies.find({
+      title: { $regex: `${keywordTitle}`, $options: "i" },
+      director: { $regex: `${keywordDirector}`, $options: "i" },
+      genre: { $regex: `${keywordGenre}`, $options: "i" },
+      releaseYear: { $regex: `${keywordReleaseYear}`, $options: "i" },
+      score: { $regex: `${keywordScore}`, $options: "i" },
+      rating: { $regex: `${keywordRating}`, $options: "i" },
+    }).skip(ELEMS_PER_PAGE * (pageNumber - 1)).limit(ELEMS_PER_PAGE).sort({ "_id": 1 });
+
+    const movies = await fetchMovieInfo(moviesPerPage);
+
+    res.json(movies);
     res.end();
+
   } catch (error) {
     console.error(error.message);
     res.sendStatus(404).end();
@@ -375,98 +380,103 @@ router.get("/oneMovie/reviews", async (req, res) => {
 
 /**
  * @swagger
- * /oneMovie/fetchMovieDataFromApi?title={title}&year={year}:
- *  get:
- *    summary: Retrieve description and poster.
- *    description: Takes a Movie title and year, then
- *                 Fetches description and movie poster URL from API and returns it as a JSON.
- *    parameters:
- *      - name: title
- *        in: query
- *        required: true
- *        description: Title of the movie.
- *        schema:
- *          type: string 
- *          example: The Conjuring
- *      - name: year
- *        in: query
- *        required: false
- *        allowEmptyValue: true
- *        description: Year of release of the movie.
- *        schema:
- *          type: integer
- *          minimum: 1980
- *          maximum: 2020
- *          example: 2013
- * 
+ * /reviews:
+ *  post:
+ *    summary: Add a new review.
+ *    description: Adds a new review to the database.
+ *    requestBody:
+ *      description: Model of the review.
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              username:
+ *                type: string
+ *                example: Caelan Whitter
+ *              email:
+ *                type: string
+ *                example: caelanbuddy@gmail.com
+ *              source:
+ *                type: string
+ *                example: https://lh3.googleusercontent.com/a-/AOh14GghFrmx6q-6pCnahBumONDnedLl7kAJ66o9Iuxh=s96-c
+ *              movieId:
+ *                type: string
+ *                example: 62378512c6d65605e4776dce
+ *              subtitle:
+ *                type: string
+ *                example: Great movie!
+ *              content:
+ *                type: string
+ *                example: It was a great movie to relax to.
+ *              rating:
+ *                type: number
+ *                example: 4
+ *              datePosted:
+ *                type: string
+ *                example: Mar 31, 2022
+ *
  *    responses:
- *      '200':
- *        description: One single movie that matches the title and year specified.
- *        content:
- *          application/json:
- *            schema:
- *              type: object
- *              properties:
- *                title:
- *                  type: string
- *                  example: The Conjuring
- *                description:
- *                  type: string
- *                  example: Paranormal investigators Ed and Lorraine Warren work to help 
- *                           a family terrorized by a dark presence in their farmhouse. Forced to 
- *                           confront a powerful entity, the Warrens find themselves caught in the 
- *                           most terrifying case of their lives.
- *                poster:
- *                  type: string
- *                  example: /wVYREutTvI2tmxr6ujrHT704wGF.jpg
- *                year:
- *                  type: integer
- *                  nullable: true
- *                  minimum: 1980
- *                  maximum: 2020
- *                  example: 2013
+ *      '201':
+ *        description: Created
  */
-router.get("/oneMovie/fetchMovieDataFromApi/", async (req, res) => {
-  let movieTitle = req.query.title;
-  let movieYear = parseInt(req.query.year);
-  // eslint-disable-next-line max-len
-  let url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${movieTitle}&year=${movieYear}`;
+ router.post("/reviews", async (req, res) => {
+  const body = await req.body;
+  const doc = new Reviews({
+    username: body.username,
+    email: body.email,
+    source: body.source,
+    movieId: body.movieId,
+    content: body.content,
+    rating: body.rating,
+    datePosted: body.datePosted,
+    subtitle: body.subtitle
+  });
+  await doc.save();
+  res.status(201).json({
+    message: "Post worked!"
+  });
+})
 
-  let response = await fetch(url);
-  try {
-    if (response.ok) {
-      let moviesJsonApi = await response.json();
-      let moviesApiResults = moviesJsonApi.results;
-      let closestMovieJson = {};
-      let movieData = {};
-
-      // Checks if movie results has at least one movie. If there is, update description and poster
-      if (moviesApiResults.length !== 0) {
-        // Take first movie from results, most similar result
-        closestMovieJson = moviesApiResults[0];
-        // If there isn't, find most similar movie based 
-        // on matching original movie title and closest year.
-      } else {
-        let closestMovieResults = await fetchClosestMovies(movieTitle);
-        closestMovieJson = findClosestMovie(closestMovieResults, movieTitle, movieYear);
-      }
-
-      // Creates movieData object with title, description and poster
-      movieData = {
-        title: closestMovieJson.title,
-        description: closestMovieJson.overview,
-        poster: closestMovieJson.poster_path,
-        year: movieYear,
-      }
-      res.json(movieData);
-      res.end();
-    } else {
-      throw new Error("404: Response not OK");
+/**
+ * @swagger
+ * /reviews:
+ *  delete:
+ *    summary: Delete a specific review.
+ *    description: Deletes a review from the database.
+ *
+ *    responses:
+ *      '204':
+ *        description: No Content, Deleted
+ */
+ router.delete("/review/delete", async (req) => {
+  const body = await req.body;
+  Reviews.findByIdAndDelete(body.id, function (err) {
+    if (err) {
+      console.error(err);
     }
-  } catch (e) {
-    res.status(404).send("404: Movie API Fetch Failed!");
-  }
+    console.log("Successful deletion");
+  });
 });
+
+/**
+ * fetchMovieInfo() takes in JSON of movies, loops through array, returns Promise of movie API data and waits for all Promises to be fulfilled
+ * @param {*} movies 
+ * @returns 
+ */
+const fetchMovieInfo = async (movies) => {
+  const requests = movies.map((movie) => {
+    if ((!movie.description || movie.poster === "") && Object.keys(movie).length !== 0) {
+      const url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${movie.title}&year=${movie.releaseYear}`;
+      return fetchMovieDataFromApi(url, movie).then((response) => {
+        return response;
+      });
+    }
+    return movie;
+  });
+  return Promise.all(requests);
+}
 
 /**
  * @swagger
@@ -513,6 +523,31 @@ router.post("/oneMovie/updateMovieDataToAzure/", async (req, res) => {
 
   res.status(201).json({
     message: "POST Updating Movie to Blob Storage succeeded!"
+  });
+});
+
+router.post("/uploadMovies", async (req, res) => {
+  const body = await req.body;
+  const movies = body.movies;
+
+  for (let movie of movies) {
+
+    // If movie poster field is empty or null, update DB movie to poster as null and skip to next movie
+    if (!movie.poster) {
+      await updateMovieDataToDB(movie._id, "", null);
+      continue;
+    }
+
+    let blobData = getMovieBlobNameAndUrl(movie);
+    let doesBlobExist = await containerClient.getBlockBlobClient(blobData.posterBlobName).exists();
+    if (!doesBlobExist) {
+      await uploadMoviePoster(blobData.posterBlobName, movie.poster);
+      await updateMovieDataToDB(movie._id, movie.description, blobData.url);
+    }
+  }
+
+  res.status(201).json({
+    message: "POST Upload Movies Successful!"
   });
 });
 
@@ -579,7 +614,7 @@ router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
  *  get:
  *    summary: Retrieve all Hidden Gems.
  *    description: Returns all the Hidden Gems in the database.
- * 
+ *
  *    responses:
  *      '200':
  *        description: List of all Hidden Gems in the database.
@@ -663,7 +698,7 @@ router.get("/hiddengems", async (req, res) => {
  *        description: Genre of the Hidden Gem
  *        schema:
  *          type: string
- * 
+ *
  *    responses:
  *      '200':
  *        description: The collection of the Hidden Gem that match the criteria.
@@ -764,10 +799,10 @@ router.delete("/hiddengems", async (req, res) => {
  *              director:
  *                type: string
  *                example: Xiaoju Zhu
- *              duration: 
+ *              duration:
  *                type: number
  *                example: 120
- *              link: 
+ *              link:
  *                type: string
  *                example: www.google.com
  *              rating:
@@ -782,7 +817,7 @@ router.delete("/hiddengems", async (req, res) => {
  *              genre:
  *                type: string
  *                example: Horror
- * 
+ *
  *    responses:
  *      '201':
  *        description: Created
@@ -807,96 +842,111 @@ router.post("/hiddengems", async (req, res) => {
   });
 });
 
-/**
- * @swagger
- * /reviews:
- *  post:
- *    summary: Add a new review.
- *    description: Adds a new review to the database.
- *    requestBody:
- *      description: Model of the review.
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            type: object
- *            properties:
- *              username:
- *                type: string
- *                example: Caelan Whitter
- *              email:
- *                type: string
- *                example: caelanbuddy@gmail.com
- *              source:
- *                type: string
- *                example: https://lh3.googleusercontent.com/a-/AOh14GghFrmx6q-6pCnahBumONDnedLl7kAJ66o9Iuxh=s96-c
- *              movieId:
- *                type: string
- *                example: 62378512c6d65605e4776dce
- *              subtitle: 
- *                type: string
- *                example: Great movie!
- *              content: 
- *                type: string
- *                example: It was a great movie to relax to.
- *              rating:
- *                type: number
- *                example: 4
- *              datePosted:
- *                type: string
- *                example: Mar 31, 2022
- * 
- *    responses:
- *      '201':
- *        description: Created
- */
-router.post("/reviews", async (req, res) => {
-  const body = await req.body;
-  const doc = new Reviews({
-    username: body.username,
-    email: body.email,
-    source: body.source,
-    movieId: body.movieId,
-    content: body.content,
-    rating: body.rating,
-    datePosted: body.datePosted,
-    subtitle: body.subtitle
-  });
-  await doc.save();
-  res.status(201).json({
-    message: "Post worked!"
-  });
-})
+/* HELPER FUNCTIONS */
 
 /**
- * @swagger
- * /reviews:
- *  delete:
- *    summary: Delete a specific review.
- *    description: Deletes a review from the database.
- * 
- *    responses:
- *      '204':
- *        description: No Content, Deleted
+ * fetchMovieDataFromApi() takes in the API Query URL with movie title and year, fetches it and returns movieData of closest movie
+ * @param {*} url 
+ * @param {*} movie 
+ * @returns 
  */
-router.delete("/review/delete", async (req) => {
-  const body = await req.body;
-  Reviews.findByIdAndDelete(body.id, function (err) {
-    if (err) {
-      console.error(err);
+ const fetchMovieDataFromApi = async (url, movie) => {
+  const response = await fetch(url);
+  if (response.ok) {
+    let moviesJsonApi = await response.json();
+    let moviesApiResults = moviesJsonApi.results;
+    let closestMovieJson = {};
+    let movieData = {};
+
+    // Calls findClosestMovieJson() algorithm to determine most similar movie from API
+    closestMovieJson = await findClosestMovieJson(moviesApiResults, movie);
+
+    // Check if algorithm found a closest movie.
+    if (closestMovieJson) {
+
+      // If there is closestMovieJson, populate movieData object with description and poster
+      movieData = {
+        _id: movie._id,
+        title: movie.title,
+        director: movie.director,
+        duration: movie.duration,
+        genre: movie.genre,
+        gross: movie.gross,
+        rating: movie.rating,
+        releaseYear: movie.releaseYear,
+        score: movie.score,
+        poster: await returnPosterURL(movie, closestMovieJson.poster_path),
+        description: closestMovieJson.overview,
+      };
+    } else {
+
+      // If there is no Json of Closest Movie, leave poster and description empty
+      movieData = {
+        _id: movie._id,
+        title: movie.title,
+        director: movie.director,
+        duration: movie.duration,
+        genre: movie.genre,
+        gross: movie.gross,
+        rating: movie.rating,
+        releaseYear: movie.releaseYear,
+        score: movie.score,
+        poster: null,
+        description: "",
+      };
     }
-    console.log("Successful deletion");
-  });
-});
+    return movieData;
+  }
+}
 
+async function returnPosterURL(movie, moviePosterPath) {
+  if (!moviePosterPath) {
+    return null;
+  }
+
+  let blobData = getMovieBlobNameAndUrl(movie);
+  let url = blobData.url;
+  let doesBlobExist = await containerClient.getBlockBlobClient(blobData.posterBlobName).exists();
+  if (!doesBlobExist) {
+    let apiImageUrl = `http://image.tmdb.org/t/p/w500${moviePosterPath}`;
+    url = apiImageUrl;
+  }
+  return url;
+}
+
+async function findClosestMovieJson(moviesApiResults, movie) {
+  try {
+
+    let closestMovieJson = null;
+    // Checks if movie results has at least one movie. If there is, update description and poster
+    if (moviesApiResults.length !== 0) {
+
+      // Take first movie from results, most similar result
+      closestMovieJson = moviesApiResults[0];
+
+    } else {
+
+      // If there isn't, find most similar movie based
+      // on matching original movie title and closest year.
+      let closestMovieResults = await fetchClosestMovies(movie.title);
+
+      // If algorithm found other closest movies
+      if (closestMovieResults.length !== 0) {
+        closestMovieJson = findClosestMovie(closestMovieResults, movie.title, movie.releaseYear);
+      }
+    }
+    return closestMovieJson;
+  } catch (e) {
+    return null;
+  }
+}
 /**
  * uploadMoviePoster fetches the image from the movie poster API 
  * with the right path and uploads to Azure Blob Storage
  * @param {*} movieTitle 
  * @param {*} moviePosterPath 
  */
-async function uploadMoviePoster(posterBlobName, moviePosterPath) {
-  let moviePosterUrl = `http://image.tmdb.org/t/p/w500${moviePosterPath}`;
+async function uploadMoviePoster(posterBlobName, moviePosterUrl) {
   let response = await fetch(moviePosterUrl);
   if (response.ok) {
 
@@ -935,7 +985,7 @@ async function updateMovieDataToDB(movieId, movieDescription, movieBlobUrl) {
  * @returns blockBlobClient.url
  */
 function getMovieBlobNameAndUrl(movieData) {
-  const posterBlobName = "rengokuBlob-" + movieData.title + "-" + movieData.year + ".jpg";
+  const posterBlobName = "rengokuBlob-" + movieData.title + "-" + movieData.releaseYear + ".jpg";
   const blockBlobClient = containerClient.getBlockBlobClient(posterBlobName);
 
   let data = {
@@ -978,6 +1028,10 @@ function findClosestMovie(movies, movieTitle, movieYearQuery) {
       moviesWithExactTitle.push(movie);
     }
   });
+
+  if (moviesWithExactTitle.length === 0) {
+    return null;
+  }
 
   let closestMovie = findClosestMovieByYear(moviesWithExactTitle, movieYearQuery);
 
