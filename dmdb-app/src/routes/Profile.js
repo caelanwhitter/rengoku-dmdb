@@ -28,6 +28,13 @@ export default function Profile() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
+  /**
+   * function that refreshes the page
+   */
+  function refreshPage() {
+    window.location.reload();
+  }
+
   const handleFailed = (result) => {
     console.log("login failed" + result);
     //alert(result);
@@ -52,6 +59,7 @@ export default function Profile() {
 
     
     setLoading(v => !v);
+    refreshPage()
   };
   
 
@@ -80,6 +88,8 @@ export default function Profile() {
   }
   async function submitBio(result){
     setOpened(false)
+    await getUser();
+    console.log(email);
     const res = await fetch('/api/biography', {
       method: 'POST',
       body: JSON.stringify({
@@ -91,6 +101,8 @@ export default function Profile() {
         'Content-Type': 'application/json',
       }
     });
+    const data = await res.json();
+    console.log(data)
   }
 
 
@@ -128,7 +140,7 @@ export default function Profile() {
                 </Button>
                 <Modal
                   opened={opened}
-                  onClose={loginData.biography = bio}
+                  onClose={()=>setOpened(false)}
                   title="Tell us about yourself">
                   <Textarea
                     onChange={(event) => setBio(event.currentTarget.value)}
