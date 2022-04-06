@@ -108,7 +108,7 @@ export default function Movies() {
     setSearchOpened(false);
     let newMoviesPaginationJson = await displayAndReturnMoviesPerPage(event);
     calculateTotalPagination(newMoviesPaginationJson);
-    setPage(1);
+    setPage(DEFAULT_ACTIVE_PAGE);
   }
 
   /**
