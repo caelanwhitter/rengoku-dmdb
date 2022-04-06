@@ -44,6 +44,8 @@ router.use(bp.urlencoded({ extended: true }));
  *                 if no parameters are specified, retrieves every movie.
  *                 If a certain parameter is not needed, it must absolutely be empty, 
  *                 thus no double-quotes, single-quotes or anything the like.
+ *    tags:
+ *      - Movies
  *    parameters:
  *      - name: title
  *        in: query
@@ -169,6 +171,8 @@ router.get("/getSearch", async (req, res) => {
  *    summary: Retrieve movies per page.
  *    description: Retrieves 52 movies per specified page, minimum page is 1.
  *                 Returns the 52 movies.
+ *    tags:
+ *      - Movies
  *    parameters:
  *      - name: pageNumber
  *        in: path
@@ -242,6 +246,8 @@ router.get("/getSearch/page/:pageNumber", async (req, res) => {
  *  get:
  *    summary: Retrieve movie by ID.
  *    description: Returns the details of the movie with the specified ID.
+ *    tags:
+ *      - Movies
  *    parameters:
  *      - name: id
  *        in: path
@@ -314,6 +320,8 @@ router.get("/oneMovie", async (req, res) => {
  *  get:
  *    summary: Retrieve reviews from movie by ID.
  *    description: Returns the reviews of the movie with the specified ID.
+ *    tags:
+ *      - Reviews
  *    parameters:
  *      - name: id
  *        in: path
@@ -384,6 +392,8 @@ router.get("/oneMovie/reviews", async (req, res) => {
  *  post:
  *    summary: Add a new review.
  *    description: Adds a new review to the database.
+ *    tags:
+ *      - Reviews
  *    requestBody:
  *      description: Model of the review.
  *      required: true
@@ -445,6 +455,19 @@ router.post("/reviews", async (req, res) => {
  *  delete:
  *    summary: Delete a specific review.
  *    description: Deletes a review from the database.
+ *    tags:
+ *      - Reviews
+ *    requestBody:
+ *      description: Delete request.
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              id:
+ *                type: string
+ *                example: 142ac939501ef9348c
  *
  *    responses:
  *      '204':
@@ -461,9 +484,10 @@ router.delete("/review/delete", async (req) => {
 });
 
 /**
- * fetchMovieInfo() takes in JSON of movies, loops through array, returns Promise of movie API data and waits for all Promises to be fulfilled
- * @param {Object} movies 
- * @returns 
+ * fetchMovieInfo() takes in JSON of movies, loops through array, 
+ * returns Promise of movie API data and waits for all Promises to be fulfilled
+ * @param {JSON} movies 
+ * @returns Fulfilled promises of Movie API data
  */
 const fetchMovieInfo = async (movies) => {
   const requests = movies.map((movie) => {
@@ -485,6 +509,8 @@ const fetchMovieInfo = async (movies) => {
  *    summary: Upload new poster to Azure.
  *    description: With Request Body, 
  *                 fetches the Blob Name URL and poster and uploads it to Blob Storage.
+ *    tags:
+ *      - Movies
  *    requestBody:
  *      description: Model of the movie.
  *      required: true
@@ -526,6 +552,32 @@ router.post("/oneMovie/updateMovieDataToAzure/", async (req, res) => {
   });
 });
 
+/**
+ * @swagger
+ * /uploadMovies:
+ *  post:
+ *    summary: Upload an array of Movies.
+ *    description: With Request Body, 
+ *                 uploads an array of Movies to the database and Azure blob storage.
+ *    tags:
+ *      - Movies
+ *    requestBody:
+ *      description: Array of movies.
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              movies:
+ *                type: array
+ *                items:
+ *                  type: object
+ * 
+ *    responses:
+ *      '201':
+ *        description: POST
+ */
 router.post("/uploadMovies", async (req, res) => {
   const body = await req.body;
   const movies = body.movies;
@@ -558,6 +610,8 @@ router.post("/uploadMovies", async (req, res) => {
  *    summary: Upload movie details to database.
  *    description: With Request Body, 
  *                 fetches description and Azure URL and uploads it to database.
+ *    tags:
+ *      - Movies
  *    requestBody:
  *      description: Model of the movie.
  *      required: true
@@ -614,6 +668,8 @@ router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
  *  get:
  *    summary: Retrieve all Hidden Gems.
  *    description: Returns all the Hidden Gems in the database.
+ *    tags:
+ *      - Hidden Gems
  *
  *    responses:
  *      '200':
@@ -673,6 +729,9 @@ router.get("/hiddengems", async (req, res) => {
  *  get:
  *    summary: Retrieve Hidden Gems with criteria.
  *    description: Returns the details of the Hidden Gem with the specified criteria.
+ *    tags:
+ *      - Hidden Gems
+ * 
  *    parameters:
  *      - name: title
  *        in: query
@@ -762,6 +821,8 @@ router.get("/hiddengems/search", async (req, res) => {
  *  delete:
  *    summary: Delete a specific submission.
  *    description: Deletes a submission from the database.
+ *    tags:
+ *      - Hidden Gems
  * 
  *    responses:
  *      '204':
@@ -785,6 +846,9 @@ router.delete("/hiddengems", async (req, res) => {
  *  post:
  *    summary: Add a new Hidden Gem.
  *    description: Adds a new Hidden Gem to the database.
+ *    tags:
+ *      - Hidden Gems
+ * 
  *    requestBody:
  *      description: Model of the submission.
  *      required: true
@@ -845,10 +909,11 @@ router.post("/hiddengems", async (req, res) => {
 /* HELPER FUNCTIONS */
 
 /**
- * fetchMovieDataFromApi() takes in the API Query URL with movie title and year, fetches it and returns movieData of closest movie
+ * fetchMovieDataFromApi() takes in the API Query URL with movie title and year, 
+ * fetches it and returns movieData of closest movie
  * @param {URL} url 
  * @param {Object} movie 
- * @returns 
+ * @returns movieData of closest movie
  */
 const fetchMovieDataFromApi = async (url, movie) => {
   const response = await fetch(url);
@@ -899,6 +964,12 @@ const fetchMovieDataFromApi = async (url, movie) => {
   }
 }
 
+/**
+ * 
+ * @param {Object} movie 
+ * @param {String} moviePosterPath 
+ * @returns URL of the poster to the movie
+ */
 async function returnPosterURL(movie, moviePosterPath) {
   if (!moviePosterPath) {
     return null;
