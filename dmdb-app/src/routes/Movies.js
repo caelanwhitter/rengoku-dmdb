@@ -107,8 +107,8 @@ export default function Movies() {
   }
 
   /**
-   * 
-   * @param {Event} event 
+   * Handle the click on search event by searching and displaying
+   * @param {Event} event Click event
    */
   async function clickOnGo(event) {
     setSearchOpened(false);
@@ -119,7 +119,7 @@ export default function Movies() {
 
   /**
      * changePage() calls methods whenever detects a change of page on pagination
-     * @param {*} event 
+     * @param {Event} event Page change event
      */
   const changePage = (event) => {
     // Re-fetches the list of movies with proper page number
@@ -144,8 +144,8 @@ export default function Movies() {
 
   /**
    * getCards() returns an array of cards that displays all the movies of a certain page
-   * @param {*} moviesJson 
-   * @returns 
+   * @param {JSON} moviesJson JSON array of movies 
+   * @returns Array of Mantine Card components
    */
   async function getCards(moviesJson) {
     let cards = moviesJson.map((movie) => {
@@ -175,7 +175,7 @@ export default function Movies() {
   /**
    * uploadMovies() takes a movie array and makes a POST request to /api/uploadMovies
    * to save the movies onto the Blob storage and MongoDB database
-   * @param {*} movies 
+   * @param {Array} movies Array of movies
    */
   async function uploadMovies(movies) {
     try {

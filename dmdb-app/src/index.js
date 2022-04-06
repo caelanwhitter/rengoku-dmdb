@@ -12,6 +12,10 @@ import Profile from "./routes/Profile";
 import Reviews from "./routes/Reviews";
 
 const rootElement = document.querySelector("#root");
+
+/**
+ * Render Routes on rootElement
+ */
 render(
   <HashRouter>
     <Navbar />

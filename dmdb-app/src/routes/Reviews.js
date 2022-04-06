@@ -53,25 +53,18 @@ export default function Reviews() {
   }
 
   /**
-   * Get the title of the movie
+   * Get the title of the movie matching the ID
    */
   async function getTitle() {
     let response = await fetch('/api/oneMovie?id=' + params.movieId);
     let movieTitle = await response.json();
     setMovieTitle(movieTitle[0].title);
   }
-
-  /**
-   * function that refreshes the page
-   */
-  function refreshPage() {
-    window.location.reload();
-  }
-
+  
   /**
    * deleteReview(id) does a DELETE request with a specific id 
    * so that it deletes that review from mongo
-   * @param {String} id 
+   * @param {String} id Review ID
    */
   async function deleteReview() {
     deletedBox.remove();
@@ -106,7 +99,7 @@ export default function Reviews() {
         datePosted: date,
         subtitle: values.headline
       })
-    }).then(refreshPage())
+    }).then(window.location.reload())
   }
 
   /**
@@ -124,7 +117,7 @@ export default function Reviews() {
   }
 
   /**
-   * each review is put into a box and styled accordingly
+   * Each review is put into a box and styled accordingly
    */
   const reviews = backendData.map((element) =>
     <>
@@ -160,7 +153,7 @@ export default function Reviews() {
   );
 
   /**
-   * schema for the form to follow
+   * Schema for the form to follow
    */
   const schema = z.object({
     // eslint-disable-next-line max-len
@@ -170,7 +163,7 @@ export default function Reviews() {
   });
 
   /**
-   * set initial values to the form
+   * Set initial values to the form
    */
   const form = useForm({
     schema: zodResolver(schema),
@@ -182,12 +175,13 @@ export default function Reviews() {
   });
 
   /**
- * checked if the person is logged in by checking the local storage
- */
+   * Check if the person is logged in by checking the local storage
+   */
   let isLoggedIn = false;
   if (localStorage.getItem("token") !== null) {
     isLoggedIn = true;
   }
+  
   return (
     <>
       {isLoggedIn ?
