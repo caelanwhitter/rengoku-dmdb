@@ -112,6 +112,14 @@ footer {
   transition: 0.3s;
 }
 
+.reviewLink:hover {
+  color: yellow;
+  background-color: black;
+  opacity: 1;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
 .title {
   background-color: black;
   color: white;
