@@ -20,7 +20,7 @@ export default function Movies() {
   const [oneMovieData, setOneMovieData] = useState([{}]);
   const [cards, setCards] = useState([]);
   const [activePage, setPage] = useState(DEFAULT_ACTIVE_PAGE);
-  const [totalPagination, setTotalPagination] = useState();
+  const [totalPagination, setTotalPagination] = useState(null);
   const [opened, setOpened] = useState(false);
   const [searchopened, setSearchOpened] = useState(false);
   const [valueTitle, setValueTitle] = useState('');
@@ -32,13 +32,13 @@ export default function Movies() {
   const [, scrollTo] = useWindowScroll();
   const [loading, setLoading] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
-
+  let moviesPaginationJson = [];
 
   /**
      * useEffect() runs following methods once. Similar to ComponentDidMount()
      */
   useEffect(() => {
-    displayMoviesPerPage(activePage);
+    displayAndReturnMoviesPerPage(activePage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -54,25 +54,32 @@ export default function Movies() {
   }
 
   /**
-     * displayMoviesPerPage() fetches list of movies following pagination endpoints \
-     * and calculates totalPagination on first render
-     * @param {String} pageNumber 
-     */
-  async function displayMoviesPerPage(pageNumber) {
+   * displayAndReturnMoviesPerPage() fetches list of movies following pagination endpoints
+   * and calculates totalPagination on first render.
+   * Returns the JSON of movies if needed
+   * @param {*} pageNumber 
+   * @returns 
+   */
+  async function displayAndReturnMoviesPerPage(pageNumber) {
+
+    // Loads movies from specific page number from backend and sets the cards for them
     setLoading((v) => !v);
     let response = await fetch('/api/getSearch/page/' + pageNumber + '?title='
       + valueTitle + '&director=' + valueDirector + '&genre=' + valueGenre
       + '&releaseYear=' + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
-    let moviesPaginationJson = await response.json();
+    moviesPaginationJson = await response.json();
     setCards(await getCards(moviesPaginationJson));
     setLoading((v) => !v);
 
-    await uploadMovies(moviesPaginationJson);
-
     // Calls calculateTotalPagination() if totalPagination not initialized yet yet
-    if (totalPagination === undefined) {
+    if (!totalPagination) {
       await calculateTotalPagination(moviesPaginationJson);
     }
+
+    // Once movies are loaded, loop through movies and upload any movies who are missing poster and description to DB and Azure
+    await uploadMovies(moviesPaginationJson);
+
+    return moviesPaginationJson;
   }
 
   /**
@@ -91,9 +98,9 @@ export default function Movies() {
   }
 
   async function clickOnGo(event) {
-    setTotalPagination(undefined);
-    displayMoviesPerPage(event);
     setSearchOpened(false);
+    let newMoviesPaginationJson = await displayAndReturnMoviesPerPage(event);
+    calculateTotalPagination(newMoviesPaginationJson);
   }
 
   /**
@@ -102,7 +109,7 @@ export default function Movies() {
      */
   const changePage = (event) => {
     // Re-fetches the list of movies with proper page number
-    displayMoviesPerPage(event);
+    displayAndReturnMoviesPerPage(event);
 
     // Sets activePage to update styles of Pagination
     setPage(event);
@@ -161,9 +168,8 @@ export default function Movies() {
    * @returns 
    */
   async function getCards(moviesJson) {
-    let cards = [];
-    for (let movie of moviesJson) {
-      cards.push(
+    let cards = moviesJson.map((movie) => {
+      return (
         <Grid.Col key={movie._id} span={3}>
           <Card onClick={() => {
             getDetails(movie._id); setModalLoading(v => !v); setOpened(true);
@@ -182,7 +188,7 @@ export default function Movies() {
           </Card>
         </Grid.Col>
       );
-    }
+    });
     return cards;
   }
 
@@ -205,11 +211,6 @@ export default function Movies() {
     } catch (e) {
       console.error(e);
     }
-  }
-
-  let isLoggedIn = false;
-  if (localStorage.getItem("token") !== null) {
-    isLoggedIn = true;
   }
 
   return (
