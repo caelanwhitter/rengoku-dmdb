@@ -32,6 +32,8 @@ console.log("Connected to container " + CONTAINER_NAME + "!\n");
 router.use(bp.json());
 router.use(bp.urlencoded({ extended: true }));
 
+/* ROUTES */
+
 /**
  * @swagger
  * /getSearch?title={title}&director={director}&genre={genre}&releaseYear={releaseYear}&score={score}&rating={rating}:
@@ -376,7 +378,50 @@ router.get("/oneMovie/reviews", async (req, res) => {
   }
 })
 
-router.post("/reviews", async (req, res) => {
+/**
+ * @swagger
+ * /reviews:
+ *  post:
+ *    summary: Add a new review.
+ *    description: Adds a new review to the database.
+ *    requestBody:
+ *      description: Model of the review.
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              username:
+ *                type: string
+ *                example: Caelan Whitter
+ *              email:
+ *                type: string
+ *                example: caelanbuddy@gmail.com
+ *              source:
+ *                type: string
+ *                example: https://lh3.googleusercontent.com/a-/AOh14GghFrmx6q-6pCnahBumONDnedLl7kAJ66o9Iuxh=s96-c
+ *              movieId:
+ *                type: string
+ *                example: 62378512c6d65605e4776dce
+ *              subtitle:
+ *                type: string
+ *                example: Great movie!
+ *              content:
+ *                type: string
+ *                example: It was a great movie to relax to.
+ *              rating:
+ *                type: number
+ *                example: 4
+ *              datePosted:
+ *                type: string
+ *                example: Mar 31, 2022
+ *
+ *    responses:
+ *      '201':
+ *        description: Created
+ */
+ router.post("/reviews", async (req, res) => {
   const body = await req.body;
   const doc = new Reviews({
     username: body.username,
@@ -394,8 +439,18 @@ router.post("/reviews", async (req, res) => {
   });
 })
 
-
-router.delete("/review/delete", async (req) => {
+/**
+ * @swagger
+ * /reviews:
+ *  delete:
+ *    summary: Delete a specific review.
+ *    description: Deletes a review from the database.
+ *
+ *    responses:
+ *      '204':
+ *        description: No Content, Deleted
+ */
+ router.delete("/review/delete", async (req) => {
   const body = await req.body;
   Reviews.findByIdAndDelete(body.id, function (err) {
     if (err) {
@@ -422,109 +477,6 @@ const fetchMovieInfo = async (movies) => {
   });
   return Promise.all(requests);
 }
-
-/**
- * fetchMovieDataFromApi() takes in the API Query URL with movie title and year, fetches it and returns movieData of closest movie
- * @param {*} url 
- * @param {*} movie 
- * @returns 
- */
-const fetchMovieDataFromApi = async (url, movie) => {
-  const response = await fetch(url);
-  if (response.ok) {
-    let moviesJsonApi = await response.json();
-    let moviesApiResults = moviesJsonApi.results;
-    let closestMovieJson = {};
-    let movieData = {};
-
-    // Calls findClosestMovieJson() algorithm to determine most similar movie from API
-    closestMovieJson = await findClosestMovieJson(moviesApiResults, movie);
-
-    // Check if algorithm found a closest movie.
-    if (closestMovieJson) {
-
-      // If there is closestMovieJson, populate movieData object with description and poster
-      movieData = {
-        _id: movie._id,
-        title: movie.title,
-        director: movie.director,
-        duration: movie.duration,
-        genre: movie.genre,
-        gross: movie.gross,
-        rating: movie.rating,
-        releaseYear: movie.releaseYear,
-        score: movie.score,
-        poster: await returnPosterURL(movie, closestMovieJson.poster_path),
-        description: closestMovieJson.overview,
-      };
-    } else {
-
-      // If there is no Json of Closest Movie, leave poster and description empty
-      movieData = {
-        _id: movie._id,
-        title: movie.title,
-        director: movie.director,
-        duration: movie.duration,
-        genre: movie.genre,
-        gross: movie.gross,
-        rating: movie.rating,
-        releaseYear: movie.releaseYear,
-        score: movie.score,
-        poster: null,
-        description: "",
-      };
-    }
-    return movieData;
-  }
-}
-
-/**
- * fetchMovieDataFromApi endpoint takes a Movie Title and Year, 
- * fetches description and movie poster URL from API and returns it as a JSON
- */
-// async function fetchMovieDataFromApi(movieTitle, movieYear) {
-//   // eslint-disable-next-line max-len
-//   let url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${movieTitle}&year=${movieYear}`;
-
-//   let response = await fetch(url);
-//   if (response.ok) {
-//     let moviesJsonApi = await response.json();
-//     let moviesApiResults = moviesJsonApi.results;
-//     let closestMovieJson = {};
-//     let movieData = {};
-
-//     // Checks if movie results has at least one movie. If there is, update description and poster
-//     if (moviesApiResults.length !== 0) {
-//       // Take first movie from results, most similar result
-//       closestMovieJson = moviesApiResults[0];
-//     } else {
-//       // If there isn't, find most similar movie based
-//       // on matching original movie title and closest year.
-//       let closestMovieResults = await fetchClosestMovies(movieTitle);
-
-//       // If algorithm found other closest movies
-//       if (closestMovieResults.length !== 0) {
-//         closestMovieJson = findClosestMovie(closestMovieResults, movieTitle, movieYear);
-//       }
-//     }
-
-//     // Check if algorithm found a closest movie. If not, keep movieData empty
-//     if (closestMovieJson) {
-
-//       // Populate movieData object with title, description and poster
-//       movieData = {
-//         title: closestMovieJson.title,
-//         description: closestMovieJson.overview,
-//         poster: returnMoviePoster(closestMovieJson.poster_path),
-//         year: movieYear,
-//       }
-//     }
-
-//     return movieData;
-//   } else {
-//     throw new Error("404: Response not OK");
-//   }
-// }
 
 /**
  * @swagger
@@ -655,23 +607,6 @@ router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
     message: "POST Updating Movie to Database succeeded!"
   });
 });
-
-async function returnPosterURL(movie, moviePosterPath) {
-  if (!moviePosterPath) {
-    return null;
-  }
-
-  let blobData = getMovieBlobNameAndUrl(movie);
-  let url = blobData.url;
-  let doesBlobExist = await containerClient.getBlockBlobClient(blobData.posterBlobName).exists();
-  if (!doesBlobExist) {
-    let apiImageUrl = `http://image.tmdb.org/t/p/w500${moviePosterPath}`;
-    // await uploadMoviePoster(blobData.posterBlobName, apiImageUrl);
-    // await updateMovieDataToDB(movie._id, movieDescription, url);
-    url = apiImageUrl;
-  }
-  return url;
-}
 
 /**
  * @swagger
@@ -907,88 +842,77 @@ router.post("/hiddengems", async (req, res) => {
   });
 });
 
-/**
- * @swagger
- * /reviews:
- *  post:
- *    summary: Add a new review.
- *    description: Adds a new review to the database.
- *    requestBody:
- *      description: Model of the review.
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            type: object
- *            properties:
- *              username:
- *                type: string
- *                example: Caelan Whitter
- *              email:
- *                type: string
- *                example: caelanbuddy@gmail.com
- *              source:
- *                type: string
- *                example: https://lh3.googleusercontent.com/a-/AOh14GghFrmx6q-6pCnahBumONDnedLl7kAJ66o9Iuxh=s96-c
- *              movieId:
- *                type: string
- *                example: 62378512c6d65605e4776dce
- *              subtitle:
- *                type: string
- *                example: Great movie!
- *              content:
- *                type: string
- *                example: It was a great movie to relax to.
- *              rating:
- *                type: number
- *                example: 4
- *              datePosted:
- *                type: string
- *                example: Mar 31, 2022
- *
- *    responses:
- *      '201':
- *        description: Created
- */
-router.post("/reviews", async (req, res) => {
-  const body = await req.body;
-  const doc = new Reviews({
-    username: body.username,
-    email: body.email,
-    source: body.source,
-    movieId: body.movieId,
-    content: body.content,
-    rating: body.rating,
-    datePosted: body.datePosted,
-    subtitle: body.subtitle
-  });
-  await doc.save();
-  res.status(201).json({
-    message: "Post worked!"
-  });
-})
+/* HELPER FUNCTIONS */
 
 /**
- * @swagger
- * /reviews:
- *  delete:
- *    summary: Delete a specific review.
- *    description: Deletes a review from the database.
- *
- *    responses:
- *      '204':
- *        description: No Content, Deleted
+ * fetchMovieDataFromApi() takes in the API Query URL with movie title and year, fetches it and returns movieData of closest movie
+ * @param {*} url 
+ * @param {*} movie 
+ * @returns 
  */
-router.delete("/review/delete", async (req) => {
-  const body = await req.body;
-  Reviews.findByIdAndDelete(body.id, function (err) {
-    if (err) {
-      console.error(err);
+ const fetchMovieDataFromApi = async (url, movie) => {
+  const response = await fetch(url);
+  if (response.ok) {
+    let moviesJsonApi = await response.json();
+    let moviesApiResults = moviesJsonApi.results;
+    let closestMovieJson = {};
+    let movieData = {};
+
+    // Calls findClosestMovieJson() algorithm to determine most similar movie from API
+    closestMovieJson = await findClosestMovieJson(moviesApiResults, movie);
+
+    // Check if algorithm found a closest movie.
+    if (closestMovieJson) {
+
+      // If there is closestMovieJson, populate movieData object with description and poster
+      movieData = {
+        _id: movie._id,
+        title: movie.title,
+        director: movie.director,
+        duration: movie.duration,
+        genre: movie.genre,
+        gross: movie.gross,
+        rating: movie.rating,
+        releaseYear: movie.releaseYear,
+        score: movie.score,
+        poster: await returnPosterURL(movie, closestMovieJson.poster_path),
+        description: closestMovieJson.overview,
+      };
+    } else {
+
+      // If there is no Json of Closest Movie, leave poster and description empty
+      movieData = {
+        _id: movie._id,
+        title: movie.title,
+        director: movie.director,
+        duration: movie.duration,
+        genre: movie.genre,
+        gross: movie.gross,
+        rating: movie.rating,
+        releaseYear: movie.releaseYear,
+        score: movie.score,
+        poster: null,
+        description: "",
+      };
     }
-    console.log("Successful deletion");
-  });
-});
+    return movieData;
+  }
+}
 
+async function returnPosterURL(movie, moviePosterPath) {
+  if (!moviePosterPath) {
+    return null;
+  }
+
+  let blobData = getMovieBlobNameAndUrl(movie);
+  let url = blobData.url;
+  let doesBlobExist = await containerClient.getBlockBlobClient(blobData.posterBlobName).exists();
+  if (!doesBlobExist) {
+    let apiImageUrl = `http://image.tmdb.org/t/p/w500${moviePosterPath}`;
+    url = apiImageUrl;
+  }
+  return url;
+}
 
 async function findClosestMovieJson(moviesApiResults, movie) {
   try {
