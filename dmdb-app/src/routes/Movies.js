@@ -236,7 +236,7 @@ export default function Movies() {
   }
  
   return (
-    
+
     <>
       <nav id="searchNav">
         <Link className="tabLink"
