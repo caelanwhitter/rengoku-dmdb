@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 /**
  * route.js holds all the possible routes of the router and sends back data
- * @author Daniel Lam, Caelan Whitter
+ * @author Daniel Lam, Caelan Whitter, Danilo Zhu
  */
 const express = require("express");
 const router = express.Router();
@@ -734,21 +734,39 @@ router.get("/hiddengems", async (req, res) => {
 
 /**
  * @swagger
- * /hiddengems?id={id}:
+ * /hiddengems/search?title={title}&director={director}&rating={rating}&genre={genre}:
  *  get:
- *    summary: Retrieve details from Hidden Gem by ID.
- *    description: Returns the details of the Hidden Gem with the specified ID.
+ *    summary: Retrieve Hidden Gems with criteria.
+ *    description: Returns the details of the Hidden Gem with the specified criteria.
  *    parameters:
- *      - name: id
+ *      - name: title
  *        in: query
- *        required: true
- *        description: ID of the Hidden Gem.
+ *        required: false
+ *        description: Title of the Hidden Gem
+ *        schema:
+ *          type: string
+ *      - name: director
+ *        in: query
+ *        required: false
+ *        description: Director of the Hidden Gem
+ *        schema:
+ *          type: string
+ *      - name: rating
+ *        in: query
+ *        required: false
+ *        description: Age rating of the Hidden Gem
+ *        schema:
+ *          type: string
+ *      - name: genre
+ *        in: query
+ *        required: false
+ *        description: Genre of the Hidden Gem
  *        schema:
  *          type: string
  *
  *    responses:
  *      '200':
- *        description: The details of the Hidden Gem that matches the ID specified.
+ *        description: The collection of the Hidden Gem that match the criteria.
  *        content:
  *          application/json:
  *            schema:
@@ -786,18 +804,45 @@ router.get("/hiddengems", async (req, res) => {
  *                    type: string
  *                    example: Mar 31, 2022
  */
-router.get("/hiddengems", async (req, res) => {
-  const id = req.query.id;
-  const hiddengem = await Submissions.find({ "_id": id });
+router.get("/hiddengems/search", async (req, res) => {
+  const hiddengems = await Submissions.find({
+    title: { $regex: `${req.query.title}`, $options: "i" },
+    director: { $regex: `${req.query.director}`, $options: "i" },
+    genre: { $regex: `${req.query.genre}`, $options: "i" },
+    rating: { $regex: `${req.query.rating}`, $options: "i" }
+  });
 
   try {
-    res.json(hiddengem);
+    res.json(hiddengems);
     res.end();
   } catch (err) {
     console.error(err.message);
     res.sendStatus(404).end();
   }
 })
+
+/**
+ * @swagger
+ * /hiddengems:
+ *  delete:
+ *    summary: Delete a specific submission.
+ *    description: Deletes a submission from the database.
+ * 
+ *    responses:
+ *      '204':
+ *        description: No Content, Deleted
+ */
+router.delete("/hiddengems", async (req, res) => {
+  const body = await req.body;
+
+  Submissions.findByIdAndDelete(body.id, function (err) {
+    if (err) {
+      console.error(err);
+    }
+    console.log("Successfully deleted!");
+    res.sendStatus(203).end();
+  });
+});
 
 /**
  * @swagger
@@ -852,7 +897,8 @@ router.post("/hiddengems", async (req, res) => {
     rating: body.rating,
     releaseDate: body.releaseDate,
     title: body.title,
-    genre: body.genre
+    genre: body.genre,
+    userid: body.userid
   });
 
   await hg.save();

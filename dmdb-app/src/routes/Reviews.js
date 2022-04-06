@@ -1,18 +1,13 @@
 import {
-  Avatar, Badge, Box, Button, Drawer, Group,
-  NumberInput, Spoiler, Text, Textarea,
-  TextInput, Modal, useMantineTheme, Title,
-  LoadingOverlay, Alert
+  Alert, Avatar, Badge, Box, Button, Drawer, Group,
+  LoadingOverlay, Modal, NumberInput, Spoiler, Text,
+  Textarea, TextInput, Title, useMantineTheme
 } from '@mantine/core';
+import { useForm, zodResolver } from '@mantine/form';
 import { TrashIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from 'react';
-import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
-import { useForm,  zodResolver} from '@mantine/form';
+import { Link, useParams } from "react-router-dom";
 import { z } from 'zod';
-
-
-
 
 export default function Reviews() {
   //Initializes variables and sets up "settters to variables"
@@ -29,7 +24,6 @@ export default function Reviews() {
   const [deletedBox, setDeletedBox] = useState("");
   const [deletedData, setDeletedData] = useState("");
   const [loading, setLoading] = useState(false);
-  
 
   const date = new Date().
     toLocaleDateString('en-us', { year: "numeric", month: "short", day: "numeric" })
@@ -42,8 +36,6 @@ export default function Reviews() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
-
   /**
  * fetchReviews() fetches list of reviews for specific movie
  */
@@ -53,7 +45,6 @@ export default function Reviews() {
     let moviesPaginationJson = await response.json();
     setBackendData(moviesPaginationJson);
     setLoading((v) => !v);
-
   }
 
   /**
@@ -95,7 +86,6 @@ export default function Reviews() {
    * insertReview() does a POST request to insert a review into the database
    */
   async function insertReview(values) {
-  
     await fetch('/api/reviews', {
       method: 'POST',
       headers: {
@@ -119,11 +109,13 @@ export default function Reviews() {
    */
   async function getUser() {
     const tokenString = localStorage.getItem("token");
-    const userToken = JSON.parse(tokenString);
+    if (tokenString !== null) {
+      const userToken = JSON.parse(tokenString);
 
-    setUsername(userToken.name);
-    setEmail(userToken.email);
-    setSource(userToken.source);
+      setUsername(userToken.name);
+      setEmail(userToken.email);
+      setSource(userToken.source);
+    }
   }
 
   /**
@@ -131,8 +123,6 @@ export default function Reviews() {
    */
   const reviews = backendData.map((element) =>
     <>
-    
-
       <Box key={element._id} sx={(theme) => ({
         backgroundColor: "#f6f6f5",
         textAlign: 'center',
@@ -148,7 +138,7 @@ export default function Reviews() {
           hideLabel="Hide"> {element.content} </Spoiler>
 
         <Group position="center" >
-          <Avatar src={element.source}/>
+          <Avatar src={element.source} />
           <Text>{element.username}</Text>
           <Text>|</Text>
           <Text>{element.datePosted}</Text>
@@ -158,14 +148,10 @@ export default function Reviews() {
             setDeletedBox(document.getElementById(event.target.id).parentElement)
             setDeletedData(event.target.id)
             setOpenedDel(true)
-          }} to={{}}size="xl" id={element._id} /></div>
+          }} to={{}} size="xl" id={element._id} /></div>
         }
-
-
-   
-        
-        
-      </Box></>
+      </Box>
+    </>
   );
 
   /**
@@ -173,11 +159,10 @@ export default function Reviews() {
    */
   const schema = z.object({
     // eslint-disable-next-line max-len
-    headline: z.string().min(5, { message: 'Name should have at least 2 letters' }).max(50, {message: 'Headline should be less than 50 characters'}),
+    headline: z.string().min(5, { message: 'Name should have at least 2 letters' }).max(50, { message: 'Headline should be less than 50 characters' }),
     // eslint-disable-next-line max-len
-    content: z.string().min(150, { message: 'Your review is too short. It needs to contain at least 150 characters.' }),
+    content: z.string().max(10000, { message: 'Your review is too long. It needs to contain less than 5000 characters.' }),
   });
-
 
   /**
    * set initial values to the form
@@ -204,9 +189,7 @@ export default function Reviews() {
         <Text align="center" className="reviewLink" size="xl"
           onClick={() => setOpenedReview(true)}>+ Add New Review</Text> :
         <Text align="center" className="reviewLink" size="xl" component={Link}
-          to="/profile">+Login to Add New Review</Text>}
-
-          
+          to="/profile">+ Login to Add New Review</Text>}
 
       <Modal
         transition="slide-right"
@@ -220,7 +203,7 @@ export default function Reviews() {
       >
         <Group grow>
           <Button color="green" onClick={() => deleteReview()}>Yes</Button>
-          <Button color="red"onClick={() => setOpenedDel(false)}> No </Button>
+          <Button color="red" onClick={() => setOpenedDel(false)}> No </Button>
         </Group>
 
       </Modal>
@@ -238,26 +221,25 @@ export default function Reviews() {
           <Button color="green" onClick={() => insertReview()}>Yes</Button>
           <Button color="red" onClick={() => setOpenedSub(false)}> No </Button>
         </Group>
-      
+
       </Modal>
       <Text sx={(theme) => ({ paddingTop: "10px", fontSize: "300%" })}
         weight={700} underline align="center">{movieTitle}</Text>
       {reviews.length === 0 ?
         <div style={{ display: "flex" }}>
-          <Alert sx={(theme) => ({ textAlign:"center", margin: "auto", width:"70%"})}
+          <Alert sx={(theme) => ({ textAlign: "center", margin: "auto", width: "70%" })}
             title="No Reviews!" color="gray">
-           This is Terrible! Add some of your own to fill up the page!
+            This is Terrible! Add some of your own to fill up the page!
           </Alert>
-        </div> 
+        </div>
         :
         <div style={{ display: "flex" }}>
-          <div style={{ margin: "auto", width:"70%"}}>{reviews}</div>
-        </div> 
+          <div style={{ margin: "auto", width: "70%" }}>{reviews}</div>
+        </div>
       }
-    
+
       <Drawer
         opened={openedReview}
-        
         onClose={() => setOpenedReview(false)}
         title={<Title order={1}>Add New Review</Title>}
         padding="lg"
@@ -269,7 +251,7 @@ export default function Reviews() {
             direction="column"
             grow
           >
-           
+
             <TextInput
               placeholder="Headline"
               label="Review Headline"
@@ -288,12 +270,12 @@ export default function Reviews() {
 
             <NumberInput sx={(theme) => ({
               width: "25%", margin: "auto", padding: "10px"
-            })} 
+            })}
             label="Star Rating"
             required
             max={5}
             min={0}
-              
+
             {...form.getInputProps('rating')}
             />
 
