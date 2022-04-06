@@ -88,13 +88,20 @@ export default function Movies() {
      * @param {JSON} moviesPaginationJson 
      */
   async function calculateTotalPagination(moviesPaginationJson) {
-    let response = await fetch('/api/getSearch?title=' + valueTitle + '&director='
-      + valueDirector + '&genre=' + valueGenre + '&releaseYear='
-      + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
-    let allMoviesJson = await response.json();
-    const totalMoviePages = Math.ceil(allMoviesJson.length / moviesPaginationJson.length);
+    let currentMoviesLength = moviesPaginationJson.length;
 
-    setTotalPagination(totalMoviePages);
+    // Check if currentMoviesLength is 0, meaning that there are no movies in search and pagination should be set to 1.
+    if (currentMoviesLength !== 0) {
+      let response = await fetch('/api/getSearch?title=' + valueTitle + '&director='
+        + valueDirector + '&genre=' + valueGenre + '&releaseYear='
+        + valueReleaseYear + '&score=' + valueScore + '&rating=' + valueRating);
+      let allMoviesJson = await response.json();
+      const totalMoviePages = Math.ceil(allMoviesJson.length / currentMoviesLength);
+
+      setTotalPagination(totalMoviePages);
+    } else {
+      setTotalPagination(1);
+    }
   }
 
   async function clickOnGo(event) {
