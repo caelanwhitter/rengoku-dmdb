@@ -108,6 +108,7 @@ export default function Movies() {
     setSearchOpened(false);
     let newMoviesPaginationJson = await displayAndReturnMoviesPerPage(event);
     calculateTotalPagination(newMoviesPaginationJson);
+    setPage(1);
   }
 
   /**
@@ -134,40 +135,6 @@ export default function Movies() {
       clickOnGo(e)
     }
   }
-
-  // function getCards(moviesJson) {
-
-  //   let cards = moviesJson.map((movie) => {
-  //     // Checks if movie description and poster are missing 
-  //     // and checks if movie isn't an empty object
-  //     if ((!movie.description || movie.poster === "") && Object.keys(movie).length !== 0) {
-  //       /*TO-DO: You cannot add multiple async calls here because map doesn't support
-  //        async functions so anything returning a Promise won't work. 
-  //        Mitigated through calling one function that will run all the async functions instead*/
-  //       updateMovieDetails(movie);
-  //     }
-  //     return (
-  //       <Grid.Col key={movie._id} span={3}>
-  //         <Card onClick={() => {
-  //           getDetails(movie._id); setModalLoading(v => !v); setOpened(true);
-  //         }} style={{ cursor: "pointer" }} shadow="md" withBorder={true}>
-  //           <Card.Section>
-  //             <Image src={movie.poster} height={movie.poster ? "100%" : 375}
-  //               width={movie.poster ? "100%" : 324} alt={movie.title + " Poster"} withPlaceholder />
-  //           </Card.Section>
-
-  //           <Space h="sm" />
-  //           <Text weight={600}>{movie.title}</Text>
-  //           <Group position="apart">
-  //             <Text size="sm">{movie.director}</Text>
-  //             <Badge color="dark">{movie.releaseYear}</Badge>
-  //           </Group>
-  //         </Card>
-  //       </Grid.Col>
-  //     );
-  //   });
-  //   return cards;
-  // }
 
   /**
    * getCards() returns an array of cards that displays all the movies of a certain page
@@ -356,7 +323,7 @@ export default function Movies() {
         
           <div id="pagination">
             <Pagination page={activePage} onChange={changePage}
-              total={totalPagination} color="dark" sibilings={1} withEdges />
+              total={totalPagination} color="dark" siblings={2} withEdges />
           </div>
         </div>
       }
