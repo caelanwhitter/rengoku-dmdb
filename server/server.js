@@ -13,13 +13,22 @@ dotenv.config();
 
 const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
 const app = require("./app");
+const res = require("express/lib/response");
+const req = require("express/lib/request");
 
 app.use(session({
   secret: process.env.SECRET,
   resave: true,
-  saveUninitialized: true
+  saveUninitialized: false
 
 }));
+
+app.use(async (req, res, next) => {
+  
+  const user = await User.find({email:  req.session.userId })
+  req.user = user
+  next()
+})
 
 /**
  * @swagger
@@ -39,11 +48,13 @@ app.post("/api/google-login", async (req, res) => {
     audience: process.env.CLIENT_ID,
   });
   const { name, email, picture, biography } = ticket.getPayload();
-  req.session.userId = email;
   let user;
 
   const findUser = await getUser(email);
+  req.session.userId = email;
 
+  console.log(req.session.userId);
+ 
   if (findUser.length === 0) {
 
     user = new User({
@@ -54,6 +65,8 @@ app.post("/api/google-login", async (req, res) => {
     });
     await user.save();
     try {
+      
+
       res.json(user);
       res.end();
     } catch (error) {
@@ -77,6 +90,9 @@ app.post("/api/google-login", async (req, res) => {
   }
 })
 
+
+
+
 app.post("/api/biography", async (req, res) => {
   const body = req.body;
   await User.updateOne(
@@ -84,7 +100,7 @@ app.post("/api/biography", async (req, res) => {
     { $set: { "biography": body.biography } },
     { upsert: true }
   );
-  
+  console.log(req.user);
   const user = await getUser(body.email);
   try {
     res.json(user);
@@ -95,7 +111,11 @@ app.post("/api/biography", async (req, res) => {
   }
 });
 
+
+
+
 app.delete("/api/v1/auth/logout", async (req, res) => {
+  console.log(req.user);
   await req.session.destroy()
   res.status(200)
   res.json({
@@ -109,6 +129,9 @@ app.delete("/api/v1/auth/logout", async (req, res) => {
  * @returns 
  */
 async function getUser(email) {
+  if (req.user !== undefined) {
+    console.log(req.session.userId);
+  }
   const findUser = await User.find({ "email": email });
   return findUser;
 }

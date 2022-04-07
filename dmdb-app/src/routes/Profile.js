@@ -79,8 +79,11 @@ export default function Profile() {
 
   async function getUser() {
     const tokenString = localStorage.getItem("token");
-    const userToken = JSON.parse(tokenString);
-    setEmail(userToken.email);
+    if (tokenString !== null) {
+      const userToken = JSON.parse(tokenString);
+      setEmail(userToken.email);
+
+    }
   }
 
   async function submitBio(){

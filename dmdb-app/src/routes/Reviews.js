@@ -108,6 +108,11 @@ export default function Reviews() {
    * Get the username, email and image src from local storage
    */
   async function getUser() {
+
+    let response = await fetch('/api/useSessionInstead');
+    let moviesPaginationJson = await response.json();
+    console.log(moviesPaginationJson);
+
     const tokenString = localStorage.getItem("token");
     if (tokenString !== null) {
       const userToken = JSON.parse(tokenString);

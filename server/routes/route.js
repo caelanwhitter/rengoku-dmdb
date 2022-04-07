@@ -1072,4 +1072,17 @@ function findClosestMovieByYear(movies, movieYearQuery) {
   return closestMovie;
 }
 
+
+router.get("/api/useSessionInstead", async (req, res) => {
+ 
+  try {
+    res.json(req.user);
+    res.end();
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(404).end();
+  }
+});
+
+
 module.exports = router;
