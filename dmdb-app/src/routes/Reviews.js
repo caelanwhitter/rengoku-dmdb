@@ -60,7 +60,7 @@ export default function Reviews() {
     let movieTitle = await response.json();
     setMovieTitle(movieTitle[0].title);
   }
-  
+
   /**
    * deleteReview(id) does a DELETE request with a specific id 
    * so that it deletes that review from mongo
@@ -157,7 +157,7 @@ export default function Reviews() {
    */
   const schema = z.object({
     // eslint-disable-next-line max-len
-    headline: z.string().min(5, { message: 'Name should have at least 2 letters' }).max(50, { message: 'Headline should be less than 50 characters' }),
+    headline: z.string().min(5, { message: 'Headline should have at least 5 characters.' }).max(50, { message: 'Headline should be less than 50 characters.' }),
     // eslint-disable-next-line max-len
     content: z.string().max(10000, { message: 'Your review is too long. It needs to contain less than 5000 characters.' }),
   });
@@ -181,7 +181,7 @@ export default function Reviews() {
   if (localStorage.getItem("token") !== null) {
     isLoggedIn = true;
   }
-  
+
   return (
     <>
       {isLoggedIn ?

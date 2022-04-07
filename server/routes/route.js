@@ -509,56 +509,6 @@ const fetchMovieInfo = async (movies) => {
 
 /**
  * @swagger
- * /oneMovie/updateMovieDataToAzure:
- *  post:
- *    summary: Upload new poster to Azure.
- *    description: With Request Body, 
- *                 fetches the Blob Name URL and poster and uploads it to Blob Storage.
- *    tags:
- *      - Movies
- *    requestBody:
- *      description: Model of the movie.
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            type: object
- *            properties:
- *              title:
- *                type: string
- *                example: The Conjuring
- *              description: 
- *                type: string
- *                example: Paranormal investigators Ed and Lorraine Warren work to help 
- *                         a family terrorized by a dark presence in their farmhouse. Forced to 
- *                         confront a powerful entity, the Warrens find themselves caught in the 
- *                         most terrifying case of their lives.
- *              year: 
- *                type: integer
- *                minimum: 1980
- *                maximum: 2020
- *                example: 2013
- *              poster:
- *                type: string
- *                example: /wVYREutTvI2tmxr6ujrHT704wGF.jpg
- * 
- *    responses:
- *      '201':
- *        description: Created
- */
-router.post("/oneMovie/updateMovieDataToAzure/", async (req, res) => {
-  const requestBody = await req.body;
-
-  let blobData = getMovieBlobNameAndUrl(requestBody);
-  await uploadMoviePoster(blobData.posterBlobName, requestBody.poster);
-
-  res.status(201).json({
-    message: "POST Updating Movie to Blob Storage succeeded!"
-  });
-});
-
-/**
- * @swagger
  * /uploadMovies:
  *  post:
  *    summary: Upload an array of Movies.
@@ -605,65 +555,6 @@ router.post("/uploadMovies", async (req, res) => {
 
   res.status(201).json({
     message: "POST Upload Movies Successful!"
-  });
-});
-
-/**
- * @swagger
- * /oneMovie/updateMovieDataToDB:
- *  post:
- *    summary: Upload movie details to database.
- *    description: With Request Body, 
- *                 fetches description and Azure URL and uploads it to database.
- *    tags:
- *      - Movies
- *    requestBody:
- *      description: Model of the movie.
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            type: object
- *            properties:
- *              id:
- *                type: string
- *                example: 62378512c6d65605e4776dce
- *              title:
- *                type: string
- *                example: The Conjuring
- *              description: 
- *                type: string
- *                example: Paranormal investigators Ed and Lorraine Warren work to help 
- *                         a family terrorized by a dark presence in their farmhouse. Forced to 
- *                         confront a powerful entity, the Warrens find themselves caught in the 
- *                         most terrifying case of their lives.
- *              year: 
- *                type: integer
- *                minimum: 1980
- *                maximum: 2020
- *                example: 2013
- *              poster:
- *                type: string
- *                example: /wVYREutTvI2tmxr6ujrHT704wGF.jpg
- * 
- *    responses:
- *      '201':
- *        description: Created
- */
-router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
-  const requestBody = await req.body;
-
-  let blobData = getMovieBlobNameAndUrl(requestBody);
-
-  // Checks if poster url is null (aka no movie poster). 
-  // If it is, upload null to DB instead of blobData.url
-  if (!requestBody.poster) {
-    blobData.url = null;
-  }
-  await updateMovieDataToDB(requestBody.id, requestBody.description, blobData.url);
-
-  res.status(201).json({
-    message: "POST Updating Movie to Database succeeded!"
   });
 });
 
@@ -1182,4 +1073,4 @@ function findClosestMovieByYear(movies, movieYearQuery) {
   return closestMovie;
 }
 
-module.exports = router;
+module.exports = { router, findClosestMovieByYear };

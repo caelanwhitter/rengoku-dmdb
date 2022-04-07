@@ -59,6 +59,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use("/api", route);
+app.use("/api", route.router);
 
 module.exports = app;
