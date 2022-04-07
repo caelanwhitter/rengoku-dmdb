@@ -112,7 +112,15 @@ app.post("/api/biography", async (req, res) => {
 });
 
 
-
+app.get("/api/useSession", async (req, res) => {
+  try {
+    res.json(req.user);
+    res.end();
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(404).end();
+  }
+});
 
 app.delete("/api/v1/auth/logout", async (req, res) => {
   console.log(req.user);

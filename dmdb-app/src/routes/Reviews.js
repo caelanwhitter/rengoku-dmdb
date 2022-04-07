@@ -109,18 +109,18 @@ export default function Reviews() {
    */
   async function getUser() {
 
-    let response = await fetch('/api/useSessionInstead');
-    let moviesPaginationJson = await response.json();
-    console.log(moviesPaginationJson);
+    let response = await fetch('/api/useSession');
+    let userSession = await response.json();
+    console.log(userSession[0]);
 
-    const tokenString = localStorage.getItem("token");
-    if (tokenString !== null) {
-      const userToken = JSON.parse(tokenString);
-
-      setUsername(userToken.name);
-      setEmail(userToken.email);
-      setSource(userToken.source);
-    }
+    // const tokenString = localStorage.getItem("token");
+    // if (tokenString !== null) {
+    //   const userToken = JSON.parse(tokenString);
+    // }
+    setUsername(userSession[0].name);
+    setEmail(userSession[0].email);
+    setSource(userSession[0].source);
+    
   }
 
   /**
@@ -164,7 +164,7 @@ export default function Reviews() {
    */
   const schema = z.object({
     // eslint-disable-next-line max-len
-    headline: z.string().min(5, { message: 'Name should have at least 2 letters' }).max(50, { message: 'Headline should be less than 50 characters' }),
+    headline: z.string().min(5, { message: 'Headline should have at least 5 letters' }).max(50, { message: 'Headline should be less than 50 characters' }),
     // eslint-disable-next-line max-len
     content: z.string().max(10000, { message: 'Your review is too long. It needs to contain less than 5000 characters.' }),
   });
