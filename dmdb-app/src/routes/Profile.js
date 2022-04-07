@@ -9,35 +9,21 @@ import '../App.css';
 export default function Profile() {
 
   const [, setLogoutMessage] = useState()
-
   const [loading, setLoading] = useState(false);
   const [opened, setOpened] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [bio, setBio] = useState("");
-  const [name, setUsername] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [source, setSource] = useState("");
-
-  // /**
-  // * useEffect() runs following methods once. Similar to ComponentDidMount()
-  // */
-  // useEffect(() => {
-  //   getUser();
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
   
-  /**
-   * function that refreshes the page
-   */
-  function refreshPage() {
-    window.location.reload();
-  }
 
   const handleFailed = (result) => {
     console.log("Login failed" + result);
-    //alert(result);
   };
   
   const handleLogin = async (googleData) => {
+
     setLoading(v => !v);
     const res = await fetch('/api/google-login', {
       method: 'POST',
@@ -49,35 +35,27 @@ export default function Profile() {
         'Content-Type': 'application/json',
       }
     });
+    setLoggedIn(true)
+    const data = await res.json();
+    console.log(data);
 
-    getUser();
-    
     setLoading(v => !v);
-    refreshPage()
+    setUsername(data.name);
+    setEmail(data.email);
+    setSource(data.source);
+    setBio(data.biography)
+    //window.location.reload();
   };
-  
-  /**
-   * Get the username, email and image src from session key
-   */
-  async function getUser() {
-
-    let response = await fetch('/api/useSession');
-    let userSession = await response.json();
-    console.log(userSession);
-    setUsername(userSession[0].name);
-    setEmail(userSession[0].email);
-    setSource(userSession[0].source);
-    setBio(userSession[0].biography)
-    
-  }
 
   const handleLogout = async response => {
+
     setLoading(v => !v);
     const res = await fetch("/api/v1/auth/logout", {
       method: "DELETE",
    
     })
     const data = await res.json()
+    setLoggedIn(false)
     setLogoutMessage(data.message);
     setLoading(v => !v);
   }
@@ -98,22 +76,22 @@ export default function Profile() {
       }
     });
 
+    const data = await res.json();
+  
+  }
 
-  }
-  let isLoggedIn = false;
-  if ( email !== null) {
-    isLoggedIn = true;
-  }
+
+
   return (
     <div className="centered">
       <Container>
         <LoadingOverlay loaderProps={{ color: 'dark', variant: 'dots' }}
           visible={loading} />
         {
-          isLoggedIn ?
+          loggedIn ?
             <Container>
               <Space h="md" />
-              <Title>Welcome to your page, {name}!</Title>
+              <Title>Welcome to your page, {username}!</Title>
               <Text color="gray">Logged in with {email}</Text>
               <Space h="md" />
 
@@ -121,7 +99,7 @@ export default function Profile() {
                 <Avatar src={source} color="dark" radius="xl" size="xl" />
                 <Space h="sm" />
 
-                <Text size="lg" weight="bold">{name}</Text>
+                <Text size="lg" weight="bold">{username}</Text>
                 <Group
                   noWrap={true}
                 >

@@ -110,6 +110,7 @@ app.post("/api/biography", async (req, res) => {
 
 
 app.get("/api/useSession", async (req, res) => {
+  console.log(req.user + "In server");
   try {
     res.json(req.user);
     res.end();
@@ -120,7 +121,6 @@ app.get("/api/useSession", async (req, res) => {
 });
 
 app.delete("/api/v1/auth/logout", async (req, res) => {
-  console.log(req.user);
   await req.session.destroy()
   res.status(200)
   res.json({
