@@ -11,6 +11,8 @@ const request = require("supertest");
 const mongoose = require("mongoose");
 const pageOne = require("./page1.json");
 const pageTwo = require("./page2.json");
+const spiderMan = require("./spiderman.json");
+const quentinTarantino = require("./quentintarantino.json")
 const emptyQuery = {
   title: "",
   director: "",
@@ -55,9 +57,137 @@ describe("GET/ Request test at endpoint '/api/getSearch/page/:pageNumber'", () =
 
     expect(expectedResults).toEqual(response.body);
   })
+
+  test("Tests endpoint at page 1 with search query with title 'Spider-Man'", async () => {
+    const response = await request(app).get("/api/getSearch/page/1").
+      query({
+        title: "Spider-Man",
+        director: "",
+        genre: "",
+        releaseYear: "",
+        score: "",
+        rating: ""
+      }).
+      expect("Content-Type", /json/).
+      expect(200);
+
+    const expectedResults = spiderMan;
+
+    expect(expectedResults).toEqual(response.body);
+  });
+
+  test("Tests endpoint at page 1 with search query with director 'Quentin Tarantino'", async () => {
+    const response = await request(app).get("/api/getSearch/page/1").
+      query({
+        title: "",
+        director: "Quentin Tarantino",
+        genre: "",
+        releaseYear: "",
+        score: "",
+        rating: ""
+      }).
+      expect("Content-Type", /json/).
+      expect(200);
+
+    const expectedResults = quentinTarantino;
+
+    expect(expectedResults).toEqual(response.body);
+  });
+
+  test("Tests endpoint with queries that will not return any movies", async () => {
+    const response = await request(app).get("/api/getSearch/page/1").
+      query({
+        title: "this is a test because there is no movie that will match this title query",
+        director: "",
+        genre: "",
+        releaseYear: "",
+        score: "",
+        rating: ""
+      }).
+      expect("Content-Type", /json/).
+      expect(200);
+
+    const expectedResults = [];
+
+    expect(expectedResults).toEqual(response.body);
+  })
+
+  test("Tests endpoint with pagination out of bounds", async () => {
+    const response = await request(app).get("/api/getSearch/page/100000").
+      query({
+        title: "",
+        director: "",
+        genre: "",
+        releaseYear: "",
+        score: "",
+        rating: ""
+      }).
+      expect("Content-Type", /json/).
+      expect(200);
+
+    const expectedResults = [];
+
+    expect(expectedResults).toEqual(response.body);
+  })
 })
 
-describe()
+describe("GET/ Request test at endpoint /api/oneMovie/:movieId", () => {
+  jest.setTimeout(60000);
+
+  test("Tests endpoint with The Shining object id", async () => {
+    const theShiningId = "624ed5bdcc0005072bfd5947";
+    const response = await request(app).get("/api/oneMovie").
+      query({ id: theShiningId }).
+      expect("Content-Type", /json/).
+      expect(200);
+
+    const expectedMovie = [
+      {
+        "_id": "624ed5bdcc0005072bfd5947",
+        "description": "Jack Torrance accepts a caretaker job at the Overlook Hotel, where he, along with his wife Wendy and their son Danny, must live isolated from the rest of the world for the winter. But they aren't prepared for the madness that lurks within.",
+        "director": "Stanley Kubrick",
+        "duration": "146.0",
+        "genre": "Drama",
+        "gross": "$46,998,772.00",
+        "poster": "https://rengokudmdb.blob.core.windows.net/rengokublobs/rengokuBlob-The%20Shining-1980.jpg",
+        "rating": "R",
+        "releaseYear": "1980",
+        "score": "8.4",
+        "title": "The Shining"
+      }
+    ]
+
+    expect(expectedMovie).toEqual(response.body);
+  });
+
+  test("Tests endpoint with The Blue Lagoon id", async () => {
+    const theBlueLagoonId = "624ed5bdcc0005072bfd5948";
+    const response = await request(app).get("/api/oneMovie").
+      query({ id: theBlueLagoonId }).
+      expect("Content-Type", /json/).
+      expect(200);
+
+    const expectedMovie = [
+      {
+        "_id": "624ed5bdcc0005072bfd5948",
+        "description": "Two small children and a ship's cook survive a shipwreck and find safety on an idyllic tropical island. Soon, however, the cook dies and the young boy and girl are left on their own. Days become years and Emmeline and Richard make a home for themselves surrounded by exotic creatures and nature's beauty. But will they ever see civilization again?",
+        "director": "Randal Kleiser",
+        "duration": "104.0",
+        "genre": "Adventure",
+        "gross": "$58,853,106.00",
+        "poster": "https://rengokudmdb.blob.core.windows.net/rengokublobs/rengokuBlob-The%20Blue%20Lagoon-1980.jpg",
+        "rating": "R",
+        "releaseYear": "1980",
+        "score": "5.8",
+        "title": "The Blue Lagoon"
+      }
+    ]
+
+    expect(expectedMovie).toEqual(response.body);
+  })
+})
+
+
 // /** The Shining - 1980
 //    * NOTES: Bread and Butter test for endpoint. Check if functionality works
 //    */

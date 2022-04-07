@@ -60,7 +60,7 @@ export default function Reviews() {
     let movieTitle = await response.json();
     setMovieTitle(movieTitle[0].title);
   }
-  
+
   /**
    * deleteReview(id) does a DELETE request with a specific id 
    * so that it deletes that review from mongo
@@ -181,7 +181,7 @@ export default function Reviews() {
   if (localStorage.getItem("token") !== null) {
     isLoggedIn = true;
   }
-  
+
   return (
     <>
       {isLoggedIn ?
