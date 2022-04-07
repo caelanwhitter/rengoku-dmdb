@@ -111,16 +111,24 @@ export default function Movies() {
    * @param {Event} event Click event
    */
   async function clickOnGo(event) {
+
+    // Remove modal from screen
     setSearchOpened(false);
+
+    // Calculate the new moviesPagionationJson based on search
     let newMoviesPaginationJson = await displayAndReturnMoviesPerPage(event);
+
+    // Recalculate pagination
     calculateTotalPagination(newMoviesPaginationJson);
+
+    // Sets pagination back to 1
     setPage(DEFAULT_ACTIVE_PAGE);
   }
 
   /**
-     * changePage() calls methods whenever detects a change of page on pagination
-     * @param {Event} event Page change event
-     */
+   * changePage() calls methods whenever detects a change of page on pagination
+   * @param {*} event 
+   */
   const changePage = (event) => {
     // Re-fetches the list of movies with proper page number
     displayAndReturnMoviesPerPage(event);
@@ -200,6 +208,7 @@ export default function Movies() {
           onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
       </nav>
 
+      {/* Modal for search */}
       <Modal
         opened={searchopened}
         onKeyUp={searchopened ? handleSubmit : null}
@@ -276,6 +285,7 @@ export default function Movies() {
         </Button>
       </Modal>
 
+      {/* Modal for DetailView */}
       <Modal
         opened={opened}
         onClose={() => setOpened(false)}
@@ -286,6 +296,7 @@ export default function Movies() {
       >
         <LoadingOverlay loaderProps={{ color: 'dark', variant: 'dots' }}
           visible={modalLoading} />
+
         <div id="movieDetails">
           <Image src={oneMovieData.poster} height={380} width={250}
             alt={oneMovieData.title + " Poster"} withPlaceholder />
@@ -314,6 +325,7 @@ export default function Movies() {
       <LoadingOverlay loaderProps={{ color: 'dark', variant: 'dots' }}
         visible={loading} />
 
+      {/* Check if page is done loading and that cards isn't empty. */}
       {!loading && cards.length === 0 ?
         <div>
           <Text sx={(theme) => ({ paddingTop: "20px", fontSize: "200%" })}

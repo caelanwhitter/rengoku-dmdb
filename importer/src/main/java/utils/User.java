@@ -2,11 +2,15 @@ package utils;
 
 import org.bson.types.*;
 
+/**
+ * User represents all of the fields of a User that logs into our website
+ */
 public class User {
 	private ObjectId id;
 	private String username, email, password;
 
-	public User() {}
+	public User() {
+	}
 
 	public User(String username, String email, String password) {
 		this.username = username;

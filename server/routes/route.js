@@ -229,6 +229,7 @@ router.get("/getSearch/page/:pageNumber", async (req, res) => {
       rating: { $regex: `${keywordRating}`, $options: "i" },
     }).skip(ELEMS_PER_PAGE * (pageNumber - 1)).limit(ELEMS_PER_PAGE).sort({ "_id": 1 });
 
+    // Loop through movies again and format posters and description
     const movies = await fetchMovieInfo(moviesPerPage);
 
     res.json(movies);
@@ -984,7 +985,9 @@ const fetchMovieDataFromApi = async (url, movie) => {
 }
 
 /**
- * 
+ * returnPosterUrl() returns the correct URL for each movie in the JSON.
+ * If first time loaded, return URL of TMDB API Poster. If not, return Azure Blob Storage URL instead.
+ * If moviePosterPath is null or invalid, return null
  * @param {Object} movie 
  * @param {String} moviePosterPath 
  * @returns URL of the poster to the movie
@@ -1005,7 +1008,7 @@ async function returnPosterURL(movie, moviePosterPath) {
 }
 
 /**
- * 
+ * findClosestMovieJson() takes in a movie and list of results and returns the closest matching movie based on title and year
  * @param {Array} moviesApiResults 
  * @param {Object} movie 
  * @returns 
@@ -1033,6 +1036,8 @@ async function findClosestMovieJson(moviesApiResults, movie) {
     }
     return closestMovieJson;
   } catch (e) {
+
+    // If there is any exception caught in this algorithm, return null
     return null;
   }
 }
@@ -1126,6 +1131,7 @@ function findClosestMovie(movies, movieTitle, movieYearQuery) {
     }
   });
 
+  // If no results are found in the end, return null
   if (moviesWithExactTitle.length === 0) {
     return null;
   }
@@ -1156,7 +1162,8 @@ function equalsIgnoreCase(firstString, secondString) {
 }
 
 /**
- * 
+ * findClosestMovieByYear() takes in movies and year, loops through them
+ * and finds the movie with closest matching release_date to the year desired
  * @param {*} movies 
  * @param {*} movieYearQuery 
  * @returns 
