@@ -7,7 +7,6 @@ public class Movie {
 	private ObjectId id;
 	private String title, description, duration, genre, rating, poster, director, gross, score, releaseYear;
 
-
 	public Movie() {
 		this.title = "Unknown";
 		this.description = "";
@@ -128,4 +127,6 @@ public class Movie {
 		return "MOVIE: " + description + " | " + director + " | "+ duration +" | " + genre + " | " + gross + " | " + poster + " | "
 				+ rating + " | " + releaseYear + " | " + score + " | " + title;
 	}
+
+
 }

@@ -14,11 +14,8 @@ import org.junit.*;
  */
 public class ImporterTest 
 {
-    /**
-     * To run tests on own machine, right click on the testmovies.csv file and copy the ful path. Paste that into the movieAttributesPath and run the test file.
-     */
-    
-    private String movieAttributesPath = "/Users/Caelan/Documents/sixthsemester/WebDevelopment/rengoku-dmdb/importer/src/test/java/utils/resources/testmovies.csv";
+   
+    private String movieAttributesPath = System.getProperty("user.dir")+"/src/test/java/utils/resources/testmovies.csv";
     private Importer importer;
     private List<Movie> testMovieList;
 
@@ -39,7 +36,7 @@ public class ImporterTest
     public void testTitlesFromDataset()
     {
         List<String> givenMovieTitles = Arrays.asList("Oh, God! Book II", "Saw: The Final Chapter", "Killers",
-                "Devil in the Flesh", "One for the Money");
+                "Devil in the Flesh", "One for the Money", "Sorority Boys","House Party","Babylon");
         List<String> takenMovieTitles = new ArrayList<String>();
 
         for (Movie movie : testMovieList) {
@@ -57,7 +54,7 @@ public class ImporterTest
     public void testDescriptionFromDataset()
     {
 
-        List<String> givenMovieDescription = Arrays.asList("", "", "", "", "");
+        List<String> givenMovieDescription = Arrays.asList("", "", "", "", "","","","");
         List<String> takenMovieDescription = new ArrayList<String>();
 
         for (Movie movie : testMovieList) {
@@ -77,7 +74,7 @@ public class ImporterTest
     public void testDurationFromDataset() 
     {
 
-        List<String> givenMovieDuration = Arrays.asList("94.0", "Unknown", "100.0", "114.0", "Unknown");
+        List<String> givenMovieDuration = Arrays.asList("94.0", "Unknown", "100.0", "114.0", "Unknown","93.0","100.0","95.0");
         List<String> takenMovieDuration = new ArrayList<String>();
 
         for (Movie movie : testMovieList) {
@@ -96,7 +93,7 @@ public class ImporterTest
     public void testGenreFromDataset() 
     {
 
-        List<String> givenMovieGenre = Arrays.asList("Comedy", "Crime", "Action", "Drama", "Action");
+        List<String> givenMovieGenre = Arrays.asList("Comedy", "Crime", "Action", "Drama", "Action","Comedy","Comedy","Drama");
         List<String> takenMovieGenre = new ArrayList<String>();
 
         for (Movie movie : testMovieList) {
@@ -114,7 +111,7 @@ public class ImporterTest
     @Test
     public void testRatingFromDataset() 
     {
-        List<String> givenMovieRating = Arrays.asList("PG", "R", "PG-13", "X", "PG-13");
+        List<String> givenMovieRating = Arrays.asList("PG", "R", "PG-13", "X", "PG-13","R","R","Unknown");
         List<String> takenMovieRating = new ArrayList<String>();
 
         for (Movie movie : testMovieList) {
@@ -132,7 +129,7 @@ public class ImporterTest
     @Test
     public void testPosterFromDataset()
     {
-        List<String> givenMoviePosters = Arrays.asList("", "", "", "", "");
+        List<String> givenMoviePosters = Arrays.asList("", "", "", "", "","","","");
         List<String> takenMoviePosters = new ArrayList<String>();
 
         for (Movie movie : testMovieList) {
@@ -151,7 +148,7 @@ public class ImporterTest
     public void testDirectorFromDataset()
     {
         List<String> givenMovieDirector = Arrays.asList("Gilbert Cates", "Kevin Greutert", "Robert Luketic",
-                "Marco Béllocchio", "Julie Anne Robinson");
+                "Marco Béllocchio", "Julie Anne Robinson","Wallace Wolodarsky","Reginald Hudlin","Franco Rosso");
         List<String> takenMovieDirector = new ArrayList<String>();
 
         for (Movie movie : testMovieList) {
@@ -170,7 +167,7 @@ public class ImporterTest
     @Test
     public void testScoreFromDataset()
     {
-        List<String> givenMovieScore = Arrays.asList("5.2", "5.6", "5.5", "5.8", "5.3");
+        List<String> givenMovieScore = Arrays.asList("5.2", "5.6", "5.5", "5.8", "5.3","5.5","6.5","7.4");
         List<String> takenMovieScore = new ArrayList<String>();
 
         for (Movie movie : testMovieList) {
@@ -189,15 +186,15 @@ public class ImporterTest
     public void testGrossFromDataset()
     {
         List<String> givenMovieGross = Arrays.asList("$14,504,277.00", "Unknown", "$98,159,963.00",
-                "$546,904.0", "$38,084,162.0");
+                "$546,904.00", "$38,084,162.00","$12,517,488.00","$26,385,627.00","$109,749.00");
         List<String> takenMovieGross = new ArrayList<String>();
 
         for (Movie movie : testMovieList) {
             takenMovieGross.add(movie.getGross());
         }
 
-        assertTrue(givenMovieGross.size() == takenMovieGross.size() /*&& givenMovieGross.equals(takenMovieGross)
-                && takenMovieGross.equals(givenMovieGross)*/);
+        assertTrue(givenMovieGross.size() == takenMovieGross.size() && givenMovieGross.equals(takenMovieGross)
+                && takenMovieGross.equals(givenMovieGross));
     }
         
 
@@ -207,7 +204,7 @@ public class ImporterTest
     @Test
     public void testReleaseYearFromDataset()
     {           
-        List<String> givenMovieReleaseYear = Arrays.asList("1980", "2010", "2010","1986","2012");
+        List<String> givenMovieReleaseYear = Arrays.asList("1980", "2010", "2010","1986","2012","2002","1990","1980");
         List<String> takenMovieReleaseYear = new ArrayList<String>();
         
         for (Movie movie : testMovieList) {
