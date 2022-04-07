@@ -147,4 +147,5 @@ public class Movie {
 				+ poster + " | "
 				+ rating + " | " + releaseYear + " | " + score + " | " + title;
 	}
+
 }

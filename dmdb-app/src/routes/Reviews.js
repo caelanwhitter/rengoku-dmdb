@@ -226,7 +226,7 @@ export default function Reviews() {
         weight={700} underline align="center">{movieTitle}</Text>
       {reviews.length === 0 ?
         <div style={{ display: "flex" }}>
-          <Alert sx={(theme) => ({ textAlign: "center", margin: "auto", width: "70%" })}
+          <Alert sx={(theme) => ({ margin: "auto", width: "70%" })}
             title="No Reviews!" color="gray">
             This is Terrible! Add some of your own to fill up the page!
           </Alert>

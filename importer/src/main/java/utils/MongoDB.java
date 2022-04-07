@@ -1,6 +1,8 @@
 package utils;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.List;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -32,9 +34,11 @@ public class MongoDB {
         ConnectionString connectionString = new ConnectionString(ATLAS_URI);
         CodecRegistry pojoCodecRegistry = CodecRegistries
                 .fromProviders(PojoCodecProvider.builder().automatic(true).build());
-        CodecRegistry codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
+        CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
+                MongoClientSettings.getDefaultCodecRegistry(),
                 pojoCodecRegistry);
-        MongoClientSettings clientSettings = MongoClientSettings.builder().applyConnectionString(connectionString)
+        MongoClientSettings clientSettings = MongoClientSettings.builder()
+                .applyConnectionString(connectionString)
                 .codecRegistry(codecRegistry).build();
         MongoClient client = MongoClients.create(clientSettings);
 
@@ -43,7 +47,6 @@ public class MongoDB {
 
         Importer importer = new Importer("importer/src/main/java/utils/resources/movies.csv");
         List<Movie> movieList = importer.fetchDataFromDataset();
-
         movies.insertMany(movieList);
 
         System.out.println("Importing data into: '" + DATABASE_NAME + "' done!");
