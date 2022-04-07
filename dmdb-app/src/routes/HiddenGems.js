@@ -10,7 +10,10 @@ import { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import '../App.css';
 
-//This function is used to display the hiddenGems page
+/**
+ * Return fully-featured Hidden Gem page.
+ * @returns HiddenGems page
+ */
 export default function HiddenGems() {
   const [opened, setOpened] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -19,12 +22,59 @@ export default function HiddenGems() {
   const [searchopened, setSearchOpened] = useState(false);
   const [hiddenGemData, setHiddenGemData] = useState({});
   const [submissions, setSubmissions] = useState([{}]);
+  const [userid, setUserid] = useState("");
 
+  /**
+   * React useEffect to get user ID and fetch all HiddenGems.
+   */
   useEffect(() => {
-    fetchHiddenGems();
+    getUser();
+    fetchAllHiddenGems();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /**
+   * Get user id if logged in.
+   */
+  const getUser = async () => {
+    if (localStorage.getItem("token") !== null) {
+      const tokenString = localStorage.getItem("token");
+      const userToken = JSON.parse(tokenString);
+
+      setUserid(userToken._id);
+    }
+  }
+
+  /**
+   * Fetch all Hidden Gems to display on page.
+   */
+  const fetchAllHiddenGems = async () => {
+    setLoading(v => !v);
+    let response = await fetch('/api/hiddengems');
+    let hiddenGemsJSON = await response.json();
+    setSubmissions(hiddenGemsJSON);
+    setLoading(v => !v);
+  }
+
+  /**
+   * Set the displayed cards as the Hidden Gems matching the search requirements
+   * @param {Object} values Search Form values
+   */
+  const searchHiddenGems = async (values) => {
+    setLoading(v => !v);
+    // eslint-disable-next-line max-len
+    let response = await fetch(`api/hiddengems/search?title=${values.title}&director=${values.director}&rating=${values.rating}&genre=${values.genre}`);
+    let gems = await response.json();
+
+    setSubmissions(gems);
+    setSearchOpened(false);
+    setLoading(v => !v);
+  }
+
+  /**
+   * Insert new submission into database from form values and refresh.
+   * @param {Object} values Form values
+   */
   const insertSubmission = async (values) => {
     await fetch('api/hiddengems', {
       method: 'POST',
@@ -40,34 +90,56 @@ export default function HiddenGems() {
           { day: "numeric", month: "short", year: "numeric" }),
         link: values.link,
         rating: values.rating,
-        genre: values.genre
+        genre: values.genre,
+        userid: values.userid
       })
-    })
+    });
+    window.location.reload();
   }
 
-  const fetchHiddenGems = async () => {
-    setLoading(v => !v);
-    let response = await fetch('/api/hiddengems');
-    let hiddenGemsJSON = await response.json();
-    setSubmissions(hiddenGemsJSON);
-    setLoading(v => !v);
+  /**
+   * Delete submission from database with ID and refresh page.
+   * @param {String} id Hidden Gem ID
+   */
+  const deleteSubmission = async (id) => {
+    await fetch('/api/hiddengems', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id: id,
+      })
+    });
+    window.location.reload();
   }
 
+  /**
+   * Fetch specific Hidden Gem with ID.
+   * @param {String} id Hidden Gem ID
+   */
   const fetchHiddenGemDetails = async (id) => {
     await fetch("/api/hiddengems?id=" + id).then(
       response => response.json()).
       then(
         data => {
-          setHiddenGemData(data[0])
+          data.forEach(hg => {
+            if (hg._id === id) {
+              setHiddenGemData(hg);
+            }
+          });
         }
       )
     setModalLoading(v => !v);
   }
 
+  /**
+   * Assign Card component and Grid Column to each Hidden Gem on page.
+   */
   let cards = submissions.map((elem) => {
     return (
       <Grid.Col key={elem._id} span={3}>
-        <Card onClick={() => {
+        <Card key={elem._id} onClick={() => {
           setModalLoading(v => !v);
           fetchHiddenGemDetails(elem._id);
           setOpened(true);
@@ -84,6 +156,9 @@ export default function HiddenGems() {
     );
   });
 
+  /**
+   * Form template
+   */
   const form = useForm({
     initialValues: {
       title: '',
@@ -93,13 +168,24 @@ export default function HiddenGems() {
       rating: '',
       releaseDate: '',
       link: '',
-      genre: ''
+      genre: '',
+      userid: ''
     },
 
     validate: {
-      link: (value) => /(http:\/\/|https:\/\/)?www\.(\w+?)\.(\w+)/g.test(value)
+      // Allow only YouTube, Dailymotion and Vimeo full links.
+      link: (value) => /^((http|https):\/\/)(www.)?(youtube|dailymotion|vimeo).com/g.test(value)
         ? null : 'Invalid link!',
     },
+  });
+
+  const searchForm = useForm({
+    initialValues: {
+      title: '',
+      director: '',
+      rating: '',
+      genre: ''
+    }
   });
 
   return (
@@ -107,71 +193,59 @@ export default function HiddenGems() {
       <nav id="searchNav">
         <Link className="tabLink"
           onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
-        <Text className="tabLink" size="xl"
-          onClick={() => setAddOpened(true)}>+ Add New Hidden Gem</Text>
+        {localStorage.getItem("token") !== null ?
+          <Text className="tabLink" size="xl"
+            onClick={() => setAddOpened(true)}>+ Add New Hidden Gem</Text>
+          :
+          <Text className="tabLink" size="xl" component={Link}
+            to="/profile">Login To Add Hidden Gem</Text>}
       </nav>
 
+      {/* Search Modal */}
       <Modal
         opened={searchopened}
         onClose={() => setSearchOpened(false)}
         hideCloseButton
       >
-        <TextInput
-          label="Title"
-          placeholder="Enter the title"
-          //variant="unstyled"
-          size="md"
-          radius="md"
-          required
-        />
+        <form onSubmit={searchForm.onSubmit((values) => searchHiddenGems(values))}>
+          <Group grow
+            direction="column">
+            <TextInput
+              label="Title"
+              placeholder="Enter the title"
+              size="md"
+              {...searchForm.getInputProps('title')}
+            />
 
-        <TextInput
-          label="Director"
-          placeholder="Enter the Director"
-          //variant="unstyled"
-          size="md"
-          radius="md"
-          required
-        />
+            <TextInput
+              label="Director"
+              placeholder="Enter the Director"
+              size="md"
+              {...searchForm.getInputProps('director')}
+            />
 
-        <TextInput
-          label="Genre"
-          placeholder="Enter the Genre"
-          //variant="unstyled"
-          size="md"
-          radius="md"
-          required
-        />
+            <TextInput
+              label="Genre"
+              placeholder="Enter the Genre"
+              size="md"
+              {...searchForm.getInputProps('genre')}
+            />
 
-        <TextInput
-          label="Release Year "
-          placeholder="Enter the Release Year"
-          //variant="unstyled"
-          size="md"
-          radius="md"
-          required
-        />
-
-        <TextInput
-          label="Score"
-          placeholder="Enter the Score "
-          // variant="unstyled"
-          size="md"
-          radius="md"
-          required
-        />
-
-        <NativeSelect
-          label="Rating"
-          data={['R', 'PG', 'PG-13']}
-          placeholder="Select a Rating"
-        />
-        <br />
-        <Button
-          color="dark"
-          type="submit">
-          Go!
-        </Button>
+            <NativeSelect
+              label="Rating"
+              data={['', 'R', 'PG', 'PG-13']}
+              size="md"
+              placeholder="Select a Rating"
+              {...searchForm.getInputProps('rating')}
+            />
+          </Group>
+          <Space h="md" />
+          <Button
+            color="dark"
+            type="submit">
+            Go!
+          </Button>
+        </form>
       </Modal>
 
       <Modal
@@ -186,19 +260,27 @@ export default function HiddenGems() {
           visible={modalLoading} />
         <div id="movieDetails">
           <div id="movieText">
-            <Title order={4}>Director: {hiddenGemData.director}</Title>
+            <Title order={4}>Director:
+              {hiddenGemData.director ? hiddenGemData.director : " Unknown"}</Title>
             <Group position="left">
               <Badge color="dark">{hiddenGemData.genre}</Badge>
               <Badge color="dark"
-                variant="outline">{hiddenGemData.duration} minutes</Badge>
+                variant="outline">
+                {hiddenGemData.duration ? hiddenGemData.duration : "Unknown"} minutes</Badge>
               <Badge color="gray" variant="outline">Rated {hiddenGemData.rating}</Badge>
-
             </Group>
+
             <Space h="md" />
-            <Text>{hiddenGemData.description}</Text>
+            <Text>{hiddenGemData.description ? hiddenGemData.description :
+              "No description provided."}</Text>
             <Space h="xl" />
-            <Button component="a" href={"http://" + hiddenGemData.link}
-              color="dark">View Movie</Button>
+            <Group>
+              <Button component="a" rel="noreferrer" target="_blank"
+                href={hiddenGemData.link} color="dark">View Movie</Button>
+              {hiddenGemData.userid === userid &&
+                <Button color="red" id={hiddenGemData._id}
+                  onClick={(e) => deleteSubmission(e.currentTarget.id)} uppercase>Delete</Button>}
+            </Group>
           </div>
         </div>
       </Modal>
@@ -257,6 +339,7 @@ export default function HiddenGems() {
                 placeholder="Age Rating"
                 label="Hidden Gem Age Rating"
                 description="Age rating of the movie"
+                color="dark"
                 required
                 {...form.getInputProps('rating')}
               />
@@ -266,6 +349,7 @@ export default function HiddenGems() {
                 placeholder="Genre"
                 label="Hidden Gem Genre"
                 description="Genre of the movie"
+                color="dark"
                 required
                 {...form.getInputProps('genre')}
               />
@@ -283,12 +367,13 @@ export default function HiddenGems() {
               <TextInput
                 placeholder="Link"
                 label="Hidden Gem Link"
-                description="Link to the movie"
+                description="Youtube, Vimeo or Dailymotion link only"
                 required
                 {...form.getInputProps('link')}
               />
             </Group>
-            <Button type="submit" color="dark">Submit</Button>
+            <Button type="submit" onClick={() => form.setFieldValue('userid', userid)}
+              color="dark">Submit</Button>
           </Group>
         </form>
       </Drawer>
@@ -298,11 +383,6 @@ export default function HiddenGems() {
       <Grid className="movieGrid" gutter={80}>
         {cards}
       </Grid>
-
-      {/* <div id="pagination">
-        <Pagination page={activePage} onChange={changePage} 
-          total={totalPagination} color="dark" sibilings={1} withEdges />
-      </div> */}
     </>
   );
 }

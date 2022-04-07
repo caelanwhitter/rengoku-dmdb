@@ -49,6 +49,7 @@ const userSchema = new Schema({
   name: String,
   email: String,
   source: String,
+  biography: String,
 }, { collection: "users" });
 
 const User = mongoose.model("User", userSchema)
@@ -61,7 +62,8 @@ const submissionSchema = new Schema({
   rating: String,
   releaseDate: String,
   title: String,
-  genre: String
+  genre: String,
+  userid: String
 }, { collection: "submissions" });
 
 const Submission = mongoose.model("Submission", submissionSchema)
