@@ -105,18 +105,13 @@ export default function Reviews() {
   }
 
   /**
-   * Get the username, email and image src from local storage
+   * Get the username, email and image src from session key
    */
   async function getUser() {
 
     let response = await fetch('/api/useSession');
     let userSession = await response.json();
-    console.log(userSession[0]);
 
-    // const tokenString = localStorage.getItem("token");
-    // if (tokenString !== null) {
-    //   const userToken = JSON.parse(tokenString);
-    // }
     setUsername(userSession[0].name);
     setEmail(userSession[0].email);
     setSource(userSession[0].source);
@@ -185,7 +180,7 @@ export default function Reviews() {
  * checked if the person is logged in by checking the local storage
  */
   let isLoggedIn = false;
-  if (localStorage.getItem("token") !== null) {
+  if ( email !== null) {
     isLoggedIn = true;
   }
   return (

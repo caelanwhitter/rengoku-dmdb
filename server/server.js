@@ -52,8 +52,6 @@ app.post("/api/google-login", async (req, res) => {
 
   const findUser = await getUser(email);
   req.session.userId = email;
-
-  console.log(req.session.userId);
  
   if (findUser.length === 0) {
 
@@ -100,7 +98,6 @@ app.post("/api/biography", async (req, res) => {
     { $set: { "biography": body.biography } },
     { upsert: true }
   );
-  console.log(req.user);
   const user = await getUser(body.email);
   try {
     res.json(user);

@@ -37,12 +37,11 @@ export default function HiddenGems() {
    * Get user id if logged in.
    */
   const getUser = async () => {
-    if (localStorage.getItem("token") !== null) {
-      const tokenString = localStorage.getItem("token");
-      const userToken = JSON.parse(tokenString);
 
-      setUserid(userToken._id);
-    }
+    let response = await fetch('/api/useSession');
+    let userSession = await response.json();
+
+    setUserid(userSession[0]._id);
   }
 
   /**
@@ -193,7 +192,7 @@ export default function HiddenGems() {
       <nav id="searchNav">
         <Link className="tabLink"
           onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
-        {localStorage.getItem("token") !== null ?
+        {userid !== "" ?
           <Text className="tabLink" size="xl"
             onClick={() => setAddOpened(true)}>+ Add New Hidden Gem</Text>
           :

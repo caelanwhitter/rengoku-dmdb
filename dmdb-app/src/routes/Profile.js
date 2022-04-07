@@ -9,24 +9,21 @@ import '../App.css';
 export default function Profile() {
 
   const [, setLogoutMessage] = useState()
-  const [loginData, setLoginData] = useState(
-    localStorage.getItem('token')
-      ? JSON.parse(localStorage.getItem('token'))
-      : null
-  );
+
   const [loading, setLoading] = useState(false);
   const [opened, setOpened] = useState(false);
-  const [email, setEmail] = useState("");
   const [bio, setBio] = useState("");
+  const [name, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [source, setSource] = useState("");
 
-
-  /**
-  * useEffect() runs following methods once. Similar to ComponentDidMount()
-  */
-  useEffect(() => {
-    getUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // /**
+  // * useEffect() runs following methods once. Similar to ComponentDidMount()
+  // */
+  // useEffect(() => {
+  //   getUser();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
   
   /**
    * function that refreshes the page
@@ -53,15 +50,26 @@ export default function Profile() {
       }
     });
 
-    const data = await res.json();
-    setLoginData(data);
-    localStorage.setItem('token', JSON.stringify(data));
-
+    getUser();
     
     setLoading(v => !v);
     refreshPage()
   };
   
+  /**
+   * Get the username, email and image src from session key
+   */
+  async function getUser() {
+
+    let response = await fetch('/api/useSession');
+    let userSession = await response.json();
+    console.log(userSession);
+    setUsername(userSession[0].name);
+    setEmail(userSession[0].email);
+    setSource(userSession[0].source);
+    setBio(userSession[0].biography)
+    
+  }
 
   const handleLogout = async response => {
     setLoading(v => !v);
@@ -71,20 +79,9 @@ export default function Profile() {
     })
     const data = await res.json()
     setLogoutMessage(data.message);
-
-    localStorage.clear();
-    setLoginData(null);
     setLoading(v => !v);
   }
 
-  async function getUser() {
-    const tokenString = localStorage.getItem("token");
-    if (tokenString !== null) {
-      const userToken = JSON.parse(tokenString);
-      setEmail(userToken.email);
-
-    }
-  }
 
   async function submitBio(){
     setOpened(false)
@@ -101,33 +98,34 @@ export default function Profile() {
       }
     });
 
-    const data = await res.json();
-    setLoginData(data[0]);
-    localStorage.setItem("token", JSON.stringify(data[0]));
-  }
 
+  }
+  let isLoggedIn = false;
+  if ( email !== null) {
+    isLoggedIn = true;
+  }
   return (
     <div className="centered">
       <Container>
         <LoadingOverlay loaderProps={{ color: 'dark', variant: 'dots' }}
           visible={loading} />
         {
-          loginData ?
+          isLoggedIn ?
             <Container>
               <Space h="md" />
-              <Title>Welcome to your page, {loginData.name}!</Title>
-              <Text color="gray">Logged in with {loginData.email}</Text>
+              <Title>Welcome to your page, {name}!</Title>
+              <Text color="gray">Logged in with {email}</Text>
               <Space h="md" />
 
               <Card shadow="md" withBorder>
-                <Avatar src={loginData.source} color="dark" radius="xl" size="xl" />
+                <Avatar src={source} color="dark" radius="xl" size="xl" />
                 <Space h="sm" />
 
-                <Text size="lg" weight="bold">{loginData.name}</Text>
+                <Text size="lg" weight="bold">{name}</Text>
                 <Group
                   noWrap={true}
                 >
-                  <Text><em>{loginData.biography}</em></Text>
+                  <Text><em>{bio}</em></Text>
                 </Group>
                 <Space h="xs" />
 
