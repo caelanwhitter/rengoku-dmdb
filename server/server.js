@@ -4,13 +4,10 @@
  */
 const Mongoose = require("./database/mongoose");
 const User = Mongoose.User;
-
-
 const dotenv = require("dotenv");
+dotenv.config();
 const { OAuth2Client } = require("google-auth-library");
 const session = require("express-session");
-dotenv.config();
-
 const client = new OAuth2Client(process.env.REACT_APP_GOOGLE_CLIENT_ID);
 const app = require("./app");
 
@@ -18,15 +15,31 @@ app.use(session({
   secret: process.env.SECRET,
   resave: true,
   saveUninitialized: true
-
 }));
 
 /**
  * @swagger
- * post:
+ * 
+ * components:
+ *  securitySchemes:
+ *    GoogleOAuth:
+ *      type: oauth2
+ *      description: This API uses OAuth 2
+ *      flows:
+ *        clientCredentials:
+ *          authorization_url: https://accounts.google.com/o/oauth2/auth/
+ *          scopes:
+ *            - biography: Update your account biography
+ *            - review_post: Post a review
+ *            - review_delete: Delete a review
+ *            - hiddengem_post: Post a new Hidden Gem
+ *            - hiddengem_delete: Delete a Hidden Gem
+ * 
+ * /google-login:
+ *  post:
  *    summary: Google Login
- *    security:
- *      - OAuth2: [write]
+ *    tags:
+ *      - Profile
  *    
  *    responses:
  *      201:
@@ -45,7 +58,6 @@ app.post("/api/google-login", async (req, res) => {
   const findUser = await getUser(email);
 
   if (findUser.length === 0) {
-
     user = new User({
       name: name,
       email: email,
@@ -77,6 +89,36 @@ app.post("/api/google-login", async (req, res) => {
   }
 })
 
+/**
+ * @swagger
+ * /biography:
+ *  post:
+ *    summary: Post updated biography.
+ *    description: Updates the biography of a specific user in the database.
+ *    tags:
+ *      - Profile
+ *    security:
+ *      - GoogleOAuth: [biography]
+ * 
+ *    requestBody:
+ *      description: User e-mail address with biography.
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              email:
+ *                type: string
+ *                example: zhudxiaoj1@gmail.com
+ *              biography:
+ *                type: string
+ *                example: Chicken Nuggets
+ *
+ *    responses:
+ *      '201':
+ *        description: Created
+ */
 app.post("/api/biography", async (req, res) => {
   const body = req.body;
   await User.updateOne(
@@ -95,6 +137,19 @@ app.post("/api/biography", async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /v1/auth/logout:
+ *  delete:
+ *    summary: Destroy a session.
+ *    description: Destroy user session when logging out.
+ *    tags:
+ *      - Profile
+ * 
+ *    responses:
+ *      '204':
+ *        description: No Content, Deleted
+ */
 app.delete("/api/v1/auth/logout", async (req, res) => {
   await req.session.destroy()
   res.status(200)
@@ -105,8 +160,8 @@ app.delete("/api/v1/auth/logout", async (req, res) => {
 
 /**
  * getUser() is a helper method that returns the fields of a User based on their email
- * @param {*} email 
- * @returns 
+ * @param {String} email 
+ * @returns User associated with the email
  */
 async function getUser(email) {
   const findUser = await User.find({ "email": email });

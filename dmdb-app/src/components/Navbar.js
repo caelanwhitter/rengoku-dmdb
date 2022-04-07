@@ -2,6 +2,9 @@ import { Title } from "@mantine/core";
 import React from "react";
 import { Link } from "react-router-dom";
 
+/**
+ * Navbar component containing the navigation links
+ */
 export default class Navbar extends React.Component {
   render() {
     return (
