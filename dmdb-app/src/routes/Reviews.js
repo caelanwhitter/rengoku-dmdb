@@ -9,6 +9,10 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
 import { z } from 'zod';
 
+/**
+ * Return fully-featured Reviews component
+ * @returns Reviews functional component
+ */
 export default function Reviews() {
   //Initializes variables and sets up "settters to variables"
   let params = useParams();
@@ -25,11 +29,12 @@ export default function Reviews() {
   const [deletedData, setDeletedData] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Date formatting
   const date = new Date().
-    toLocaleDateString('en-us', { year: "numeric", month: "short", day: "numeric" })
+    toLocaleDateString('en-us', { year: "numeric", month: "short", day: "numeric" });
 
   /**
-  * useEffect() runs following methods once. Similar to ComponentDidMount()
+  * useEffect() runs functions once. Similar to ComponentDidMount()
   */
   useEffect(() => {
     getTitle(); fetchReviews(); getUser();
@@ -37,8 +42,8 @@ export default function Reviews() {
   }, []);
 
   /**
- * fetchReviews() fetches list of reviews for specific movie
- */
+   * fetchReviews() fetches list of reviews for specific movie
+   */
   async function fetchReviews() {
     setLoading((v) => !v);
     let response = await fetch('/api/oneMovie/reviews?id=' + params.movieId);
@@ -48,25 +53,18 @@ export default function Reviews() {
   }
 
   /**
-   * Get the title of the movie
+   * Get the title of the movie matching the ID
    */
   async function getTitle() {
     let response = await fetch('/api/oneMovie?id=' + params.movieId);
     let movieTitle = await response.json();
     setMovieTitle(movieTitle[0].title);
   }
-
-  /**
-   * function that refreshes the page
-   */
-  function refreshPage() {
-    window.location.reload();
-  }
-
+  
   /**
    * deleteReview(id) does a DELETE request with a specific id 
    * so that it deletes that review from mongo
-   * @param {String} id 
+   * @param {String} id Review ID
    */
   async function deleteReview() {
     deletedBox.remove();
@@ -101,7 +99,7 @@ export default function Reviews() {
         datePosted: date,
         subtitle: values.headline
       })
-    }).then(refreshPage())
+    }).then(window.location.reload())
   }
 
   /**
@@ -119,7 +117,7 @@ export default function Reviews() {
   }
 
   /**
-   * each review is put into a box and styled accordingly
+   * Each review is put into a box and styled accordingly
    */
   const reviews = backendData.map((element) =>
     <>
@@ -155,7 +153,7 @@ export default function Reviews() {
   );
 
   /**
-   * schema for the form to follow
+   * Schema for the form to follow
    */
   const schema = z.object({
     // eslint-disable-next-line max-len
@@ -165,7 +163,7 @@ export default function Reviews() {
   });
 
   /**
-   * set initial values to the form
+   * Set initial values to the form
    */
   const form = useForm({
     schema: zodResolver(schema),
@@ -177,12 +175,13 @@ export default function Reviews() {
   });
 
   /**
- * checked if the person is logged in by checking the local storage
- */
+   * Check if the person is logged in by checking the local storage
+   */
   let isLoggedIn = false;
   if (localStorage.getItem("token") !== null) {
     isLoggedIn = true;
   }
+  
   return (
     <>
       {isLoggedIn ?
@@ -275,7 +274,6 @@ export default function Reviews() {
             required
             max={5}
             min={0}
-
             {...form.getInputProps('rating')}
             />
 

@@ -1,6 +1,10 @@
 import { Button, Divider, Image, List, Modal, Space, Text, Title } from "@mantine/core";
 import { useState } from 'react';
 
+/**
+ * Footer that contains all the credits and basic information.
+ * @returns Footer functional component
+ */
 export default function Footer() {
   const [aboutOpened, setAboutOpened] = useState(false);
 

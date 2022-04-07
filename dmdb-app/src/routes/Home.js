@@ -1,7 +1,13 @@
-import { Button, Container, Group, Image, Space, Text, ThemeIcon } from "@mantine/core";
+import {
+  Button, Container, Group,
+  Image, Space, Text, ThemeIcon
+} from "@mantine/core";
 import { Link } from "react-router-dom";
 
-//This function is used to render the featured movies of our movie database
+/**
+ * Return the fully-featured Homepage
+ * @returns Home functional component
+ */
 export default function Home() {
   return (
     <Container id="mainPageContainer">

@@ -10,9 +10,8 @@ import { Link, NavLink } from "react-router-dom";
 import '../App.css';
 
 /**
- * Movies() is a component that fetches the list of Movies from the DB 
- * and displays it properly using pagination
- * @returns Table Of Movies + Pagination
+ * Fetch the list of Movies from the database and display it properly using pagination
+ * @returns Movies functional component
  */
 export default function Movies() {
   //Initializes variables and sets up "setters to variables"
@@ -35,13 +34,17 @@ export default function Movies() {
   let moviesPaginationJson = [];
 
   /**
-     * useEffect() runs following methods once. Similar to ComponentDidMount()
-     */
+   * useEffect() runs functions once at render. Similar to ComponentDidMount()
+   */
   useEffect(() => {
     displayAndReturnMoviesPerPage(activePage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /**
+   * Fetch specified movie details from backend with ID
+   * @param {String} movieId ID of the movie
+   */
   async function getDetails(movieId) {
     await fetch("/api/oneMovie?id=" + movieId).then(
       response => response.json()).
@@ -56,9 +59,8 @@ export default function Movies() {
   /**
    * displayAndReturnMoviesPerPage() fetches list of movies following pagination endpoints
    * and calculates totalPagination on first render.
-   * Returns the JSON of movies if needed
-   * @param {*} pageNumber 
-   * @returns 
+   * @param {String} pageNumber Page Number
+   * @returns Movies JSON, if needed
    */
   async function displayAndReturnMoviesPerPage(pageNumber) {
 
@@ -83,10 +85,10 @@ export default function Movies() {
   }
 
   /**
-     * calculateTotalPagination() calculates in how many pages should 
-     * the entire list of movies be separated for pagination
-     * @param {JSON} moviesPaginationJson 
-     */
+   * calculateTotalPagination() calculates in how many pages should 
+   * the entire list of movies be separated for pagination
+   * @param {JSON} moviesPaginationJson 
+   */
   async function calculateTotalPagination(moviesPaginationJson) {
     let currentMoviesLength = moviesPaginationJson.length;
 
@@ -104,6 +106,10 @@ export default function Movies() {
     }
   }
 
+  /**
+   * Handle the click on search event by searching and displaying
+   * @param {Event} event Click event
+   */
   async function clickOnGo(event) {
     setSearchOpened(false);
     let newMoviesPaginationJson = await displayAndReturnMoviesPerPage(event);
@@ -113,7 +119,7 @@ export default function Movies() {
 
   /**
      * changePage() calls methods whenever detects a change of page on pagination
-     * @param {*} event 
+     * @param {Event} event Page change event
      */
   const changePage = (event) => {
     // Re-fetches the list of movies with proper page number
@@ -138,8 +144,8 @@ export default function Movies() {
 
   /**
    * getCards() returns an array of cards that displays all the movies of a certain page
-   * @param {*} moviesJson 
-   * @returns 
+   * @param {JSON} moviesJson JSON array of movies 
+   * @returns Array of Mantine Card components
    */
   async function getCards(moviesJson) {
     let cards = moviesJson.map((movie) => {
@@ -169,7 +175,7 @@ export default function Movies() {
   /**
    * uploadMovies() takes a movie array and makes a POST request to /api/uploadMovies
    * to save the movies onto the Blob storage and MongoDB database
-   * @param {*} movies 
+   * @param {Array} movies Array of movies
    */
   async function uploadMovies(movies) {
     try {
@@ -298,11 +304,9 @@ export default function Movies() {
 
             <Title order={6}>Gross: {oneMovieData.gross}</Title>
             <Badge variant="gradient" gradient={{ from: 'teal', to: 'lime', deg: 105 }}>
-
               <NavLink style={{ textDecoration: 'none', color: 'black' }}
-                to={`${oneMovieData._id}/reviews`}>View Reviews</NavLink></Badge>
-             
-              
+                to={`${oneMovieData._id}/reviews`}>View Reviews</NavLink>
+            </Badge>
           </div>
         </div>
       </Modal>
@@ -310,7 +314,7 @@ export default function Movies() {
       <LoadingOverlay loaderProps={{ color: 'dark', variant: 'dots' }}
         visible={loading} />
 
-      {!loading && cards.length === 0 ? 
+      {!loading && cards.length === 0 ?
         <div>
           <Text sx={(theme) => ({ paddingTop: "20px", fontSize: "200%" })}
             weight={700} align="center">No movies found for this search!</Text>
@@ -320,7 +324,7 @@ export default function Movies() {
           <Grid className="movieGrid" gutter={80}>
             {cards}
           </Grid>
-        
+
           <div id="pagination">
             <Pagination page={activePage} onChange={changePage}
               total={totalPagination} color="dark" siblings={2} withEdges />

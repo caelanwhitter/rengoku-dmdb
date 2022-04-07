@@ -12,7 +12,7 @@ import '../App.css';
 
 /**
  * Return fully-featured Hidden Gem page.
- * @returns HiddenGems page
+ * @returns HiddenGems functional component
  */
 export default function HiddenGems() {
   const [opened, setOpened] = useState(false);
@@ -94,6 +94,7 @@ export default function HiddenGems() {
         userid: values.userid
       })
     });
+
     window.location.reload();
   }
 
@@ -111,6 +112,7 @@ export default function HiddenGems() {
         id: id,
       })
     });
+
     window.location.reload();
   }
 
@@ -143,10 +145,10 @@ export default function HiddenGems() {
           setModalLoading(v => !v);
           fetchHiddenGemDetails(elem._id);
           setOpened(true);
-        }}
-        style={{ cursor: "pointer" }} shadow="md" withBorder={true}>
+        }} style={{ cursor: "pointer" }} shadow="md" withBorder={true}>
 
           <Text weight={600}>{elem.title}</Text>
+
           <Group position="apart">
             <Text size="sm">{elem.director}</Text>
             <Badge color="dark">{elem.releaseDate}</Badge>
@@ -193,7 +195,8 @@ export default function HiddenGems() {
       <nav id="searchNav">
         <Link className="tabLink"
           onClick={() => setSearchOpened(true)} to={{}}> <MagnifyingGlassIcon /> Search</Link>
-        {localStorage.getItem("token") !== null ?
+        {localStorage.getItem("token") !== null 
+          ?
           <Text className="tabLink" size="xl"
             onClick={() => setAddOpened(true)}>+ Add New Hidden Gem</Text>
           :
@@ -240,6 +243,7 @@ export default function HiddenGems() {
             />
           </Group>
           <Space h="md" />
+
           <Button
             color="dark"
             type="submit">
@@ -258,10 +262,12 @@ export default function HiddenGems() {
       >
         <LoadingOverlay loaderProps={{ color: 'dark', variant: 'dots' }}
           visible={modalLoading} />
+
         <div id="movieDetails">
           <div id="movieText">
             <Title order={4}>Director:
               {hiddenGemData.director ? hiddenGemData.director : " Unknown"}</Title>
+
             <Group position="left">
               <Badge color="dark">{hiddenGemData.genre}</Badge>
               <Badge color="dark"
@@ -273,6 +279,7 @@ export default function HiddenGems() {
             <Space h="md" />
             <Text>{hiddenGemData.description ? hiddenGemData.description :
               "No description provided."}</Text>
+              
             <Space h="xl" />
             <Group>
               <Button component="a" rel="noreferrer" target="_blank"

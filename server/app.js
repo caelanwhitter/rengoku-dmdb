@@ -11,6 +11,9 @@ const path = require("path");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJSDoc = require("swagger-jsdoc");
 
+/**
+ * Swagger options
+ */
 const options = {
   definition: {
     openapi: "3.0.0",
@@ -31,7 +34,7 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:3001/api",
+        url: "http://dmdb-project.herokuapp.com/api",
         description: "API server"
       },
     ],
@@ -41,6 +44,7 @@ const options = {
 
 const specs = swaggerJSDoc(options);
 
+// Use Swagger route
 app.use(
   "/api-docs",
   swaggerUi.serve,
