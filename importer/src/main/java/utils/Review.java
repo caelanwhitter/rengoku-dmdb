@@ -2,12 +2,16 @@ package utils;
 
 import org.bson.types.*;
 
+/**
+ * Review is an Object that represents and holds the fields of a Review
+ */
 public class Review {
 	private ObjectId id;
 	private String username, content, datePosted;
 	private double rating;
 
-	public Review() {}
+	public Review() {
+	}
 
 	public Review(String username, String content, String datePosted, double rating) {
 		this.username = username;

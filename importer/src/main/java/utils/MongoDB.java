@@ -14,7 +14,9 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
 /**
- * MongoDB.java sets up initial connection to MongoDB database, creates Importer and inserts movies into database
+ * MongoDB.java sets up initial connection to MongoDB database, creates Importer
+ * and inserts movies into database
+ * 
  * @author Caelan Whitter & Daniel Lam
  */
 public class MongoDB {
@@ -42,12 +44,8 @@ public class MongoDB {
         Importer importer = new Importer("importer/src/main/java/utils/resources/movies.csv");
         List<Movie> movieList = importer.fetchDataFromDataset();
 
-        // for (Movie movie : movieList)
-        // {
-        //         System.out.println(movie);
-        // }
         movies.insertMany(movieList);
-      
+
         System.out.println("Importing data into: '" + DATABASE_NAME + "' done!");
     }
 }

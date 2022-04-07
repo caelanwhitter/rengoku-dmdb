@@ -2,12 +2,16 @@ package utils;
 
 import org.bson.types.*;
 
+/**
+ * Movie class is an Object that represents and holds the fields of a Movie
+ */
 public class Movie {
-	// TO-DO: find better replacement than empty string
 	private ObjectId id;
 	private String title, description, duration, genre, rating, poster, director, gross, score, releaseYear;
 
-
+	/**
+	 * Default Constructor
+	 */
 	public Movie() {
 		this.title = "Unknown";
 		this.description = "";
@@ -21,6 +25,20 @@ public class Movie {
 		this.releaseYear = "Unknown";
 	}
 
+	/**
+	 * Parameterised Constructor
+	 * 
+	 * @param title
+	 * @param description
+	 * @param duration
+	 * @param genre
+	 * @param rating
+	 * @param poster
+	 * @param director
+	 * @param score
+	 * @param gross
+	 * @param releaseYear
+	 */
 	public Movie(String title, String description, String duration, String genre, String rating,
 			String poster, String director, String score, String gross, String releaseYear) {
 		this.title = title;
@@ -125,7 +143,8 @@ public class Movie {
 
 	@Override
 	public String toString() {
-		return "MOVIE: " + description + " | " + director + " | "+ duration +" | " + genre + " | " + gross + " | " + poster + " | "
+		return "MOVIE: " + description + " | " + director + " | " + duration + " | " + genre + " | " + gross + " | "
+				+ poster + " | "
 				+ rating + " | " + releaseYear + " | " + score + " | " + title;
 	}
 }
