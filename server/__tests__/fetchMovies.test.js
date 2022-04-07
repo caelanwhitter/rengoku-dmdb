@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 /**
- * fetchMovies.test.js tests many edge cases when fetching data 
+ * fetchMovies.test.js tests the pagination and fetching specific movies
  * from the API and matching it with the dataset.
  * Properly tests out any mismatching data between the API and the dataset
  * HOW TO RUN: Run `npm test` on root dir to run
@@ -12,7 +12,8 @@ const mongoose = require("mongoose");
 const pageOne = require("./page1.json");
 const pageTwo = require("./page2.json");
 const spiderMan = require("./spiderman.json");
-const quentinTarantino = require("./quentintarantino.json")
+const quentinTarantino = require("./quentintarantino.json");
+const routeMethods = require("../routes/route");
 const emptyQuery = {
   title: "",
   director: "",
@@ -184,6 +185,31 @@ describe("GET/ Request test at endpoint /api/oneMovie/:movieId", () => {
     ]
 
     expect(expectedMovie).toEqual(response.body);
+  })
+
+  test("Tests helper function findClosestMovieByYear()", () => {
+    const testMovies = [
+      {
+        "title": "Test Movie 1",
+        "release_date": "2020-03-04"
+      },
+      {
+        "title": "Test Movie 2",
+        "release_date": "1994-06-07"
+      },
+      {
+        "title": "Test Movie 3",
+        "release_date": "2000-12-01"
+      }
+    ]
+
+    const movieResult = routeMethods.findClosestMovieByYear(testMovies, 2020);
+    const expectedResult = {
+      "title": "Test Movie 1",
+      "release_date": "2020-03-04"
+    }
+
+    expect(expectedResult).toMatchObject(movieResult);
   })
 })
 

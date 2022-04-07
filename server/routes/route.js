@@ -1073,4 +1073,4 @@ function findClosestMovieByYear(movies, movieYearQuery) {
   return closestMovie;
 }
 
-module.exports = router;
+module.exports = { router, findClosestMovieByYear };
