@@ -1,13 +1,14 @@
+/* eslint-disable max-len */
 /**
  * route.js holds all the possible routes of the router and sends back data
- * @author Daniel Lam, Caelan Whitter
+ * @author Daniel Lam, Caelan Whitter, Danilo Zhu
  */
-
 const express = require("express");
 const router = express.Router();
 const Mongoose = require("../database/mongoose");
 const Movies = Mongoose.Movie;
 const Reviews = Mongoose.Review;
+const Submissions = Mongoose.Submission;
 const ObjectId = require("mongodb").ObjectId;
 const fetch = require("node-fetch");
 const { BlobServiceClient } = require("@azure/storage-blob");
@@ -17,12 +18,12 @@ const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const CONTAINER_NAME = "rengokublobs";
 const ONE_MEGABYTE = 1024 * 1024;
 const uploadOptions = { bufferSize: 4 * ONE_MEGABYTE, maxBuffers: 20 };
+const ELEMS_PER_PAGE = 52;
 require("dotenv").config();
 
 /**
  * Start up connection to Azure Blob Storage
  */
-
 console.log("Connecting to Azure Blob Storage...");
 const blobServiceClient = BlobServiceClient.fromConnectionString(AZURE_STORAGE_CONNECTION_STRING);
 const containerClient = blobServiceClient.getContainerClient(CONTAINER_NAME);
@@ -31,7 +32,111 @@ console.log("Connected to container " + CONTAINER_NAME + "!\n");
 router.use(bp.json());
 router.use(bp.urlencoded({ extended: true }));
 
+/* ROUTES */
 
+/**
+ * @swagger
+ * /getSearch?title={title}&director={director}&genre={genre}&releaseYear={releaseYear}&score={score}&rating={rating}:
+ *  get:
+ *    summary: Retrieve every movie.
+ *    description: Used when loading the Movies page with no search parameters.
+ *                 Retrieves a list of movies matching the parameters specified, 
+ *                 if no parameters are specified, retrieves every movie.
+ *                 If a certain parameter is not needed, it must absolutely be empty, 
+ *                 thus no double-quotes, single-quotes or anything the like.
+ *    parameters:
+ *      - name: title
+ *        in: query
+ *        required: false
+ *        description: Movie title.
+ *        allowEmptyValue: true 
+ *        schema:
+ *          type: string
+ *      - name: director
+ *        in: query
+ *        require: false
+ *        description: Director of the movie.
+ *        allowEmptyValue: true 
+ *        schema:
+ *          type: string
+ *      - name: genre
+ *        in: query
+ *        required: false
+ *        description: Movie genre.
+ *        allowEmptyValue: true 
+ *        schema:
+ *          type: string
+ *      - name: releaseYear
+ *        in: query
+ *        require: false
+ *        description: Year of release of the movie.
+ *        allowEmptyValue: true 
+ *        schema:
+ *          type: integer
+ *          minimum: 1980
+ *          maximum: 2020
+ *      - name: score
+ *        in: query
+ *        require: false
+ *        description: Overall score given by reviewers to the movie.
+ *        allowEmptyValue: true 
+ *        schema:
+ *          type: string
+ *      - name: rating
+ *        in: query
+ *        require: false
+ *        description: Rating of the movie (Adults, teens or everyone).
+ *        allowEmptyValue: true
+ *        schema:
+ *          type: string
+ * 
+ *    responses:
+ *      '200':
+ *        description: A list of movies that match the parameters specified, if no parameters, every movie.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *                properties:
+ *                  id:
+ *                    type: string
+ *                    example: 62378512c6d65605e4778633
+ *                  description:
+ *                    type: string
+ *                    example: Paranormal investigators Ed and Lorraine Warren work to help 
+ *                             a family terrorized by a dark presence in their farmhouse. Forced to 
+ *                             confront a powerful entity, the Warrens find themselves caught in the 
+ *                             most terrifying case of their lives.
+ *                  director:
+ *                    type: string
+ *                    example: James Wan
+ *                  duration:
+ *                    type: string
+ *                    example: 112.0
+ *                  genre:
+ *                    type: string
+ *                    example: Horror
+ *                  gross:
+ *                    type: string
+ *                    example: $320,290,989.00
+ *                  poster:
+ *                    type: string
+ *                    example: https://rengokudmdb.blob.core.windows.net/rengokublobs/rengokuBlob-The%20Conjuring-2013.jpg
+ *                  rating:
+ *                    type: string
+ *                    example: R
+ *                  releaseYear:
+ *                    type: string
+ *                    example: 2013
+ *                  score:
+ *                    type: string
+ *                    example: 7.5
+ *                  title:
+ *                    type: string
+ *                    example: The Conjuring
+*/
 router.get("/getSearch", async (req, res) => {
   const keywordTitle = req.query.title;
   const keywordDirector = req.query.director;
@@ -55,34 +160,141 @@ router.get("/getSearch", async (req, res) => {
     console.error(error.message);
     res.sendStatus(404).end();
   }
-})
-router.get("/getSearch/page/:pageNumber", async (req, res) => {
-  const pageNumber = req.params.pageNumber;
-  const keywordTitle = req.query.title;
-  const keywordDirector = req.query.director;
-  const keywordGenre = req.query.genre;
-  const keywordReleaseYear = req.query.releaseYear;
-  const keywordScore = req.query.score;
-  const keywordRating = req.query.rating;
-  const elemsPerPage = 52;
-  const moviesPerPage = await Movies.find({
-    title: { $regex: `${keywordTitle}`, $options: "i" },
-    director: { $regex: `${keywordDirector}`, $options: "i" },
-    genre: { $regex: `${keywordGenre}`, $options: "i" },
-    releaseYear: { $regex: `${keywordReleaseYear}`, $options: "i" },
-    score: { $regex: `${keywordScore}`, $options: "i" },
-    rating: { $regex: `${keywordRating}`, $options: "i" },
-  }).skip(elemsPerPage * (pageNumber - 1)).limit(elemsPerPage);
+});
 
+/**
+ * @swagger
+ * /getSearch/page/{pageNumber}:
+ *  get:
+ *    summary: Retrieve movies per page.
+ *    description: Retrieves 52 movies per specified page, minimum page is 1.
+ *                 Returns the 52 movies.
+ *    parameters:
+ *      - name: pageNumber
+ *        in: path
+ *        required: true
+ *        description: Page number.
+ *        schema:
+ *          type: integer
+ *          minimum: 1
+ * 
+ *    responses:
+ *      '200':
+ *        description: A list of movies that match the page specified.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *                properties:
+ *                  title:
+ *                    type: string
+ *                    example: The Conjuring
+ *                  director:
+ *                    type: string
+ *                    example: James Wan
+ *                  genre:
+ *                    type: string
+ *                    example: Horror
+ *                  releaseYear:
+ *                    type: string
+ *                    example: 2013
+ *                  score:
+ *                    type: string
+ *                    example: 7.5
+ *                  rating:
+ *                    type: string
+ *                    example: R
+ */
+router.get("/getSearch/page/:pageNumber", async (req, res) => {
   try {
-    res.json(moviesPerPage);
+    const pageNumber = req.params.pageNumber;
+    const keywordTitle = req.query.title;
+    const keywordDirector = req.query.director;
+    const keywordGenre = req.query.genre;
+    const keywordReleaseYear = req.query.releaseYear;
+    const keywordScore = req.query.score;
+    const keywordRating = req.query.rating;
+    const moviesPerPage = await Movies.find({
+      title: { $regex: `${keywordTitle}`, $options: "i" },
+      director: { $regex: `${keywordDirector}`, $options: "i" },
+      genre: { $regex: `${keywordGenre}`, $options: "i" },
+      releaseYear: { $regex: `${keywordReleaseYear}`, $options: "i" },
+      score: { $regex: `${keywordScore}`, $options: "i" },
+      rating: { $regex: `${keywordRating}`, $options: "i" },
+    }).skip(ELEMS_PER_PAGE * (pageNumber - 1)).limit(ELEMS_PER_PAGE).sort({ "_id": 1 });
+
+    const movies = await fetchMovieInfo(moviesPerPage);
+
+    res.json(movies);
     res.end();
+
   } catch (error) {
     console.error(error.message);
     res.sendStatus(404).end();
   }
 })
 
+/**
+ * @swagger
+ * /oneMovie?id={id}:
+ *  get:
+ *    summary: Retrieve movie by ID.
+ *    description: Returns the details of the movie with the specified ID.
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        required: true
+ *        description: ID of the movie.
+ *        schema:
+ *          type: string
+ * 
+ *    responses:
+ *      '200':
+ *        description: One single movie that matches the ID specified.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                id:
+ *                  type: string
+ *                  example: 62378512c6d65605e4778633
+ *                description:
+ *                  type: string
+ *                  example: Paranormal investigators Ed and Lorraine Warren work to help 
+ *                           a family terrorized by a dark presence in their farmhouse. Forced to 
+ *                           confront a powerful entity, the Warrens find themselves caught in the 
+ *                           most terrifying case of their lives.
+ *                director:
+ *                  type: string
+ *                  example: James Wan
+ *                duration:
+ *                  type: string
+ *                  example: 112.0
+ *                genre:
+ *                  type: string
+ *                  example: Horror
+ *                gross:
+ *                  type: string
+ *                  example: $320,290,989.00
+ *                poster:
+ *                  type: string
+ *                  example: https://rengokudmdb.blob.core.windows.net/rengokublobs/rengokuBlob-The%20Conjuring-2013.jpg
+ *                rating:
+ *                  type: string
+ *                  example: R
+ *                releaseYear:
+ *                  type: string
+ *                  example: 2013
+ *                score:
+ *                  type: string
+ *                  example: 7.5
+ *                title:
+ *                  type: string
+ *                  example: The Conjuring
+ */
 router.get("/oneMovie", async (req, res) => {
   const id = req.query.id;
   const singleMovie = await Movies.find({ "_id": new ObjectId(id) });
@@ -96,10 +308,67 @@ router.get("/oneMovie", async (req, res) => {
   }
 })
 
+/**
+ * @swagger
+ * /oneMovie/reviews?id={id}:
+ *  get:
+ *    summary: Retrieve reviews from movie by ID.
+ *    description: Returns the reviews of the movie with the specified ID.
+ *    parameters:
+ *      - name: id
+ *        in: path
+ *        required: true
+ *        description: ID of the movie.
+ *        schema:
+ *          type: string
+ * 
+ *    responses:
+ *      '200':
+ *        description: The reviews of the movie that matches the ID specified.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *                properties:
+ *                  id:
+ *                    type: string
+ *                    example: 6245df834793b57bfafa5b1f
+ *                  username:
+ *                    type: string
+ *                    example: Caelan Whitter
+ *                  email:
+ *                    type: string
+ *                    example: caelanwhitter@gmail.com
+ *                  source:
+ *                    type: string
+ *                    example: https://lh3.googleusercontent.com/a/AATXAJzqxP70inc0scd2Y4JOwv4QHg4xlXIT1uY6m5sb=s96-c
+ *                  movieid:
+ *                    type: string
+ *                    example: 62378512c6d65605e4776dce
+ *                  subtitle:
+ *                    type: string
+ *                    example: Good movie
+ *                  content:
+ *                    type: string
+ *                    example: I really enjoyed this movie.
+ *                  rating:
+ *                    type: integer
+ *                    minimum: 0
+ *                    maximum: 10
+ *                    example: 0
+ *                  datePosted:
+ *                    type: string
+ *                    example: Mar 31, 2022
+ *                  __v:
+ *                    type: number
+ *                    example: 0
+ */
 router.get("/oneMovie/reviews", async (req, res) => {
   const id = req.query.id;
-
   const reviewForMovie = await Reviews.find({ "movieId": id });
+
   try {
     res.json(reviewForMovie);
     res.end();
@@ -109,11 +378,55 @@ router.get("/oneMovie/reviews", async (req, res) => {
   }
 })
 
-
+/**
+ * @swagger
+ * /reviews:
+ *  post:
+ *    summary: Add a new review.
+ *    description: Adds a new review to the database.
+ *    requestBody:
+ *      description: Model of the review.
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              username:
+ *                type: string
+ *                example: Caelan Whitter
+ *              email:
+ *                type: string
+ *                example: caelanbuddy@gmail.com
+ *              source:
+ *                type: string
+ *                example: https://lh3.googleusercontent.com/a-/AOh14GghFrmx6q-6pCnahBumONDnedLl7kAJ66o9Iuxh=s96-c
+ *              movieId:
+ *                type: string
+ *                example: 62378512c6d65605e4776dce
+ *              subtitle:
+ *                type: string
+ *                example: Great movie!
+ *              content:
+ *                type: string
+ *                example: It was a great movie to relax to.
+ *              rating:
+ *                type: number
+ *                example: 4
+ *              datePosted:
+ *                type: string
+ *                example: Mar 31, 2022
+ *
+ *    responses:
+ *      '201':
+ *        description: Created
+ */
 router.post("/reviews", async (req, res) => {
   const body = await req.body;
   const doc = new Reviews({
     username: body.username,
+    email: body.email,
+    source: body.source,
     movieId: body.movieId,
     content: body.content,
     rating: body.rating,
@@ -126,6 +439,17 @@ router.post("/reviews", async (req, res) => {
   });
 })
 
+/**
+ * @swagger
+ * /reviews:
+ *  delete:
+ *    summary: Delete a specific review.
+ *    description: Deletes a review from the database.
+ *
+ *    responses:
+ *      '204':
+ *        description: No Content, Deleted
+ */
 router.delete("/review/delete", async (req) => {
   const body = await req.body;
   Reviews.findByIdAndDelete(body.id, function (err) {
@@ -137,55 +461,59 @@ router.delete("/review/delete", async (req) => {
 });
 
 /**
- * fetchMovieDataFromApi endpoint takes a Movie Title and Year, 
- * fetches description and movie poster URL from API and returns it as a JSON
+ * fetchMovieInfo() takes in JSON of movies, loops through array, returns Promise of movie API data and waits for all Promises to be fulfilled
+ * @param {*} movies 
+ * @returns 
  */
-router.get("/oneMovie/fetchMovieDataFromApi/", async (req, res) => {
-  let movieTitle = req.query.title;
-  let movieYear = parseInt(req.query.year);
-  // eslint-disable-next-line max-len
-  let url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${movieTitle}&year=${movieYear}`;
-
-  let response = await fetch(url);
-  try {
-    if (response.ok) {
-      let moviesJsonApi = await response.json();
-      let moviesApiResults = moviesJsonApi.results;
-      let closestMovieJson = {};
-      let movieData = {};
-
-      // Checks if movie results has at least one movie. If there is, update description and poster
-      if (moviesApiResults.length !== 0) {
-        // Take first movie from results, most similar result
-        closestMovieJson = moviesApiResults[0];
-        // If there isn't, find most similar movie based 
-        // on matching original movie title and closest year.
-      } else {
-        let closestMovieResults = await fetchClosestMovies(movieTitle);
-        closestMovieJson = findClosestMovie(closestMovieResults, movieTitle, movieYear);
-      }
-
-      // Creates movieData object with title, description and poster
-      movieData = {
-        title: closestMovieJson.title,
-        description: closestMovieJson.overview,
-        poster: closestMovieJson.poster_path,
-        year: movieYear,
-      }
-      console.log(movieData);
-      res.json(movieData);
-      res.end();
-    } else {
-      throw new Error("404: Response not OK");
+const fetchMovieInfo = async (movies) => {
+  const requests = movies.map((movie) => {
+    if ((!movie.description || movie.poster === "") && Object.keys(movie).length !== 0) {
+      const url = `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_API_KEY}&query=${movie.title}&year=${movie.releaseYear}`;
+      return fetchMovieDataFromApi(url, movie).then((response) => {
+        return response;
+      });
     }
-  } catch (e) {
-    res.status(404).send("404: Movie API Fetch Failed!");
-  }
-});
+    return movie;
+  });
+  return Promise.all(requests);
+}
 
 /**
- * updateMovieDataToAzure endpoint takes the Request Body, 
- * fetches the Blob Name URL and poster and uploads it to Blob Storage
+ * @swagger
+ * /oneMovie/updateMovieDataToAzure:
+ *  post:
+ *    summary: Upload new poster to Azure.
+ *    description: With Request Body, 
+ *                 fetches the Blob Name URL and poster and uploads it to Blob Storage.
+ *    requestBody:
+ *      description: Model of the movie.
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              title:
+ *                type: string
+ *                example: The Conjuring
+ *              description: 
+ *                type: string
+ *                example: Paranormal investigators Ed and Lorraine Warren work to help 
+ *                         a family terrorized by a dark presence in their farmhouse. Forced to 
+ *                         confront a powerful entity, the Warrens find themselves caught in the 
+ *                         most terrifying case of their lives.
+ *              year: 
+ *                type: integer
+ *                minimum: 1980
+ *                maximum: 2020
+ *                example: 2013
+ *              poster:
+ *                type: string
+ *                example: /wVYREutTvI2tmxr6ujrHT704wGF.jpg
+ * 
+ *    responses:
+ *      '201':
+ *        description: Created
  */
 router.post("/oneMovie/updateMovieDataToAzure/", async (req, res) => {
   const requestBody = await req.body;
@@ -198,9 +526,70 @@ router.post("/oneMovie/updateMovieDataToAzure/", async (req, res) => {
   });
 });
 
+router.post("/uploadMovies", async (req, res) => {
+  const body = await req.body;
+  const movies = body.movies;
+
+  for (let movie of movies) {
+
+    // If movie poster field is empty or null, update DB movie to poster as null and skip to next movie
+    if (!movie.poster) {
+      await updateMovieDataToDB(movie._id, "", null);
+      continue;
+    }
+
+    let blobData = getMovieBlobNameAndUrl(movie);
+    let doesBlobExist = await containerClient.getBlockBlobClient(blobData.posterBlobName).exists();
+    if (!doesBlobExist) {
+      await uploadMoviePoster(blobData.posterBlobName, movie.poster);
+      await updateMovieDataToDB(movie._id, movie.description, blobData.url);
+    }
+  }
+
+  res.status(201).json({
+    message: "POST Upload Movies Successful!"
+  });
+});
+
 /**
- * updateMovieDataToDB endpoint takes request Body, 
- * fetches description and Azure URL and uploads it to database
+ * @swagger
+ * /oneMovie/updateMovieDataToDB:
+ *  post:
+ *    summary: Upload movie details to database.
+ *    description: With Request Body, 
+ *                 fetches description and Azure URL and uploads it to database.
+ *    requestBody:
+ *      description: Model of the movie.
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              id:
+ *                type: string
+ *                example: 62378512c6d65605e4776dce
+ *              title:
+ *                type: string
+ *                example: The Conjuring
+ *              description: 
+ *                type: string
+ *                example: Paranormal investigators Ed and Lorraine Warren work to help 
+ *                         a family terrorized by a dark presence in their farmhouse. Forced to 
+ *                         confront a powerful entity, the Warrens find themselves caught in the 
+ *                         most terrifying case of their lives.
+ *              year: 
+ *                type: integer
+ *                minimum: 1980
+ *                maximum: 2020
+ *                example: 2013
+ *              poster:
+ *                type: string
+ *                example: /wVYREutTvI2tmxr6ujrHT704wGF.jpg
+ * 
+ *    responses:
+ *      '201':
+ *        description: Created
  */
 router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
   const requestBody = await req.body;
@@ -220,13 +609,344 @@ router.post("/oneMovie/updateMovieDataToDB", async (req, res) => {
 });
 
 /**
+ * @swagger
+ * /hiddengems:
+ *  get:
+ *    summary: Retrieve all Hidden Gems.
+ *    description: Returns all the Hidden Gems in the database.
+ *
+ *    responses:
+ *      '200':
+ *        description: List of all Hidden Gems in the database.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *                properties:
+ *                  id:
+ *                    type: string
+ *                    example: 6245df834793b57bfafa5b1f
+ *                  director:
+ *                    type: string
+ *                    example: Caelan Whitter
+ *                  title:
+ *                    type: string
+ *                    example: The Project
+ *                  link:
+ *                    type: string
+ *                    example: www.google.com
+ *                  description:
+ *                    type: string
+ *                    example: The whole process of the project
+ *                  genre:
+ *                    type: string
+ *                    example: Thriller
+ *                  duration:
+ *                    type: number
+ *                    minimum: 10
+ *                    maximum: 500
+ *                    example: 150
+ *                  rating:
+ *                    type: string
+ *                    example: PG
+ *                  releaseDate:
+ *                    type: string
+ *                    example: Mar 31, 2022
+ */
+router.get("/hiddengems", async (req, res) => {
+  const hiddengem = await Submissions.find();
+
+  try {
+    res.json(hiddengem);
+    res.end();
+  } catch (err) {
+    console.error(err.message);
+    res.sendStatus(404).end();
+  }
+});
+
+/**
+ * @swagger
+ * /hiddengems/search?title={title}&director={director}&rating={rating}&genre={genre}:
+ *  get:
+ *    summary: Retrieve Hidden Gems with criteria.
+ *    description: Returns the details of the Hidden Gem with the specified criteria.
+ *    parameters:
+ *      - name: title
+ *        in: query
+ *        required: false
+ *        description: Title of the Hidden Gem
+ *        schema:
+ *          type: string
+ *      - name: director
+ *        in: query
+ *        required: false
+ *        description: Director of the Hidden Gem
+ *        schema:
+ *          type: string
+ *      - name: rating
+ *        in: query
+ *        required: false
+ *        description: Age rating of the Hidden Gem
+ *        schema:
+ *          type: string
+ *      - name: genre
+ *        in: query
+ *        required: false
+ *        description: Genre of the Hidden Gem
+ *        schema:
+ *          type: string
+ *
+ *    responses:
+ *      '200':
+ *        description: The collection of the Hidden Gem that match the criteria.
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *                properties:
+ *                  id:
+ *                    type: string
+ *                    example: 6245df834793b57bfafa5b1f
+ *                  director:
+ *                    type: string
+ *                    example: Caelan Whitter
+ *                  title:
+ *                    type: string
+ *                    example: The Project
+ *                  link:
+ *                    type: string
+ *                    example: www.google.com
+ *                  description:
+ *                    type: string
+ *                    example: The whole process of the project
+ *                  genre:
+ *                    type: string
+ *                    example: Thriller
+ *                  duration:
+ *                    type: number
+ *                    minimum: 10
+ *                    maximum: 500
+ *                    example: 150
+ *                  rating:
+ *                    type: string
+ *                    example: PG
+ *                  releaseDate:
+ *                    type: string
+ *                    example: Mar 31, 2022
+ */
+router.get("/hiddengems/search", async (req, res) => {
+  const hiddengems = await Submissions.find({
+    title: { $regex: `${req.query.title}`, $options: "i" },
+    director: { $regex: `${req.query.director}`, $options: "i" },
+    genre: { $regex: `${req.query.genre}`, $options: "i" },
+    rating: { $regex: `${req.query.rating}`, $options: "i" }
+  });
+
+  try {
+    res.json(hiddengems);
+    res.end();
+  } catch (err) {
+    console.error(err.message);
+    res.sendStatus(404).end();
+  }
+})
+
+/**
+ * @swagger
+ * /hiddengems:
+ *  delete:
+ *    summary: Delete a specific submission.
+ *    description: Deletes a submission from the database.
+ * 
+ *    responses:
+ *      '204':
+ *        description: No Content, Deleted
+ */
+router.delete("/hiddengems", async (req, res) => {
+  const body = await req.body;
+
+  Submissions.findByIdAndDelete(body.id, function (err) {
+    if (err) {
+      console.error(err);
+    }
+    console.log("Successfully deleted!");
+    res.sendStatus(203).end();
+  });
+});
+
+/**
+ * @swagger
+ * /hiddengems:
+ *  post:
+ *    summary: Add a new Hidden Gem.
+ *    description: Adds a new Hidden Gem to the database.
+ *    requestBody:
+ *      description: Model of the submission.
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              description:
+ *                type: string
+ *                example: I made this movie myself.
+ *              director:
+ *                type: string
+ *                example: Xiaoju Zhu
+ *              duration:
+ *                type: number
+ *                example: 120
+ *              link:
+ *                type: string
+ *                example: www.google.com
+ *              rating:
+ *                type: string
+ *                example: PG
+ *              releaseDate:
+ *                type: string
+ *                example: Mar 31, 2022
+ *              title:
+ *                type: string
+ *                example: Web Development
+ *              genre:
+ *                type: string
+ *                example: Horror
+ *
+ *    responses:
+ *      '201':
+ *        description: Created
+ */
+router.post("/hiddengems", async (req, res) => {
+  const body = await req.body;
+  const hg = new Submissions({
+    description: body.description,
+    director: body.director,
+    duration: body.duration,
+    link: body.link,
+    rating: body.rating,
+    releaseDate: body.releaseDate,
+    title: body.title,
+    genre: body.genre,
+    userid: body.userid
+  });
+
+  await hg.save();
+  res.status(201).json({
+    message: "Inserted Hidden Gem"
+  });
+});
+
+/* HELPER FUNCTIONS */
+
+/**
+ * fetchMovieDataFromApi() takes in the API Query URL with movie title and year, fetches it and returns movieData of closest movie
+ * @param {*} url 
+ * @param {*} movie 
+ * @returns 
+ */
+const fetchMovieDataFromApi = async (url, movie) => {
+  const response = await fetch(url);
+  if (response.ok) {
+    let moviesJsonApi = await response.json();
+    let moviesApiResults = moviesJsonApi.results;
+    let closestMovieJson = {};
+    let movieData = {};
+
+    // Calls findClosestMovieJson() algorithm to determine most similar movie from API
+    closestMovieJson = await findClosestMovieJson(moviesApiResults, movie);
+
+    // Check if algorithm found a closest movie.
+    if (closestMovieJson) {
+
+      // If there is closestMovieJson, populate movieData object with description and poster
+      movieData = {
+        _id: movie._id,
+        title: movie.title,
+        director: movie.director,
+        duration: movie.duration,
+        genre: movie.genre,
+        gross: movie.gross,
+        rating: movie.rating,
+        releaseYear: movie.releaseYear,
+        score: movie.score,
+        poster: await returnPosterURL(movie, closestMovieJson.poster_path),
+        description: closestMovieJson.overview,
+      };
+    } else {
+
+      // If there is no Json of Closest Movie, leave poster and description empty
+      movieData = {
+        _id: movie._id,
+        title: movie.title,
+        director: movie.director,
+        duration: movie.duration,
+        genre: movie.genre,
+        gross: movie.gross,
+        rating: movie.rating,
+        releaseYear: movie.releaseYear,
+        score: movie.score,
+        poster: null,
+        description: "",
+      };
+    }
+    return movieData;
+  }
+}
+
+async function returnPosterURL(movie, moviePosterPath) {
+  if (!moviePosterPath) {
+    return null;
+  }
+
+  let blobData = getMovieBlobNameAndUrl(movie);
+  let url = blobData.url;
+  let doesBlobExist = await containerClient.getBlockBlobClient(blobData.posterBlobName).exists();
+  if (!doesBlobExist) {
+    let apiImageUrl = `http://image.tmdb.org/t/p/w500${moviePosterPath}`;
+    url = apiImageUrl;
+  }
+  return url;
+}
+
+async function findClosestMovieJson(moviesApiResults, movie) {
+  try {
+
+    let closestMovieJson = null;
+    // Checks if movie results has at least one movie. If there is, update description and poster
+    if (moviesApiResults.length !== 0) {
+
+      // Take first movie from results, most similar result
+      closestMovieJson = moviesApiResults[0];
+
+    } else {
+
+      // If there isn't, find most similar movie based
+      // on matching original movie title and closest year.
+      let closestMovieResults = await fetchClosestMovies(movie.title);
+
+      // If algorithm found other closest movies
+      if (closestMovieResults.length !== 0) {
+        closestMovieJson = findClosestMovie(closestMovieResults, movie.title, movie.releaseYear);
+      }
+    }
+    return closestMovieJson;
+  } catch (e) {
+    return null;
+  }
+}
+/**
  * uploadMoviePoster fetches the image from the movie poster API 
  * with the right path and uploads to Azure Blob Storage
  * @param {*} movieTitle 
  * @param {*} moviePosterPath 
  */
-async function uploadMoviePoster(posterBlobName, moviePosterPath) {
-  let moviePosterUrl = `http://image.tmdb.org/t/p/w500${moviePosterPath}`;
+async function uploadMoviePoster(posterBlobName, moviePosterUrl) {
   let response = await fetch(moviePosterUrl);
   if (response.ok) {
 
@@ -265,7 +985,7 @@ async function updateMovieDataToDB(movieId, movieDescription, movieBlobUrl) {
  * @returns blockBlobClient.url
  */
 function getMovieBlobNameAndUrl(movieData) {
-  const posterBlobName = "rengokuBlob-" + movieData.title + "-" + movieData.year + ".jpg";
+  const posterBlobName = "rengokuBlob-" + movieData.title + "-" + movieData.releaseYear + ".jpg";
   const blockBlobClient = containerClient.getBlockBlobClient(posterBlobName);
 
   let data = {
@@ -308,6 +1028,10 @@ function findClosestMovie(movies, movieTitle, movieYearQuery) {
       moviesWithExactTitle.push(movie);
     }
   });
+
+  if (moviesWithExactTitle.length === 0) {
+    return null;
+  }
 
   let closestMovie = findClosestMovieByYear(moviesWithExactTitle, movieYearQuery);
 

@@ -1,15 +1,24 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica,
-    Arial,sans-serif, Apple Color Emoji, Segoe UI Emoji;
+    Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
 }
 
-a, .tabLink, #gitLabLink {
+a,
+.tabLink,
+#gitLabLink {
   text-decoration: none;
   color: black;
 }
 
-#gitLabLink:hover {
-  color: orange;
+footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-top: auto;
+  border-radius: 15px;
+  background-color: #f0f3f7;
+  padding-top: 20px;
+  padding-bottom: 10px;
 }
 
 #brandIcon {
@@ -19,12 +28,20 @@ a, .tabLink, #gitLabLink {
   width: 200px;
 }
 
-.title {
-  background-color: black;
-  color: white;
-  letter-spacing: 3px;
-  text-align: center;
-  font-size: 50px;
+#contributorButton,
+#movieContainer {
+  display: flex;
+  justify-content: space-around;
+}
+
+#gitLabLink:hover {
+  color: orange;
+}
+
+#mainContent {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 #mainPageContainer {
@@ -32,36 +49,13 @@ a, .tabLink, #gitLabLink {
   padding-bottom: 50px;
 }
 
-#movieContainer {
+#movieDetails {
   display: flex;
-  justify-content: space-around;
+  padding: 10px;
 }
 
 #movieList {
   max-width: 50%;
-}
-
-.movieGrid {
-  margin: 10px;
-}
-
-.tabs, #searchNav {
-  font-size: 150%;
-  padding: 5px;
-  border-bottom: solid 1px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-variant: small-caps;
-}
-
-#searchNav {
-  justify-content: center;
-}
-
-#movieDetails {
-  display: flex;
-  padding: 10px;
 }
 
 #movieText {
@@ -75,28 +69,71 @@ a, .tabLink, #gitLabLink {
   margin-bottom: 50px;
 }
 
-.tabLink:hover {
-  background-color: black;
-  border-radius: 5px;
-  color: white;
-}
-.trashLink:hover{
-color: red;
+#searchNav {
+  justify-content: center;
 }
 
-.intro { 
+#searchNav>div {
+  cursor: pointer;
+}
+
+.centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.intro {
   font-size: 60px;
 }
 
-footer {
-  background-color: #f0f3f7;
-  padding-top: 20px;
-  padding-bottom: 10px;
-  position: relative;
-  width: 100%;
-  left: 0;
-  bottom: 0;
+.movieGrid {
+  margin: 10px;
+  background-color: #f0f3f5;
+  border-radius: 15px;
+}
+
+.tabs,
+#searchNav {
+  font-size: 150%;
+  padding: 5px;
+  border-bottom: solid 1px;
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-around;
+  align-items: center;
+  font-variant: small-caps;
+}
+
+.tabLink:hover {
+  color: white;
+  background-color: black;
+  opacity: 1;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.reviewLink:hover {
+  color: yellow;
+  background-color: black;
+  opacity: 1;
+  border-radius: 5px;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.title {
+  background-color: black;
+  color: white;
+  letter-spacing: 3px;
+  text-align: center;
+  font-size: 50px;
+}
+
+.trashLink:hover {
+  color: red;
+}
+
+.underHover:hover,
+.footSection>a:hover {
+  text-decoration: underline;
 }

@@ -1,8 +1,10 @@
 package utils;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.text.NumberFormat;
@@ -36,10 +38,19 @@ public class Importer {
         /**
          * a try-catch method to extract data from csv file
          */
-        BufferedReader reader = new BufferedReader(new FileReader(movieAttributesPath));
+
+        FileInputStream fis = new FileInputStream(movieAttributesPath);
+        InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+        BufferedReader reader = new BufferedReader(isr);
+        //BufferedReader reader = new BufferedReader(new FileReader(movieAttributesPath));
 
         try {
             boolean firstLine = true;
+            // File file = new File("D:\\sample.txt");
+            //         // Instantiating the PrintStream class
+            //         PrintStream stream = new PrintStream(file);
+            //         System.out.println("From now on "+file.getAbsolutePath()+" will be your console");
+            //         System.setOut(stream);
             while ((line = reader.readLine()) != null) {
 
                 /**
@@ -52,7 +63,6 @@ public class Importer {
 
                 // Create starting Movie object with default values
                 Movie movie = new Movie();
-
                 String[] movieAttributes = line.split(splitby);
                 /**
                  * Lines that start with a " means that there is a comma within the title which
@@ -63,6 +73,8 @@ public class Importer {
                     formatTitleWithComma(line, movie);
 
                 } else {
+                  
+                    
                     /**
                      * Set title, rating, genre and releaseYear since they never change even if a
                      * line is missing information
@@ -71,7 +83,6 @@ public class Importer {
                     movie.setRating(formatRating(movieAttributes[1]));
                     movie.setGenre(movieAttributes[2]);
                     movie.setReleaseYear(movieAttributes[3]);
-                    movie.setScore(formatNumber(movieAttributes[6]));
 
                     /**
                      * Since the release date column can contain a comma,
@@ -81,10 +92,17 @@ public class Importer {
                      * to empty
                      */
                     if (movieAttributes[4].startsWith("\"")
-                            && (movieAttributes.length == 16 || movieAttributes.length == 15)) {
+                            && (movieAttributes.length >= 16 || movieAttributes.length == 15 )) {
                         if (movieAttributes.length == 16) {
                             movie.setDuration(movieAttributes[15]);
                         }
+                        if (movieAttributes.length == 17) {
+                            movie.setDuration(movieAttributes[16]);
+                        }
+                        if (movieAttributes.length == 18) {
+                            movie.setDuration(movieAttributes[17]);
+                        }
+                        movie.setScore(formatNumber(movieAttributes[6]));
                         movie.setDirector(movieAttributes[8]);
                         movie.setGross(formatGross(movieAttributes[13]));
 
@@ -100,15 +118,23 @@ public class Importer {
                         movie.setDirector(movieAttributes[7]);
                         movie.setScore(formatNumber(movieAttributes[5]));
                     }
+
+                    else if (movieAttributes.length > 16) {
+                        movie.setScore(formatNumber(movieAttributes[6]));
+                    }
+
                     /**
                      * In case if movieAttributes where the release date have no comma, go through
                      * here since the
                      * data are in different spots
                      */
+                    
                     else {
                         movie.setDuration(movieAttributes[14]);
                         movie.setDirector(movieAttributes[7]);
                         movie.setGross(formatGross(movieAttributes[12]));
+                        movie.setScore(formatNumber(movieAttributes[5]));
+
                     }
 
                     /* Add movie into movie list after changes */
@@ -183,6 +209,7 @@ public class Importer {
      *             comma
      */
     public void formatTitleWithComma(String line, Movie movie) {
+
         /**
          * Split by ", to get the title by itself. Creates two other arrays.
          * One containing everything before and up to the release date, and the other
@@ -191,6 +218,7 @@ public class Importer {
         String[] commas = line.split("\",");
         String[] firstHalf = commas[1].split(",");
         String[] secondHalf = commas[2].split(",");
+
 
         /**
          * Set the variables depending on their placements in the seperate arrays
