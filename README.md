@@ -1,5 +1,7 @@
 # Dawson Movie Database
 
+[Visit our official website](https://dmdb-project.herokuapp.com)
+
 ## Description
 This project aims to display a list of over 7500 movies to a user. A user could also login, review movies and submit their own Hidden Gem which are user-submitted movies found on their own separate page.
 
