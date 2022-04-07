@@ -16,50 +16,39 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
 /**
- * MongoDB.java sets up initial connection to MongoDB database, creates Importer and inserts movies into database
+ * MongoDB.java sets up initial connection to MongoDB database, creates Importer
+ * and inserts movies into database
+ * 
  * @author Caelan Whitter & Daniel Lam
  */
 public class MongoDB {
-        public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
 
-                Dotenv dotenv = Dotenv.load();
-                final String ATLAS_URI = dotenv.get("ATLAS_URI");
-                final String DATABASE_NAME = "moviedb";
-                final String COLLECTION_NAME = "movies";
+        Dotenv dotenv = Dotenv.load();
+        final String ATLAS_URI = dotenv.get("ATLAS_URI");
+        final String DATABASE_NAME = "moviedb";
+        final String COLLECTION_NAME = "movies";
 
-                System.out.println("Importing data into: '" + DATABASE_NAME + "'...");
+        System.out.println("Importing data into: '" + DATABASE_NAME + "'...");
 
-                ConnectionString connectionString = new ConnectionString(ATLAS_URI);
-                CodecRegistry pojoCodecRegistry = CodecRegistries
-                                .fromProviders(PojoCodecProvider.builder().automatic(true).build());
-                CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
-                                MongoClientSettings.getDefaultCodecRegistry(),
-                                pojoCodecRegistry);
-                MongoClientSettings clientSettings = MongoClientSettings.builder()
-                                .applyConnectionString(connectionString)
-                                .codecRegistry(codecRegistry).build();
-                MongoClient client = MongoClients.create(clientSettings);
+        ConnectionString connectionString = new ConnectionString(ATLAS_URI);
+        CodecRegistry pojoCodecRegistry = CodecRegistries
+                .fromProviders(PojoCodecProvider.builder().automatic(true).build());
+        CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
+                MongoClientSettings.getDefaultCodecRegistry(),
+                pojoCodecRegistry);
+        MongoClientSettings clientSettings = MongoClientSettings.builder()
+                .applyConnectionString(connectionString)
+                .codecRegistry(codecRegistry).build();
+        MongoClient client = MongoClients.create(clientSettings);
 
-                MongoDatabase database = client.getDatabase(DATABASE_NAME);
-                MongoCollection<Movie> movies = database.getCollection(COLLECTION_NAME, Movie.class);
+        MongoDatabase database = client.getDatabase(DATABASE_NAME);
+        MongoCollection<Movie> movies = database.getCollection(COLLECTION_NAME, Movie.class);
 
-                Importer importer = new Importer("importer/src/main/java/utils/resources/movies.csv");
-                List<Movie> movieList = importer.fetchDataFromDataset();
+        Importer importer = new Importer("importer/src/main/java/utils/resources/movies.csv");
+        List<Movie> movieList = importer.fetchDataFromDataset();
+        movies.insertMany(movieList);
 
-                
-
-        //         File file = new File("D:\\sample.txt");
-        //         //Instantiating the PrintStream class
-        //         PrintStream stream = new PrintStream(file);
-        //         System.out.println("From now on "+file.getAbsolutePath()+" will be your console");
-        //         System.setOut(stream);
-        //         //Printing values to file
-        // for (Movie movie : movieList)
-        //         {
-        //                 System.out.println(movie);
-        //         }
-                movies.insertMany(movieList);
-
-                System.out.println("Importing data into: '" + DATABASE_NAME + "' done!");
-        }
+        System.out.println("Importing data into: '" + DATABASE_NAME + "' done!");
+    }
 }

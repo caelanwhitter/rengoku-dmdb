@@ -2,12 +2,16 @@ package utils;
 
 import org.bson.types.*;
 
+/**
+ * Submission is an object that represents and hold the fields of an Hidden Gem
+ */
 public class Submission {
     private ObjectId id;
     private String username, title, description, duration, genre, rating, poster, videoLink;
     private double score;
 
-    public Submission() {}
+    public Submission() {
+    }
 
     public Submission(String username, String title, String description, String duration, String genre,
             String rating, String poster, String videoLink, double score) {

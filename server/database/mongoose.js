@@ -17,6 +17,7 @@ console.log("Connected to database!\n");
 //Bind connection to error event (to get notification of connection errors)
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
+// Movie Schema
 const movieSchema = new Schema({
   description: String,
   director: String,
@@ -32,6 +33,7 @@ const movieSchema = new Schema({
 
 const Movie = mongoose.model("Movie", movieSchema)
 
+// Review Schema
 const reviewSchema = new Schema({
   username: String,
   email: String,
@@ -45,6 +47,7 @@ const reviewSchema = new Schema({
 
 const Review = mongoose.model("Review", reviewSchema)
 
+// User Schema
 const userSchema = new Schema({
   name: String,
   email: String,
@@ -54,6 +57,7 @@ const userSchema = new Schema({
 
 const User = mongoose.model("User", userSchema)
 
+// Hidden Gem schema
 const submissionSchema = new Schema({
   description: String,
   director: String,
